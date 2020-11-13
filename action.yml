@@ -46,4 +46,4 @@ outputs:
     description: 'The latest version of the .NET SDK for the specified channel when the action completed.'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'
