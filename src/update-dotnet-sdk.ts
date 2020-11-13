@@ -72,14 +72,10 @@ export async function run() {
       fs.writeFileSync(globalJsonPath, json, { encoding: 'utf8' });
     }
 
-    core.setOutput('pull-request-number', '');
-    core.setOutput('pull-request-html-url', '');
+    core.setOutput('pull-request-number', result.pullRequestNumber);
+    core.setOutput('pull-request-html-url', result.pullRequestUrl);
     core.setOutput('sdk-updated', result.updated);
     core.setOutput('sdk-version', result.version);
-
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
-
-    console.log(`The event payload: ${payload}`);
 
   } catch (error) {
     core.setFailed(error.message);
