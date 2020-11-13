@@ -1,0 +1,33 @@
+{
+  "name": "update-dotnet-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A GitHub Action that updates the .NET SDK.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martincostello/update-dotnet-sdk.git"
+  },
+  "keywords": [
+    "actions",
+    "dotnet",
+    "github",
+    "sdk"
+  ],
+  "author": {
+    "name": "Martin Costello",
+    "url": "https://martincostello.com/"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/martincostello/update-dotnet-sdk/issues"
+  },
+  "homepage": "https://github.com/martincostello/update-dotnet-sdk#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  }
+}
