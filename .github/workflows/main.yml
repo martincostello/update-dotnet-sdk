@@ -1,0 +1,28 @@
+name: update-dotnet-sdk
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-sdk:
+    runs-on: ubuntu-latest
+    name: Update .NET SDK
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Update .NET SDK
+      id: update
+      uses: ./
+      with:
+        channel: '3.1'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Print outputs
+      run: |
+        echo "PR number: ${{ steps.update.outputs.pull-request-number }}"
+        echo "PR URL: ${{ steps.update.outputs.pull-request-html-url }}"
+        echo "SDK Updated? ${{ steps.update.outputs.sdk-updated }}"
+        echo "SDK version: ${{ steps.update.outputs.sdk-version }}"
