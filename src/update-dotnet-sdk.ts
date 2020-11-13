@@ -28,13 +28,15 @@ export async function run() {
       return;
     }
 
-    if (!fs.existsSync(globalJsonFileName)) {
-      core.setFailed(`The global.json file '${globalJsonFileName}' cannot be found.`);
+    const globalJsonPath = path.normalize(globalJsonFileName);
+
+    if (!fs.existsSync(globalJsonPath)) {
+      core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
       return;
     }
 
     const globalJson = JSON.parse(
-      fs.readFileSync(globalJsonFileName, { encoding: 'utf8' })
+      fs.readFileSync(globalJsonPath, { encoding: 'utf8' })
     );
 
     let currentVersion = null;
@@ -44,7 +46,7 @@ export async function run() {
     }
 
     if (!currentVersion) {
-      core.setFailed(`.NET SDK version cannot be found in '${globalJsonFileName}'.`);
+      core.setFailed(`.NET SDK version cannot be found in '${globalJsonPath}'.`);
       return;
     }
 
