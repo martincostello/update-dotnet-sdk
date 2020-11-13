@@ -6,6 +6,8 @@ import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { DotNetSdkUpdater } from './DotNetSdkUpdater';
+
 export async function run() {
   try {
 
@@ -50,17 +52,24 @@ export async function run() {
       return;
     }
 
-    let updatedVersion = currentVersion;
-
     const branchName = core.getInput('branch-name');
     const commitMessage = core.getInput('commit-message');
     const userEmail = core.getInput('user-email');
     const userName = core.getInput('user-name');
 
+    const updater = new DotNetSdkUpdater(currentVersion);
+    const result = await updater.tryUpdateSdk();
+
+    if (result.updated) {
+      globalJson.sdk.version = result.version;
+      const json = JSON.stringify(globalJson);
+      fs.writeFileSync(globalJsonPath, json, { encoding: 'utf8' });
+    }
+
     core.setOutput('pull-request-number', '');
     core.setOutput('pull-request-html-url', '');
-    core.setOutput('sdk-updated', updatedVersion !== currentVersion);
-    core.setOutput('sdk-version', updatedVersion);
+    core.setOutput('sdk-updated', result.updated);
+    core.setOutput('sdk-version', result.version);
 
     const payload = JSON.stringify(github.context.payload, undefined, 2);
 

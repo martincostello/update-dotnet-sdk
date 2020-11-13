@@ -1,3 +1,6 @@
+// Copyright (c) Martin Costello, 2020. All rights reserved.
+// Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
+
 import io = require('@actions/io');
 import fs = require('fs');
 import os = require('os');
@@ -44,7 +47,7 @@ describe('update-dotnet-sdk tests', () => {
 
     await update.run();
 
-    assertWriteCalled(`::set-output name=sdk-updated output::true${os.EOL}`);
+    assertWriteCalled(`::set-output name=sdk-updated::true${os.EOL}`);
 
     const globalJson = JSON.parse(
       fs.readFileSync(globalJsonPath, { encoding: 'utf8' })

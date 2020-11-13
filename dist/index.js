@@ -2,6 +2,46 @@ module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 424:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+// Copyright (c) Martin Costello, 2020. All rights reserved.
+// Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DotNetSdkUpdater = void 0;
+class DotNetSdkUpdater {
+    constructor(currentVersion) {
+        this.currentVersion = currentVersion;
+    }
+    tryUpdateSdk() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updatedVersion = "3.1.404";
+            const result = {
+                pullRequestNumber: "",
+                pullRequestUrl: "",
+                updated: updatedVersion !== this.currentVersion,
+                version: updatedVersion
+            };
+            return Promise.resolve(result);
+        });
+    }
+}
+exports.DotNetSdkUpdater = DotNetSdkUpdater;
+
+
+/***/ }),
+
 /***/ 689:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -42,6 +82,8 @@ exports.run = void 0;
 const core = __importStar(__webpack_require__(507));
 const github = __importStar(__webpack_require__(621));
 const fs = __importStar(__webpack_require__(747));
+const path = __importStar(__webpack_require__(622));
+const DotNetSdkUpdater_1 = __webpack_require__(424);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -60,28 +102,35 @@ function run() {
                 core.setFailed("No path to global.json file specified.");
                 return;
             }
-            if (!fs.existsSync(globalJsonFileName)) {
-                core.setFailed(`The global.json file '${globalJsonFileName}' cannot be found.`);
+            const globalJsonPath = path.normalize(globalJsonFileName);
+            if (!fs.existsSync(globalJsonPath)) {
+                core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
                 return;
             }
-            const globalJson = JSON.parse(fs.readFileSync(globalJsonFileName, { encoding: 'utf8' }));
+            const globalJson = JSON.parse(fs.readFileSync(globalJsonPath, { encoding: 'utf8' }));
             let currentVersion = null;
             if (globalJson.sdk && globalJson.sdk.version) {
                 currentVersion = globalJson.sdk.version;
             }
             if (!currentVersion) {
-                core.setFailed(`.NET SDK version cannot be found in '${globalJsonFileName}'.`);
+                core.setFailed(`.NET SDK version cannot be found in '${globalJsonPath}'.`);
                 return;
             }
-            let updatedVersion = currentVersion;
             const branchName = core.getInput('branch-name');
             const commitMessage = core.getInput('commit-message');
             const userEmail = core.getInput('user-email');
             const userName = core.getInput('user-name');
+            const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(currentVersion);
+            const result = yield updater.tryUpdateSdk();
+            if (result.updated) {
+                globalJson.sdk.version = result.version;
+                const json = JSON.stringify(globalJson);
+                fs.writeFileSync(globalJsonPath, json, { encoding: 'utf8' });
+            }
             core.setOutput('pull-request-number', '');
             core.setOutput('pull-request-html-url', '');
-            core.setOutput('sdk-updated', updatedVersion !== currentVersion);
-            core.setOutput('sdk-version', updatedVersion);
+            core.setOutput('sdk-updated', result.updated);
+            core.setOutput('sdk-version', result.version);
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             console.log(`The event payload: ${payload}`);
         }
