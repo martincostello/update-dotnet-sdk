@@ -34,7 +34,7 @@ inputs:
   dry-run:
     description: 'If true, the action will not actually make changes to the file system, Git or GitHub.'
     required: false
-    default: true
+    default: false
 outputs:
   pull-request-number:
     description: 'The number of the Pull Request created by the action if the .NET SDK is updated.'
