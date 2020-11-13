@@ -1,5 +1,5 @@
 name: 'Update .NET SDK'
-description: 'Attempts to update the version of the .NET SDK used by the repository's global.json file.'
+description: 'Attempts to update the version of the .NET SDK used by the repository''s global.json file.'
 author: 'Martin Costello'
 branding:
   icon: 'refresh-cw'
