@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { DotNetSdkUpdater } from './DotNetSdkUpdater';
+import { UpdateOptions } from './UpdateOptions';
 
 export async function run() {
   try {
@@ -41,23 +42,28 @@ export async function run() {
       fs.readFileSync(globalJsonPath, { encoding: 'utf8' })
     );
 
-    let currentVersion = null;
+    let version = null;
 
     if (globalJson.sdk && globalJson.sdk.version) {
-      currentVersion = globalJson.sdk.version;
+      version = globalJson.sdk.version;
     }
 
-    if (!currentVersion) {
+    if (!version) {
       core.setFailed(`.NET SDK version cannot be found in '${globalJsonPath}'.`);
       return;
     }
 
-    const branchName = core.getInput('branch-name');
-    const commitMessage = core.getInput('commit-message');
-    const userEmail = core.getInput('user-email');
-    const userName = core.getInput('user-name');
+    const options: UpdateOptions = {
+      accessToken: accessToken,
+      branch: core.getInput('branch-name'),
+      channel: channel,
+      commitMessage: core.getInput('commit-message'),
+      dryRun: core.getInput('dry-run') === "true",
+      userEmail: core.getInput('user-email'),
+      userName: core.getInput('user-name')
+    };
 
-    const updater = new DotNetSdkUpdater(currentVersion);
+    const updater = new DotNetSdkUpdater(version, options);
     const result = await updater.tryUpdateSdk();
 
     if (result.updated) {

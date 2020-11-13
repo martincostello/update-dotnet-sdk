@@ -21,8 +21,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DotNetSdkUpdater = void 0;
 class DotNetSdkUpdater {
-    constructor(currentVersion) {
+    constructor(currentVersion, options) {
         this.currentVersion = currentVersion;
+        this.options = options;
     }
     tryUpdateSdk() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -108,19 +109,24 @@ function run() {
                 return;
             }
             const globalJson = JSON.parse(fs.readFileSync(globalJsonPath, { encoding: 'utf8' }));
-            let currentVersion = null;
+            let version = null;
             if (globalJson.sdk && globalJson.sdk.version) {
-                currentVersion = globalJson.sdk.version;
+                version = globalJson.sdk.version;
             }
-            if (!currentVersion) {
+            if (!version) {
                 core.setFailed(`.NET SDK version cannot be found in '${globalJsonPath}'.`);
                 return;
             }
-            const branchName = core.getInput('branch-name');
-            const commitMessage = core.getInput('commit-message');
-            const userEmail = core.getInput('user-email');
-            const userName = core.getInput('user-name');
-            const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(currentVersion);
+            const options = {
+                accessToken: accessToken,
+                branch: core.getInput('branch-name'),
+                channel: channel,
+                commitMessage: core.getInput('commit-message'),
+                dryRun: core.getInput('dry-run') === "true",
+                userEmail: core.getInput('user-email'),
+                userName: core.getInput('user-name')
+            };
+            const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(version, options);
             const result = yield updater.tryUpdateSdk();
             if (result.updated) {
                 globalJson.sdk.version = result.version;
