@@ -11,17 +11,54 @@ export async function run() {
 
     const channel = core.getInput('channel');
     const accessToken = core.getInput('repo-token');
+    const globalJsonFileName = core.getInput('global-json-file');
+
+    if (!channel) {
+      core.setFailed("No release channel specified.");
+      return;
+    }
+
+    if (!accessToken) {
+      core.setFailed("No GitHub access token specified.");
+      return;
+    }
+
+    if (!globalJsonFileName) {
+      core.setFailed("No path to global.json file specified.");
+      return;
+    }
+
+    if (!fs.existsSync(globalJsonFileName)) {
+      core.setFailed(`The global.json file '${globalJsonFileName}' cannot be found.`);
+      return;
+    }
+
+    const globalJson = JSON.parse(
+      fs.readFileSync(globalJsonFileName, { encoding: 'utf8' })
+    );
+
+    let currentVersion = null;
+
+    if (globalJson.sdk && globalJson.sdk.version) {
+      currentVersion = globalJson.sdk.version;
+    }
+
+    if (!currentVersion) {
+      core.setFailed(`.NET SDK version cannot be found in '${globalJsonFileName}'.`);
+      return;
+    }
+
+    let updatedVersion = currentVersion;
 
     const branchName = core.getInput('branch-name');
     const commitMessage = core.getInput('commit-message');
-    const globalJsonFileName = core.getInput('global-json-file');
     const userEmail = core.getInput('user-email');
     const userName = core.getInput('user-name');
 
     core.setOutput('pull-request-number', '');
     core.setOutput('pull-request-html-url', '');
-    core.setOutput('sdk-updated', false);
-    core.setOutput('sdk-version', '5.0.100');
+    core.setOutput('sdk-updated', updatedVersion !== currentVersion);
+    core.setOutput('sdk-version', updatedVersion);
 
     const payload = JSON.stringify(github.context.payload, undefined, 2);
 
