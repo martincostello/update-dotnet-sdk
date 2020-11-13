@@ -1,2 +1,4 @@
-.DS_Store
-node_modules
+.DS_Store/
+lib/
+node_modules/
+global.json

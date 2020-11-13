@@ -2,3 +2,4 @@
 
 # npm i -g @vercel/ncc
 npm run build
+npm run test
