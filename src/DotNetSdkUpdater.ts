@@ -187,8 +187,8 @@ export class DotNetSdkUpdater {
     core.debug(`Commit message: ${this.options.commitMessage}`);
 
     if (process.env.GITHUB_REPOSITORY) {
-      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git` ], true);
-      await this.execGit([ "fetch", "origin" ]);
+      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git` ]);
+      await this.execGit([ "fetch", "origin" ], true);
     }
 
     const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
