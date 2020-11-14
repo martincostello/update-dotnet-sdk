@@ -17,6 +17,7 @@ const globalJsonPath = path.join(tempDir, "global.json");
 describe("update-dotnet-sdk tests", () => {
 
   const inputs = {
+    "GITHUB_REPOSITORY": "",
     "INPUT_global-json-file": globalJsonPath,
     "INPUT_repo-token": "my-token",
     "INPUT_user-email": "github-actions[bot]@users.noreply.github.com",
