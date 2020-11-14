@@ -38,7 +38,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NullWritable = exports.DotNetSdkUpdater = void 0;
+exports.DotNetSdkUpdater = void 0;
 const fs = __importStar(__webpack_require__(5747));
 const os = __importStar(__webpack_require__(2087));
 const path = __importStar(__webpack_require__(5622));
@@ -46,6 +46,7 @@ const core = __webpack_require__(2507);
 const exec = __webpack_require__(6995);
 const github = __webpack_require__(2621);
 const http_client_1 = __webpack_require__(1404);
+const stream_1 = __webpack_require__(2413);
 class DotNetSdkUpdater {
     constructor(options) {
         this.options = options;
@@ -120,6 +121,7 @@ class DotNetSdkUpdater {
             const options = {
                 cwd: this.repoPath,
                 errStream: new NullWritable(),
+                outStream: new NullWritable(),
                 ignoreReturnCode: ignoreErrors,
                 silent: ignoreErrors,
                 listeners: {
@@ -169,26 +171,17 @@ class DotNetSdkUpdater {
     applySdkUpdate(globalJson, releaseInfo, result) {
         return __awaiter(this, void 0, void 0, function* () {
             core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
+            // Apply the update to the file system
             globalJson.sdk.version = result.version;
             const json = JSON.stringify(globalJson, null, 2) + os.EOL;
             fs.writeFileSync(this.options.globalJsonPath, json, { encoding: 'utf8' });
             core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
+            // Configure Git
             if (!this.options.branch) {
                 this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
             }
             if (!this.options.commitMessage) {
                 this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
-            }
-            core.debug(`Commit message: ${this.options.commitMessage}`);
-            if (process.env.GITHUB_REPOSITORY) {
-                yield this.execGit(["remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git`]);
-                yield this.execGit(["fetch", "origin"], true);
-            }
-            const base = yield this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
-            const branchExists = yield this.execGit(["rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}`], true);
-            if (branchExists) {
-                core.info(`The ${this.options.branch} branch already exists`);
-                return;
             }
             if (this.options.userName) {
                 yield this.execGit(["config", "user.name", this.options.userName]);
@@ -198,6 +191,20 @@ class DotNetSdkUpdater {
                 yield this.execGit(["config", "user.email", this.options.userEmail]);
                 core.info(`Updated git user email to '${this.options.userEmail}'`);
             }
+            if (process.env.GITHUB_REPOSITORY) {
+                // TODO Update to support GHE
+                yield this.execGit(["remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git`]);
+                yield this.execGit(["fetch", "origin"], true);
+            }
+            core.debug(`Branch: ${this.options.branch}`);
+            core.debug(`Commit message: ${this.options.commitMessage}`);
+            core.debug(`User name: ${this.options.userName}`);
+            core.debug(`User email: ${this.options.userEmail}`);
+            const branchExists = yield this.execGit(["rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}`], true);
+            if (branchExists) {
+                core.info(`The ${this.options.branch} branch already exists`);
+                return;
+            }
             yield this.execGit(["checkout", "-b", this.options.branch], true);
             core.info(`Created git branch ${this.options.branch}`);
             yield this.execGit(["add", this.options.globalJsonPath]);
@@ -206,7 +213,7 @@ class DotNetSdkUpdater {
             const sha1 = yield this.execGit(["log", "--format='%H'", "-n", "1"]);
             const shortSha1 = sha1.replace("'", "").substring(0, 7);
             core.info(`Commited .NET SDK update to git (${shortSha1})`);
-            if (process.env.GITHUB_REPOSITORY) {
+            if (!this.options.dryRun && process.env.GITHUB_REPOSITORY) {
                 yield this.execGit(["push", "-u", "origin", this.options.branch], true);
                 core.info(`Pushed changes to repository (${process.env.GITHUB_REPOSITORY})`);
             }
@@ -214,7 +221,6 @@ class DotNetSdkUpdater {
     }
 }
 exports.DotNetSdkUpdater = DotNetSdkUpdater;
-const stream_1 = __webpack_require__(2413);
 class NullWritable extends stream_1.Writable {
     _write(_chunk, _encoding, callback) {
         callback();
@@ -223,7 +229,6 @@ class NullWritable extends stream_1.Writable {
         callback();
     }
 }
-exports.NullWritable = NullWritable;
 
 
 /***/ }),
