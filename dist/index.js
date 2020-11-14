@@ -38,7 +38,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DotNetSdkUpdater = void 0;
+exports.NullWritable = exports.DotNetSdkUpdater = void 0;
 const fs = __importStar(__webpack_require__(5747));
 const os = __importStar(__webpack_require__(2087));
 const path = __importStar(__webpack_require__(5622));
@@ -80,7 +80,7 @@ class DotNetSdkUpdater {
             };
             core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
             core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
-            core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion}`);
+            core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
             if (result.updated) {
                 yield this.applySdkUpdate(globalJson, releaseInfo, result);
                 //await this.createPullRequest(releaseInfo.latest);
@@ -119,6 +119,9 @@ class DotNetSdkUpdater {
             let commandError = "";
             const options = {
                 cwd: this.repoPath,
+                errStream: new NullWritable(),
+                ignoreReturnCode: ignoreErrors,
+                silent: ignoreErrors,
                 listeners: {
                     stdout: (data) => {
                         commandOutput += data.toString();
@@ -126,8 +129,7 @@ class DotNetSdkUpdater {
                     stderr: (data) => {
                         commandError += data.toString();
                     }
-                },
-                ignoreReturnCode: ignoreErrors
+                }
             };
             yield exec.exec("git", args, options);
             if (commandError && !ignoreErrors) {
@@ -180,7 +182,7 @@ class DotNetSdkUpdater {
             core.debug(`Commit message: ${this.options.commitMessage}`);
             if (process.env.GITHUB_REPOSITORY) {
                 yield this.execGit(["remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git`]);
-                yield this.execGit(["fetch", "origin"]);
+                yield this.execGit(["fetch", "origin"], true);
             }
             const base = yield this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
             const branchExists = yield this.execGit(["rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}`], true);
@@ -205,13 +207,23 @@ class DotNetSdkUpdater {
             const shortSha1 = sha1.replace("'", "").substring(0, 7);
             core.info(`Commited .NET SDK update to git (${shortSha1})`);
             if (process.env.GITHUB_REPOSITORY) {
-                yield this.execGit(["push", "-u", "origin", this.options.branch]);
+                yield this.execGit(["push", "-u", "origin", this.options.branch], true);
                 core.info(`Pushed changes to repository (${process.env.GITHUB_REPOSITORY})`);
             }
         });
     }
 }
 exports.DotNetSdkUpdater = DotNetSdkUpdater;
+const stream_1 = __webpack_require__(2413);
+class NullWritable extends stream_1.Writable {
+    _write(_chunk, _encoding, callback) {
+        callback();
+    }
+    _writev(_chunks, callback) {
+        callback();
+    }
+}
+exports.NullWritable = NullWritable;
 
 
 /***/ }),

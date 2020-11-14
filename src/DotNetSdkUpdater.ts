@@ -109,6 +109,7 @@ export class DotNetSdkUpdater {
 
     const options = {
       cwd: this.repoPath,
+      errStream: new NullWritable(),
       ignoreReturnCode: ignoreErrors,
       silent: ignoreErrors,
       listeners: {
@@ -246,4 +247,15 @@ interface ReleaseInfo {
 interface SdkVersions {
   current: ReleaseInfo;
   latest: ReleaseInfo;
+}
+
+import { Writable } from "stream";
+
+export class NullWritable extends Writable {
+  _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
+    callback();
+  }
+  _writev(_chunks: Array<{chunk: any; encoding: string}>, callback: (error?: Error | null) => void): void {
+    callback();
+  }
 }
