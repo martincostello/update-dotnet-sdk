@@ -22,9 +22,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install ncc
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Install packages
       shell: pwsh
-      run: npm i -g @vercel/ncc
+      run: |
+        npm i -g @vercel/ncc
+        npm install
 
     - name: Build and Test
       shell: pwsh
