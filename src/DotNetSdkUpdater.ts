@@ -59,7 +59,7 @@ export class DotNetSdkUpdater {
     const result: UpdateResult = {
       pullRequestNumber: "",
       pullRequestUrl: "",
-      updated: releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion,
+      updated: false,
       version: releaseInfo.latest.sdkVersion
     };
 
@@ -67,7 +67,9 @@ export class DotNetSdkUpdater {
     core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
     core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
 
-    if (result.updated) {
+    const versionUpdated = releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion;
+
+    if (versionUpdated) {
 
       const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo, result);
 
@@ -75,6 +77,8 @@ export class DotNetSdkUpdater {
         const pullRequest = await this.createPullRequest(baseBranch, releaseInfo);
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
+
+        result.updated = true;
       }
 
     } else {
