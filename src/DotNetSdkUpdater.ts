@@ -12,6 +12,7 @@ const github = require('@actions/github');
 import { HttpClient } from '@actions/http-client';
 import { UpdateOptions } from './UpdateOptions';
 import { UpdateResult } from './UpdateResult';
+import { Writable } from "stream";
 
 export class DotNetSdkUpdater {
 
@@ -254,8 +255,6 @@ interface SdkVersions {
   current: ReleaseInfo;
   latest: ReleaseInfo;
 }
-
-import { Writable } from "stream";
 
 export class NullWritable extends Writable {
   _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
