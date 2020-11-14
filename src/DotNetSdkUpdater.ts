@@ -133,6 +133,8 @@ export class DotNetSdkUpdater {
 
     const result = await octokit.pulls.create(request);
 
+    core.info(JSON.stringify(result, null, 2));
+
     core.info(`Created pull request #${result.number}: ${result.title}`);
     core.info(`View the pull request at ${result.html_url}`);
 
