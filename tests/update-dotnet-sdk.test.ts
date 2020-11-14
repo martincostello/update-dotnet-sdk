@@ -9,7 +9,7 @@ import path = require("path");
 
 const github = require("@actions/github");
 
-import * as updater from "../src/update-dotnet-sdk";
+import { run } from "../src/update-dotnet-sdk";
 
 const tempDir = path.join(os.tmpdir(), "update-dotnet-sdk-temp");
 const globalJsonPath = path.join(tempDir, "global.json");
@@ -63,7 +63,7 @@ describe("update-dotnet-sdk tests", () => {
       }
     });
 
-    await updater.run();
+    await run();
 
     assertWriteCalled(`::set-output name=pull-request-html-url::https://github.com/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
     assertWriteCalled(`::set-output name=pull-request-number::42${os.EOL}`);

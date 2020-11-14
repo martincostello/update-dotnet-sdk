@@ -369,7 +369,9 @@ function run() {
     });
 }
 exports.run = run;
-run();
+if (require.main === require.cache[eval('__filename')]) {
+    run();
+}
 
 
 /***/ }),
