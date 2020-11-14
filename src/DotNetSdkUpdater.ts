@@ -110,6 +110,7 @@ export class DotNetSdkUpdater {
     const options = {
       cwd: this.repoPath,
       errStream: new NullWritable(),
+      outStream: new NullWritable(),
       ignoreReturnCode: ignoreErrors,
       silent: ignoreErrors,
       listeners: {
