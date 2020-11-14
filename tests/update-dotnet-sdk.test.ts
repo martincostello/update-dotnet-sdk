@@ -76,7 +76,7 @@ describe("update-dotnet-sdk tests", () => {
     const actualVersion: string = globalJson.sdk.version;
 
     expect(actualVersion).not.toBe(sdkVersion);
-  }, 1500000);
+  }, 30000);
 });
 
 function assertWriteCalled(message: string): void {
