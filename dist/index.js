@@ -64,12 +64,19 @@ class DotNetSdkUpdater {
     tryUpdateSdk() {
         return __awaiter(this, void 0, void 0, function* () {
             const globalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: "utf8" }));
-            let sdkVersion = null;
+            let sdkVersion = "";
             if (globalJson.sdk && globalJson.sdk.version) {
                 sdkVersion = globalJson.sdk.version;
             }
             if (!sdkVersion) {
                 throw new Error(`.NET SDK version cannot be found in '${this.options.globalJsonPath}'.`);
+            }
+            if (!this.options.channel) {
+                const versionParts = sdkVersion.split(".");
+                if (versionParts.length < 2) {
+                    throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
+                }
+                this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
             }
             const releases = yield this.getDotNetReleases();
             const releaseInfo = yield DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
@@ -322,13 +329,8 @@ const DotNetSdkUpdater_1 = __webpack_require__(424);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const channel = core.getInput("channel");
             const accessToken = core.getInput("repo-token");
             const globalJsonFileName = core.getInput("global-json-file");
-            if (!channel) {
-                core.setFailed("No release channel specified.");
-                return;
-            }
             if (!accessToken) {
                 core.setFailed("No GitHub access token specified.");
                 return;
@@ -345,7 +347,7 @@ function run() {
             const options = {
                 accessToken: accessToken,
                 branch: core.getInput("branch-name"),
-                channel: channel,
+                channel: core.getInput("channel"),
                 commitMessage: core.getInput("commit-message"),
                 dryRun: core.getInput("dry-run") === "true",
                 globalJsonPath: globalJsonPath,

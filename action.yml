@@ -5,14 +5,15 @@ branding:
   icon: 'refresh-cw'
   color: 'blue'
 inputs:
-  channel:
-    description: 'The .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.).'
-    required: true
   repo-token:
     description: 'The GitHub access token to use to create a Pull Request for any SDK update to the repository.'
     required: true
   branch-name:
     description: 'The optional Git branch name to use.'
+    required: false
+    default: ''
+  channel:
+    description: 'The optional .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.).'
     required: false
     default: ''
   commit-message:

@@ -11,14 +11,8 @@ import { UpdateOptions } from "./UpdateOptions";
 export async function run() {
   try {
 
-    const channel = core.getInput("channel");
     const accessToken = core.getInput("repo-token");
     const globalJsonFileName = core.getInput("global-json-file");
-
-    if (!channel) {
-      core.setFailed("No release channel specified.");
-      return;
-    }
 
     if (!accessToken) {
       core.setFailed("No GitHub access token specified.");
@@ -40,7 +34,7 @@ export async function run() {
     const options: UpdateOptions = {
       accessToken: accessToken,
       branch: core.getInput("branch-name"),
-      channel: channel,
+      channel: core.getInput("channel"),
       commitMessage: core.getInput("commit-message"),
       dryRun: core.getInput("dry-run") === "true",
       globalJsonPath: globalJsonPath,

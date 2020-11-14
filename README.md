@@ -9,7 +9,6 @@ steps:
 - uses: actions/checkout@v2
 - uses: martincostello/update-dotnet-sdk@v1
   with:
-    channel: '3.1'
     repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -19,7 +18,6 @@ steps:
 
 | **Name** | **Description** |
 |:--|:--|
-| `channel` | The .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.). |
 | `repo-token` | The GitHub access token to use to create a Pull Request for any SDK update to the repository. |
 
 ### Optional
@@ -27,6 +25,7 @@ steps:
 | **Name** | **Description** | **Default** |
 |:--|:--|:--|
 | `branch-name` | The optional Git branch name to use. | - |
+| `channel` | The optional .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.). | The channel derived from the current SDK version. |
 | `commit-message` | The optional Git commit message to use. | - |
 | `global-json-file` | The optional path to the global.json file to update the SDK for. | `./global.json` |
 | `user-email` | The optional email address to use for the Git commit. | `github-actions[bot]@users.noreply.github.com` |

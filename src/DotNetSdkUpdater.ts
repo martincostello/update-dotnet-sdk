@@ -43,7 +43,7 @@ export class DotNetSdkUpdater {
       fs.readFileSync(this.options.globalJsonPath, { encoding: "utf8" })
     );
 
-    let sdkVersion = null;
+    let sdkVersion = "";
 
     if (globalJson.sdk && globalJson.sdk.version) {
       sdkVersion = globalJson.sdk.version;
@@ -51,6 +51,17 @@ export class DotNetSdkUpdater {
 
     if (!sdkVersion) {
       throw new Error(`.NET SDK version cannot be found in '${this.options.globalJsonPath}'.`);
+    }
+
+    if (!this.options.channel) {
+
+      const versionParts = sdkVersion.split(".");
+
+      if (versionParts.length < 2) {
+        throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
+      }
+
+      this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
     }
 
     const releases = await this.getDotNetReleases();

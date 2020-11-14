@@ -19,7 +19,6 @@ jobs:
       id: update
       uses: ./
       with:
-        channel: '3.1'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         global-json-file: './_global.json'
 
