@@ -172,33 +172,20 @@ export class DotNetSdkUpdater {
 
     core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
 
+    // Apply the update to the file system
     globalJson.sdk.version = result.version;
     const json = JSON.stringify(globalJson, null, 2) + os.EOL;
 
     fs.writeFileSync(this.options.globalJsonPath, json, { encoding: 'utf8' });
     core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
 
+    // Configure Git
     if (!this.options.branch) {
       this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
     }
 
     if (!this.options.commitMessage) {
       this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
-    }
-
-    core.debug(`Commit message: ${this.options.commitMessage}`);
-
-    if (process.env.GITHUB_REPOSITORY) {
-      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git` ]);
-      await this.execGit([ "fetch", "origin" ], true);
-    }
-
-    const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
-    const branchExists = await this.execGit([ "rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}` ], true);
-
-    if (branchExists) {
-      core.info(`The ${this.options.branch} branch already exists`);
-      return;
     }
 
     if (this.options.userName) {
@@ -209,6 +196,24 @@ export class DotNetSdkUpdater {
     if (this.options.userEmail) {
       await this.execGit([ "config", "user.email", this.options.userEmail ]);
       core.info(`Updated git user email to '${this.options.userEmail}'`);
+    }
+
+    if (process.env.GITHUB_REPOSITORY) {
+      // TODO Update to support GHE
+      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git` ]);
+      await this.execGit([ "fetch", "origin" ], true);
+    }
+
+    core.debug(`Branch: ${this.options.branch}`);
+    core.debug(`Commit message: ${this.options.commitMessage}`);
+    core.debug(`User name: ${this.options.userName}`);
+    core.debug(`User email: ${this.options.userEmail}`);
+
+    const branchExists = await this.execGit([ "rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}` ], true);
+
+    if (branchExists) {
+      core.info(`The ${this.options.branch} branch already exists`);
+      return;
     }
 
     await this.execGit([ "checkout", "-b", this.options.branch ], true);
