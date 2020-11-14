@@ -275,7 +275,7 @@ export class DotNetSdkUpdater {
     }
 
     // Allow Git to silently change the line endings to whatever the repo uses by default
-    await this.execGit([ "config", "core.safecrlf", "false" ]);
+    await this.execGit([ "config", "core.safecrlf", "true" ]);
 
     if (this.options.repo) {
       // TODO Update to support GHE
