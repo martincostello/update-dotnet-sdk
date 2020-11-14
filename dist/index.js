@@ -135,12 +135,12 @@ class DotNetSdkUpdater {
                 };
             }
             const result = yield octokit.pulls.create(request);
-            core.info(JSON.stringify(result, null, 2));
-            core.info(`Created pull request #${result.number}: ${result.title}`);
-            core.info(`View the pull request at ${result.html_url}`);
+            core.debug(JSON.stringify(result, null, 2));
+            core.info(`Created pull request #${result.data.number}: ${result.data.title}`);
+            core.info(`View the pull request at ${result.data.html_url}`);
             return {
-                number: result.number,
-                url: result.html_url
+                number: result.data.number,
+                url: result.data.html_url
             };
         });
     }

@@ -55,8 +55,10 @@ describe("update-dotnet-sdk tests", () => {
     github.getOctokit = jest.fn().mockReturnValue({
       pulls: {
         create: () => Promise.resolve({
-          number: "42",
-          html_url: "https://github.com/martincostello/update-dotnet-sdk/pull/42"
+          data: {
+            number: "42",
+            html_url: "https://github.com/martincostello/update-dotnet-sdk/pull/42"
+          }
         })
       }
     });
