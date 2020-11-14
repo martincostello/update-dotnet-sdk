@@ -256,7 +256,7 @@ interface SdkVersions {
   latest: ReleaseInfo;
 }
 
-export class NullWritable extends Writable {
+class NullWritable extends Writable {
   _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
     callback();
   }
