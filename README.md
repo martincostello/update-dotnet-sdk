@@ -4,6 +4,8 @@
 
 This action updates the .NET SDK version specified by a `global.json` file stored in a GitHub repository.
 
+An example Pull Request created by the action can be found [here](https://github.com/martincostello/update-dotnet-sdk/pull/10).
+
 ## Example Usage
 
 ```yml
@@ -12,6 +14,33 @@ steps:
 - uses: martincostello/update-dotnet-sdk@v1
   with:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Example Workflow
+
+Below is an example of a full GitHub Actions workflow to automate .NET SDK updates.
+
+```yml
+name: update-dotnet-sdk
+
+on:
+
+  # Scheduled trigger to check for .NET SDK updates once an hour
+  schedule:
+    - cron:  '0 * * * *'
+
+  # Manual trigger to update the .NET SDK on demand
+  workflow_dispatch:
+
+jobs:
+  update-dotnet-sdk:
+    name: Update .NET SDK
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: martincostello/update-dotnet-sdk@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Inputs
