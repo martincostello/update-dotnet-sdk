@@ -274,6 +274,9 @@ export class DotNetSdkUpdater {
       core.info(`Updated git user email to '${this.options.userEmail}'`);
     }
 
+    // Allow Git to silently change the line endings to whatever the repo uses by default
+    await this.execGit([ "config", "core.safecrlf", "false" ]);
+
     if (this.options.repo) {
       // TODO Update to support GHE
       await this.execGit([ "remote", "set-url", "origin", `https://github.com/${this.options.repo}.git` ]);
