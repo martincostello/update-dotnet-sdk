@@ -83,10 +83,12 @@ class DotNetSdkUpdater {
             core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
             core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
             if (result.updated) {
-                yield this.applySdkUpdate(globalJson, releaseInfo, result);
-                const pullRequest = yield this.createPullRequest(releaseInfo);
-                result.pullRequestNumber = pullRequest.number;
-                result.pullRequestUrl = pullRequest.url;
+                const baseBranch = yield this.applySdkUpdate(globalJson, releaseInfo, result);
+                if (baseBranch) {
+                    const pullRequest = yield this.createPullRequest(baseBranch, releaseInfo);
+                    result.pullRequestNumber = pullRequest.number;
+                    result.pullRequestUrl = pullRequest.url;
+                }
             }
             else {
                 core.info(`The current .NET SDK version is up-to-date`);
@@ -94,10 +96,9 @@ class DotNetSdkUpdater {
             return result;
         });
     }
-    createPullRequest(versions) {
+    createPullRequest(base, versions) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const base = yield this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
             const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
             let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
             if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
@@ -208,6 +209,8 @@ class DotNetSdkUpdater {
     applySdkUpdate(globalJson, releaseInfo, result) {
         return __awaiter(this, void 0, void 0, function* () {
             core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
+            // Get the base branch to use later to create the Pull Request
+            const base = yield this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
             // Apply the update to the file system
             globalJson.sdk.version = result.version;
             const json = JSON.stringify(globalJson, null, 2) + os.EOL;
@@ -240,7 +243,7 @@ class DotNetSdkUpdater {
             const branchExists = yield this.execGit(["rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}`], true);
             if (branchExists) {
                 core.info(`The ${this.options.branch} branch already exists`);
-                return;
+                return undefined;
             }
             yield this.execGit(["checkout", "-b", this.options.branch], true);
             core.info(`Created git branch ${this.options.branch}`);
@@ -254,6 +257,7 @@ class DotNetSdkUpdater {
                 yield this.execGit(["push", "-u", "origin", this.options.branch], true);
                 core.info(`Pushed changes to repository (${this.options.repo})`);
             }
+            return base;
         });
     }
 }

@@ -69,12 +69,13 @@ export class DotNetSdkUpdater {
 
     if (result.updated) {
 
-      await this.applySdkUpdate(globalJson, releaseInfo, result);
+      const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo, result);
 
-      const pullRequest = await this.createPullRequest(releaseInfo);
-
-      result.pullRequestNumber = pullRequest.number;
-      result.pullRequestUrl = pullRequest.url;
+      if (baseBranch) {
+        const pullRequest = await this.createPullRequest(baseBranch, releaseInfo);
+        result.pullRequestNumber = pullRequest.number;
+        result.pullRequestUrl = pullRequest.url;
+      }
 
     } else {
       core.info(`The current .NET SDK version is up-to-date`);
@@ -83,9 +84,8 @@ export class DotNetSdkUpdater {
     return result;
   }
 
-  private async createPullRequest(versions: SdkVersions): Promise<PullRequest> {
+  private async createPullRequest(base: string, versions: SdkVersions): Promise<PullRequest> {
 
-    const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
     const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
 
     let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
@@ -223,9 +223,12 @@ export class DotNetSdkUpdater {
     return result;
   }
 
-  private async applySdkUpdate(globalJson: any, releaseInfo: SdkVersions, result: UpdateResult): Promise<void> {
+  private async applySdkUpdate(globalJson: any, releaseInfo: SdkVersions, result: UpdateResult): Promise<string | undefined> {
 
     core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
+
+    // Get the base branch to use later to create the Pull Request
+    const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
 
     // Apply the update to the file system
     globalJson.sdk.version = result.version;
@@ -268,7 +271,7 @@ export class DotNetSdkUpdater {
 
     if (branchExists) {
       core.info(`The ${this.options.branch} branch already exists`);
-      return;
+      return undefined;
     }
 
     await this.execGit([ "checkout", "-b", this.options.branch ], true);
@@ -288,6 +291,8 @@ export class DotNetSdkUpdater {
       await this.execGit([ "push", "-u", "origin", this.options.branch ], true);
       core.info(`Pushed changes to repository (${this.options.repo})`);
     }
+
+    return base;
   }
 }
 
