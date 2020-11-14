@@ -1,8 +1,6 @@
 name: update-dotnet-sdk
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
