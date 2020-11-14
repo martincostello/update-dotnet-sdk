@@ -2,7 +2,6 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as core from '@actions/core';
-import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -38,39 +37,19 @@ export async function run() {
       return;
     }
 
-    const globalJson = JSON.parse(
-      fs.readFileSync(globalJsonPath, { encoding: 'utf8' })
-    );
-
-    let version = null;
-
-    if (globalJson.sdk && globalJson.sdk.version) {
-      version = globalJson.sdk.version;
-    }
-
-    if (!version) {
-      core.setFailed(`.NET SDK version cannot be found in '${globalJsonPath}'.`);
-      return;
-    }
-
     const options: UpdateOptions = {
       accessToken: accessToken,
       branch: core.getInput('branch-name'),
       channel: channel,
       commitMessage: core.getInput('commit-message'),
       dryRun: core.getInput('dry-run') === "true",
+      globalJsonPath: globalJsonPath,
       userEmail: core.getInput('user-email'),
       userName: core.getInput('user-name')
     };
 
-    const updater = new DotNetSdkUpdater(version, options);
+    const updater = new DotNetSdkUpdater(options);
     const result = await updater.tryUpdateSdk();
-
-    if (result.updated) {
-      globalJson.sdk.version = result.version;
-      const json = JSON.stringify(globalJson);
-      fs.writeFileSync(globalJsonPath, json, { encoding: 'utf8' });
-    }
 
     core.setOutput('pull-request-number', result.pullRequestNumber);
     core.setOutput('pull-request-html-url', result.pullRequestUrl);

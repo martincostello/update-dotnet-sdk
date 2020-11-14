@@ -13,6 +13,8 @@ export interface UpdateOptions {
 
   dryRun: boolean;
 
+  globalJsonPath: string;
+
   userEmail: string;
 
   userName: string;
