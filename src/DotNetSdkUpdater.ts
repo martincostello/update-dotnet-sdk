@@ -109,6 +109,8 @@ export class DotNetSdkUpdater {
 
     const options = {
       cwd: this.repoPath,
+      ignoreReturnCode: ignoreErrors,
+      silent: ignoreErrors,
       listeners: {
         stdout: (data: Buffer) => {
           commandOutput += data.toString();
@@ -116,8 +118,7 @@ export class DotNetSdkUpdater {
         stderr: (data: Buffer) => {
           commandError += data.toString();
         }
-      },
-      ignoreReturnCode: ignoreErrors
+      }
     };
 
     await exec.exec("git", args, options);
