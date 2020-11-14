@@ -15,16 +15,23 @@ steps:
 
 ## Inputs
 
-| **Name** | **Required** | **Description** | **Default** |
-|:--|:-:|:--|:--|
-| `channel` | Yes | The .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.). | - |
-| `repo-token` | Yes | The GitHub access token to use to create a Pull Request for any SDK update to the repository. | - |
-| `branch-name` | No | The optional Git branch name to use. | - |
-| `commit-message` | No | The optional Git commit message to use. | - |
-| `global-json-file` | No | The optional path to the global.json file to update the SDK for. | `./global.json` |
-| `user-email` | No | The optional email address to use for the Git commit. | `github-actions[bot]@users.noreply.github.com` |
-| `user-name` | No | The optional user name to use for the Git commit. | `github-actions[bot]` |
-| `dry-run` | No | If true, the action will push changes to GitHub. | `false` |
+## Required
+
+| **Name** | **Description** |
+|:--|:--|
+| `channel` | The .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.). |
+| `repo-token` | The GitHub access token to use to create a Pull Request for any SDK update to the repository. |
+
+### Optional
+
+| **Name** | **Description** | **Default** |
+|:--|:--|:--|
+| `branch-name` | The optional Git branch name to use. | - |
+| `commit-message` | The optional Git commit message to use. | - |
+| `global-json-file` | The optional path to the global.json file to update the SDK for. | `./global.json` |
+| `user-email` | The optional email address to use for the Git commit. | `github-actions[bot]@users.noreply.github.com` |
+| `user-name` | The optional user name to use for the Git commit. | `github-actions[bot]` |
+| `dry-run` | If true, the action will not push changes to GitHub. | `false` |
 
 ## Outputs
 

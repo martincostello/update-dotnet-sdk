@@ -32,7 +32,7 @@ inputs:
     required: false
     default: 'github-actions[bot]'
   dry-run:
-    description: 'If true, the action will not actually make changes to the file system, Git or GitHub.'
+    description: 'If true, the action will not push changes to GitHub.'
     required: false
     default: false
 outputs:
