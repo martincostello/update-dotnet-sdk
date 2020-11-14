@@ -1,5 +1,7 @@
 # Update .NET SDK
 
+[![Build status](https://github.com/martincostello/update-dotnet-sdk/workflows/build/badge.svg?branch=main&event=push)](https://github.com/martincostello/update-dotnet-sdk/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
+
 This action updates the .NET SDK version specified by a `global.json` file stored in a GitHub repository.
 
 ## Example Usage
