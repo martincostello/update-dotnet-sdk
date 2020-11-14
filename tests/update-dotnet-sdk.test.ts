@@ -41,7 +41,7 @@ describe("update-dotnet-sdk tests", () => {
     }
   }, 5000);
 
-  it("Updates the .NET SDK in global.json if a new version is available", async () => {
+  xit("Updates the .NET SDK in global.json if a new version is available", async () => {
 
     const sdkVersion = "3.1.201";
     const jsonContents = `{${os.EOL}"sdk": {${os.EOL}"version": "${sdkVersion}"${os.EOL}}${os.EOL}}`;
