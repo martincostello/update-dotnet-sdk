@@ -60,7 +60,7 @@ export class DotNetSdkUpdater {
       pullRequestNumber: "",
       pullRequestUrl: "",
       updated: false,
-      version: releaseInfo.latest.sdkVersion
+      version: releaseInfo.current.sdkVersion
     };
 
     core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
@@ -79,10 +79,11 @@ export class DotNetSdkUpdater {
         result.pullRequestUrl = pullRequest.url;
 
         result.updated = true;
+        result.version = releaseInfo.latest.sdkVersion;
       }
 
     } else {
-      core.info(`The current .NET SDK version is up-to-date`);
+      core.info("The current .NET SDK version is up-to-date");
     }
 
     return result;
@@ -237,7 +238,7 @@ export class DotNetSdkUpdater {
     const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
 
     // Apply the update to the file system
-    globalJson.sdk.version = result.version;
+    globalJson.sdk.version = releaseInfo.latest.sdkVersion;
     const json = JSON.stringify(globalJson, null, 2) + os.EOL;
 
     fs.writeFileSync(this.options.globalJsonPath, json, { encoding: "utf8" });
