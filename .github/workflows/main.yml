@@ -21,7 +21,6 @@ jobs:
       with:
         channel: '3.1'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        dry-run: true
         global-json-file: './_global.json'
 
     - name: Print outputs

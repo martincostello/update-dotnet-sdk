@@ -230,7 +230,7 @@ export class DotNetSdkUpdater {
 
     core.info(`Commited .NET SDK update to git (${shortSha1})`);
 
-    if (process.env.GITHUB_REPOSITORY) {
+    if (!this.options.dryRun && process.env.GITHUB_REPOSITORY) {
       await this.execGit([ "push", "-u", "origin", this.options.branch ], true);
       core.info(`Pushed changes to repository (${process.env.GITHUB_REPOSITORY})`);
     }

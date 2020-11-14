@@ -24,7 +24,7 @@ steps:
 | `global-json-file` | No | The optional path to the global.json file to update the SDK for. | `./global.json` |
 | `user-email` | No | The optional email address to use for the Git commit. | `github-actions[bot]@users.noreply.github.com` |
 | `user-name` | No | The optional user name to use for the Git commit. | `github-actions[bot]` |
-| `dry-run` | No | If true, the action will not actually make changes to the file system, Git or GitHub. | `false` |
+| `dry-run` | No | If true, the action will push changes to GitHub. | `false` |
 
 ## Outputs
 
