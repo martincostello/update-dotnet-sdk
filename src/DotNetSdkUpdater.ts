@@ -64,7 +64,7 @@ export class DotNetSdkUpdater {
 
     core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
     core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
-    core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion}`);
+    core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
 
     if (result.updated) {
       await this.applySdkUpdate(globalJson, releaseInfo, result);
@@ -187,7 +187,7 @@ export class DotNetSdkUpdater {
     core.debug(`Commit message: ${this.options.commitMessage}`);
 
     if (process.env.GITHUB_REPOSITORY) {
-      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git` ]);
+      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${process.env.GITHUB_REPOSITORY}.git` ], true);
       await this.execGit([ "fetch", "origin" ]);
     }
 
@@ -223,7 +223,7 @@ export class DotNetSdkUpdater {
     core.info(`Commited .NET SDK update to git (${shortSha1})`);
 
     if (process.env.GITHUB_REPOSITORY) {
-      await this.execGit([ "push", "-u", "origin", this.options.branch ]);
+      await this.execGit([ "push", "-u", "origin", this.options.branch ], true);
       core.info(`Pushed changes to repository (${process.env.GITHUB_REPOSITORY})`);
     }
   }
