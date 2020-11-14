@@ -1,25 +1,27 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-import exec = require('@actions/exec');
-import io = require('@actions/io');
-import fs = require('fs');
-import os = require('os');
-import path = require('path');
+import exec = require("@actions/exec");
+import io = require("@actions/io");
+import fs = require("fs");
+import os = require("os");
+import path = require("path");
 
-import * as updater from '../src/update-dotnet-sdk';
+const github = require("@actions/github");
 
-const tempDir = path.join(os.tmpdir(), 'update-dotnet-sdk-temp');
-const globalJsonPath = path.join(tempDir, 'global.json');
+import * as updater from "../src/update-dotnet-sdk";
 
-describe('update-dotnet-sdk tests', () => {
+const tempDir = path.join(os.tmpdir(), "update-dotnet-sdk-temp");
+const globalJsonPath = path.join(tempDir, "global.json");
+
+describe("update-dotnet-sdk tests", () => {
 
   const inputs = {
-    'INPUT_channel': "3.1",
-    'INPUT_global-json-file': globalJsonPath,
-    'INPUT_repo-token': "my-token",
-    'INPUT_user-email': "github-actions[bot]@users.noreply.github.com",
-    'INPUT_user-name': "github-actions[bot]"
+    "INPUT_channel": "3.1",
+    "INPUT_global-json-file": globalJsonPath,
+    "INPUT_repo-token": "my-token",
+    "INPUT_user-email": "github-actions[bot]@users.noreply.github.com",
+    "INPUT_user-name": "github-actions[bot]"
   };
 
   beforeEach(async () => {
@@ -32,14 +34,14 @@ describe('update-dotnet-sdk tests', () => {
 
   afterEach(async () => {
     try {
-      await io.rmRF(path.join(tempDir, 'global.json'));
+      await io.rmRF(path.join(tempDir, "global.json"));
       await io.rmRF(tempDir);
     } catch {
-      console.log('Failed to remove test directories');
+      console.log("Failed to remove test directories");
     }
   }, 5000);
 
-  it('Updates the .NET SDK in global.json if a new version is available', async () => {
+  it("Updates the .NET SDK in global.json if a new version is available", async () => {
 
     const sdkVersion = "3.1.201";
     const jsonContents = `{${os.EOL}"sdk": {${os.EOL}"version": "${sdkVersion}"${os.EOL}}${os.EOL}}`;
@@ -50,12 +52,23 @@ describe('update-dotnet-sdk tests', () => {
       process.env[key] = inputs[key as keyof typeof inputs]
     }
 
+    github.getOctokit = jest.fn().mockReturnValue({
+      pulls: {
+        create: () => Promise.resolve({
+          number: "42",
+          html_url: "https://github.com/martincostello/update-dotnet-sdk/pull/42"
+        })
+      }
+    });
+
     await updater.run();
 
+    assertWriteCalled(`::set-output name=pull-request-html-url::https://github.com/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
+    assertWriteCalled(`::set-output name=pull-request-number::42${os.EOL}`);
     assertWriteCalled(`::set-output name=sdk-updated::true${os.EOL}`);
 
     const globalJson = JSON.parse(
-      fs.readFileSync(globalJsonPath, { encoding: 'utf8' })
+      fs.readFileSync(globalJsonPath, { encoding: "utf8" })
     );
 
     const actualVersion: string = globalJson.sdk.version;

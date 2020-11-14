@@ -15,6 +15,10 @@ export interface UpdateOptions {
 
   globalJsonPath: string;
 
+  repo?: string;
+
+  runId?: string;
+
   userEmail: string;
 
   userName: string;
