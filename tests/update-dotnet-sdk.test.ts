@@ -19,6 +19,7 @@ describe("update-dotnet-sdk tests", () => {
   const inputs = {
     "GITHUB_REPOSITORY": "",
     "INPUT_global-json-file": globalJsonPath,
+    "INPUT_labels": "foo,bar",
     "INPUT_repo-token": "my-token",
     "INPUT_user-email": "github-actions[bot]@users.noreply.github.com",
     "INPUT_user-name": "github-actions[bot]"
@@ -53,6 +54,9 @@ describe("update-dotnet-sdk tests", () => {
     }
 
     github.getOctokit = jest.fn().mockReturnValue({
+      issues: {
+        addLabels: () => Promise.resolve({})
+      },
       pulls: {
         create: () => Promise.resolve({
           data: {

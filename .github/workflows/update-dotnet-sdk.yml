@@ -19,6 +19,7 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         global-json-file: './_global.json'
+        labels: dependencies
 
     - name: Print outputs
       run: |
