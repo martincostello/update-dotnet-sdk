@@ -127,10 +127,12 @@ export class DotNetSdkUpdater {
     const octokit = github.getOctokit(this.options.accessToken);
 
     const split = (this.options.repo ?? "/").split("/");
+    const owner = split[0];
+    const repo = split[1];
 
     const request = {
-      owner: split[0],
-      repo: split[1],
+      owner: owner,
+      repo: repo,
       title: title,
       head: this.options.branch,
       base: base,
@@ -147,17 +149,39 @@ export class DotNetSdkUpdater {
       };
     }
 
-    const result = await octokit.pulls.create(request);
+    const response = await octokit.pulls.create(request);
 
-    core.debug(JSON.stringify(result, null, 2));
+    core.debug(JSON.stringify(response, null, 2));
 
-    core.info(`Created pull request #${result.data.number}: ${result.data.title}`);
-    core.info(`View the pull request at ${result.data.html_url}`);
+    core.info(`Created pull request #${response.data.number}: ${response.data.title}`);
+    core.info(`View the pull request at ${response.data.html_url}`);
 
-    return {
-      number: result.data.number,
-      url: result.data.html_url
+    const result = {
+      number: response.data.number,
+      url: response.data.html_url
     };
+
+    if (this.options.labels) {
+
+      const labelsToApply = this.options.labels.split(',');
+
+      if (labelsToApply.length > 0) {
+        try {
+          await octokit.issues.addLabels({
+            owner: owner,
+            repo: repo,
+            issue_number: result.number,
+            labels: labelsToApply
+          });
+        }
+        catch (error) {
+          core.error(`Failed to apply label(s) to Pull Request #${result.number}`);
+          core.error(error);
+        }
+      }
+    }
+
+    return result;
   }
 
   private async execGit(args: string[], ignoreErrors: Boolean = false): Promise<string> {

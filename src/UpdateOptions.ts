@@ -15,6 +15,8 @@ export interface UpdateOptions {
 
   globalJsonPath: string;
 
+  labels: string;
+
   repo?: string;
 
   runId?: string;

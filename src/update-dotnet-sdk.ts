@@ -28,6 +28,7 @@ export async function run() {
       commitMessage: core.getInput("commit-message", { required: false }),
       dryRun: core.getInput("dry-run", { required: false }) === "true",
       globalJsonPath: globalJsonPath,
+      labels: core.getInput("labels", { required: false }) ?? "",
       repo: process.env.GITHUB_REPOSITORY,
       runId: process.env.GITHUB_RUN_ID,
       userEmail: core.getInput("user-email", { required: false }),
