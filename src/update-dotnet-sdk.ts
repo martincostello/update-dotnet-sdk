@@ -11,18 +11,8 @@ import { UpdateOptions } from "./UpdateOptions";
 export async function run() {
   try {
 
-    const accessToken = core.getInput("repo-token");
-    const globalJsonFileName = core.getInput("global-json-file");
-
-    if (!accessToken) {
-      core.setFailed("No GitHub access token specified.");
-      return;
-    }
-
-    if (!globalJsonFileName) {
-      core.setFailed("No path to global.json file specified.");
-      return;
-    }
+    const accessToken = core.getInput("repo-token", { required: true });
+    const globalJsonFileName = core.getInput("global-json-file", { required: true });
 
     const globalJsonPath = path.normalize(globalJsonFileName);
 
@@ -33,15 +23,15 @@ export async function run() {
 
     const options: UpdateOptions = {
       accessToken: accessToken,
-      branch: core.getInput("branch-name"),
-      channel: core.getInput("channel"),
-      commitMessage: core.getInput("commit-message"),
-      dryRun: core.getInput("dry-run") === "true",
+      branch: core.getInput("branch-name", { required: false }),
+      channel: core.getInput("channel", { required: false }),
+      commitMessage: core.getInput("commit-message", { required: false }),
+      dryRun: core.getInput("dry-run", { required: false }) === "true",
       globalJsonPath: globalJsonPath,
       repo: process.env.GITHUB_REPOSITORY,
       runId: process.env.GITHUB_RUN_ID,
-      userEmail: core.getInput("user-email"),
-      userName: core.getInput("user-name")
+      userEmail: core.getInput("user-email", { required: false }),
+      userName: core.getInput("user-name", { required: false })
     };
 
     const updater = new DotNetSdkUpdater(options);

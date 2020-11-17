@@ -332,16 +332,8 @@ const DotNetSdkUpdater_1 = __webpack_require__(424);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const accessToken = core.getInput("repo-token");
-            const globalJsonFileName = core.getInput("global-json-file");
-            if (!accessToken) {
-                core.setFailed("No GitHub access token specified.");
-                return;
-            }
-            if (!globalJsonFileName) {
-                core.setFailed("No path to global.json file specified.");
-                return;
-            }
+            const accessToken = core.getInput("repo-token", { required: true });
+            const globalJsonFileName = core.getInput("global-json-file", { required: true });
             const globalJsonPath = path.normalize(globalJsonFileName);
             if (!fs.existsSync(globalJsonPath)) {
                 core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
@@ -349,15 +341,15 @@ function run() {
             }
             const options = {
                 accessToken: accessToken,
-                branch: core.getInput("branch-name"),
-                channel: core.getInput("channel"),
-                commitMessage: core.getInput("commit-message"),
-                dryRun: core.getInput("dry-run") === "true",
+                branch: core.getInput("branch-name", { required: false }),
+                channel: core.getInput("channel", { required: false }),
+                commitMessage: core.getInput("commit-message", { required: false }),
+                dryRun: core.getInput("dry-run", { required: false }) === "true",
                 globalJsonPath: globalJsonPath,
                 repo: process.env.GITHUB_REPOSITORY,
                 runId: process.env.GITHUB_RUN_ID,
-                userEmail: core.getInput("user-email"),
-                userName: core.getInput("user-name")
+                userEmail: core.getInput("user-email", { required: false }),
+                userName: core.getInput("user-name", { required: false })
             };
             const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(options);
             const result = yield updater.tryUpdateSdk();
