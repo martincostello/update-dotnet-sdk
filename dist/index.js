@@ -367,6 +367,8 @@ function run() {
             core.setOutput("sdk-version", result.version);
         }
         catch (error) {
+            core.error("Failed to check for updates to .NET SDK");
+            core.error(error);
             core.setFailed(error.message);
         }
     });
