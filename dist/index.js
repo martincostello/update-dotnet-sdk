@@ -24,7 +24,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -189,6 +189,9 @@ class DotNetSdkUpdater {
             const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/master/release-notes/${this.options.channel}/releases.json`;
             core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
             const releasesResponse = yield httpClient.getJson(releasesUrl);
+            if (releasesResponse.statusCode >= 400) {
+                throw new Error(`Failed to get releases JSON for channel ${this.options.channel} - HTTP status ${releasesResponse.statusCode}`);
+            }
             return releasesResponse.result || {};
         });
     }
@@ -307,7 +310,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -329,16 +332,8 @@ const DotNetSdkUpdater_1 = __webpack_require__(424);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const accessToken = core.getInput("repo-token");
-            const globalJsonFileName = core.getInput("global-json-file");
-            if (!accessToken) {
-                core.setFailed("No GitHub access token specified.");
-                return;
-            }
-            if (!globalJsonFileName) {
-                core.setFailed("No path to global.json file specified.");
-                return;
-            }
+            const accessToken = core.getInput("repo-token", { required: true });
+            const globalJsonFileName = core.getInput("global-json-file", { required: true });
             const globalJsonPath = path.normalize(globalJsonFileName);
             if (!fs.existsSync(globalJsonPath)) {
                 core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
@@ -346,15 +341,15 @@ function run() {
             }
             const options = {
                 accessToken: accessToken,
-                branch: core.getInput("branch-name"),
-                channel: core.getInput("channel"),
-                commitMessage: core.getInput("commit-message"),
-                dryRun: core.getInput("dry-run") === "true",
+                branch: core.getInput("branch-name", { required: false }),
+                channel: core.getInput("channel", { required: false }),
+                commitMessage: core.getInput("commit-message", { required: false }),
+                dryRun: core.getInput("dry-run", { required: false }) === "true",
                 globalJsonPath: globalJsonPath,
                 repo: process.env.GITHUB_REPOSITORY,
                 runId: process.env.GITHUB_RUN_ID,
-                userEmail: core.getInput("user-email"),
-                userName: core.getInput("user-name")
+                userEmail: core.getInput("user-email", { required: false }),
+                userName: core.getInput("user-name", { required: false })
             };
             const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(options);
             const result = yield updater.tryUpdateSdk();
@@ -364,6 +359,8 @@ function run() {
             core.setOutput("sdk-version", result.version);
         }
         catch (error) {
+            core.error("Failed to check for updates to .NET SDK");
+            core.error(error);
             core.setFailed(error.message);
         }
     });

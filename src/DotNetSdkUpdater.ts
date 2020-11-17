@@ -202,6 +202,11 @@ export class DotNetSdkUpdater {
     core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
 
     const releasesResponse = await httpClient.getJson<any>(releasesUrl);
+
+    if (releasesResponse.statusCode >= 400) {
+      throw new Error(`Failed to get releases JSON for channel ${this.options.channel} - HTTP status ${releasesResponse.statusCode}`);
+    }
+
     return releasesResponse.result || {};
   }
 
