@@ -31,6 +31,7 @@ describe("update-dotnet-sdk tests", () => {
       process.env[key] = inputs[key as keyof typeof inputs];
     }
     process.stdout.write = jest.fn();
+    core.error = jest.fn();
     core.setFailed = jest.fn();
     await io.rmRF(tempDir);
   })
@@ -67,6 +68,7 @@ describe("update-dotnet-sdk tests", () => {
 
     await run();
 
+    expect(core.error).toHaveBeenCalledTimes(0);
     expect(core.setFailed).toHaveBeenCalledTimes(0);
 
     assertWriteCalled(`::set-output name=pull-request-html-url::https://github.com/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
