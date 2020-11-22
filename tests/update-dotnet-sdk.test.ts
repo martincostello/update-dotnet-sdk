@@ -19,11 +19,11 @@ describe("update-dotnet-sdk tests", () => {
 
   const inputs = {
     "GITHUB_REPOSITORY": "",
-    "INPUT_global-json-file": globalJsonPath,
-    "INPUT_labels": "foo,bar",
-    "INPUT_repo-token": "my-token",
-    "INPUT_user-email": "github-actions[bot]@users.noreply.github.com",
-    "INPUT_user-name": "github-actions[bot]"
+    "INPUT_GLOBAL-JSON-FILE": globalJsonPath,
+    "INPUT_LABELS": "foo,bar",
+    "INPUT_REPO-TOKEN": "my-token",
+    "INPUT_USER-EMAIL": "github-actions[bot]@users.noreply.github.com",
+    "INPUT_USER-NAME": "github-actions[bot]"
   };
 
   beforeEach(async () => {
