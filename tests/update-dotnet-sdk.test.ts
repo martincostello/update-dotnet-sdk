@@ -42,7 +42,7 @@ describe("update-dotnet-sdk tests", () => {
     }
   }, 5000);
 
-  xit("Updates the .NET SDK in global.json if a new version is available", async () => {
+  it("Updates the .NET SDK in global.json if a new version is available", async () => {
 
     const sdkVersion = "3.1.201";
     const jsonContents = `{${os.EOL}"sdk": {${os.EOL}"version": "${sdkVersion}"${os.EOL}}${os.EOL}}`;
@@ -101,7 +101,8 @@ async function createTestGitRepo(path: string, data: string): Promise<void> {
     ignoreReturnCode: true
   };
 
-  await exec.exec("git", [ "init" ], options);
-  await exec.exec("git", [ "add", "." ], options);
-  await exec.exec("git", [ "commit", "-m", "Initial commit" ], options);
+  await exec.exec("git", ["init"], options);
+  await exec.exec("git", ["config", "core.safecrlf", "false"], options);
+  await exec.exec("git", ["add", "."], options);
+  await exec.exec("git", ["commit", "-m", "Initial commit"], options);
 }
