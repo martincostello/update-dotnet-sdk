@@ -1,6 +1,7 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+import core = require("@actions/core");
 import exec = require("@actions/exec");
 import io = require("@actions/io");
 import fs = require("fs");
@@ -18,11 +19,11 @@ describe("update-dotnet-sdk tests", () => {
 
   const inputs = {
     "GITHUB_REPOSITORY": "",
-    "INPUT_global-json-file": globalJsonPath,
-    "INPUT_labels": "foo,bar",
-    "INPUT_repo-token": "my-token",
-    "INPUT_user-email": "github-actions[bot]@users.noreply.github.com",
-    "INPUT_user-name": "github-actions[bot]"
+    "INPUT_GLOBAL-JSON-FILE": globalJsonPath,
+    "INPUT_LABELS": "foo,bar",
+    "INPUT_REPO-TOKEN": "my-token",
+    "INPUT_USER-EMAIL": "github-actions[bot]@users.noreply.github.com",
+    "INPUT_USER-NAME": "github-actions[bot]"
   };
 
   beforeEach(async () => {
@@ -30,6 +31,8 @@ describe("update-dotnet-sdk tests", () => {
       process.env[key] = inputs[key as keyof typeof inputs];
     }
     process.stdout.write = jest.fn();
+    core.error = jest.fn();
+    core.setFailed = jest.fn();
     await io.rmRF(tempDir);
   })
 
@@ -42,16 +45,12 @@ describe("update-dotnet-sdk tests", () => {
     }
   }, 5000);
 
-  xit("Updates the .NET SDK in global.json if a new version is available", async () => {
+  it("Updates the .NET SDK in global.json if a new version is available", async () => {
 
     const sdkVersion = "3.1.201";
     const jsonContents = `{${os.EOL}"sdk": {${os.EOL}"version": "${sdkVersion}"${os.EOL}}${os.EOL}}`;
 
     await createTestGitRepo(globalJsonPath, jsonContents);
-
-    for (const key in inputs) {
-      process.env[key] = inputs[key as keyof typeof inputs]
-    }
 
     github.getOctokit = jest.fn().mockReturnValue({
       issues: {
@@ -68,6 +67,9 @@ describe("update-dotnet-sdk tests", () => {
     });
 
     await run();
+
+    expect(core.error).toHaveBeenCalledTimes(0);
+    expect(core.setFailed).toHaveBeenCalledTimes(0);
 
     assertWriteCalled(`::set-output name=pull-request-html-url::https://github.com/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
     assertWriteCalled(`::set-output name=pull-request-number::42${os.EOL}`);
@@ -101,7 +103,14 @@ async function createTestGitRepo(path: string, data: string): Promise<void> {
     ignoreReturnCode: true
   };
 
-  await exec.exec("git", [ "init" ], options);
-  await exec.exec("git", [ "add", "." ], options);
-  await exec.exec("git", [ "commit", "-m", "Initial commit" ], options);
+  let execGit = async (...args: string[]) => {
+    await exec.exec("git", args, options);
+  };
+
+  await execGit("init");
+  await execGit("config", "core.safecrlf", "false");
+  await execGit("config", "user.email", "test@test.local");
+  await execGit("config", "user.name", "test");
+  await execGit("add", ".");
+  await execGit("commit", "-m", "Initial commit");
 }
