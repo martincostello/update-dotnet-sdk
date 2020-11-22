@@ -103,6 +103,8 @@ async function createTestGitRepo(path: string, data: string): Promise<void> {
 
   await exec.exec("git", ["init"], options);
   await exec.exec("git", ["config", "core.safecrlf", "false"], options);
+  await exec.exec("git", ["config", "user.email", "test@test.local"], options);
+  await exec.exec("git", ["config", "user.name", "test"], options);
   await exec.exec("git", ["add", "."], options);
   await exec.exec("git", ["commit", "-m", "Initial commit"], options);
 }
