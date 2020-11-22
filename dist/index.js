@@ -2,7 +2,7 @@ module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 424:
+/***/ 5868:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -28,24 +28,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DotNetSdkUpdater = void 0;
 const fs = __importStar(__webpack_require__(5747));
 const os = __importStar(__webpack_require__(2087));
 const path = __importStar(__webpack_require__(5622));
-const core = __webpack_require__(2507);
-const exec = __webpack_require__(6995);
-const github = __webpack_require__(2621);
-const http_client_1 = __webpack_require__(1404);
+const core = __webpack_require__(8298);
+const exec = __webpack_require__(5245);
+const github = __webpack_require__(7534);
+const http_client_1 = __webpack_require__(544);
 const stream_1 = __webpack_require__(2413);
 class DotNetSdkUpdater {
     constructor(options) {
@@ -61,159 +52,151 @@ class DotNetSdkUpdater {
             latest: latestRelease
         };
     }
-    tryUpdateSdk() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const globalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: "utf8" }));
-            let sdkVersion = "";
-            if (globalJson.sdk && globalJson.sdk.version) {
-                sdkVersion = globalJson.sdk.version;
+    async tryUpdateSdk() {
+        const globalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: "utf8" }));
+        let sdkVersion = "";
+        if (globalJson.sdk && globalJson.sdk.version) {
+            sdkVersion = globalJson.sdk.version;
+        }
+        if (!sdkVersion) {
+            throw new Error(`.NET SDK version cannot be found in '${this.options.globalJsonPath}'.`);
+        }
+        if (!this.options.channel) {
+            const versionParts = sdkVersion.split(".");
+            if (versionParts.length < 2) {
+                throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
             }
-            if (!sdkVersion) {
-                throw new Error(`.NET SDK version cannot be found in '${this.options.globalJsonPath}'.`);
+            this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
+        }
+        const releases = await this.getDotNetReleases();
+        const releaseInfo = await DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
+        const result = {
+            pullRequestNumber: "",
+            pullRequestUrl: "",
+            updated: false,
+            version: releaseInfo.current.sdkVersion
+        };
+        core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
+        core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
+        core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
+        const versionUpdated = releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion;
+        if (versionUpdated) {
+            const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo, result);
+            if (baseBranch) {
+                const pullRequest = await this.createPullRequest(baseBranch, releaseInfo);
+                result.pullRequestNumber = pullRequest.number;
+                result.pullRequestUrl = pullRequest.url;
+                result.updated = true;
+                result.version = releaseInfo.latest.sdkVersion;
             }
-            if (!this.options.channel) {
-                const versionParts = sdkVersion.split(".");
-                if (versionParts.length < 2) {
-                    throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
-                }
-                this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
-            }
-            const releases = yield this.getDotNetReleases();
-            const releaseInfo = yield DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
-            const result = {
-                pullRequestNumber: "",
-                pullRequestUrl: "",
-                updated: false,
-                version: releaseInfo.current.sdkVersion
-            };
-            core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
-            core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
-            core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
-            const versionUpdated = releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion;
-            if (versionUpdated) {
-                const baseBranch = yield this.applySdkUpdate(globalJson, releaseInfo, result);
-                if (baseBranch) {
-                    const pullRequest = yield this.createPullRequest(baseBranch, releaseInfo);
-                    result.pullRequestNumber = pullRequest.number;
-                    result.pullRequestUrl = pullRequest.url;
-                    result.updated = true;
-                    result.version = releaseInfo.latest.sdkVersion;
-                }
-            }
-            else {
-                core.info("The current .NET SDK version is up-to-date");
-            }
-            return result;
-        });
+        }
+        else {
+            core.info("The current .NET SDK version is up-to-date");
+        }
+        return result;
     }
-    createPullRequest(base, versions) {
+    async createPullRequest(base, versions) {
         var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
-            let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
-            if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
-                body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
-            }
-            else {
-                body += `which also updates the .NET runtime from version [\`\`${versions.current.runtimeVersion}\`\`](${versions.current.releaseNotes}) to version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}).`;
-            }
-            if (versions.latest.security && versions.latest.securityIssues.length > 0) {
-                body += `\n\nThis release includes fixes for the following security issue(s):`;
-                versions.latest.securityIssues.forEach(issue => {
-                    body += `\n  * [${issue.id}](${issue.url})`;
-                });
-            }
-            // TODO Update to support GHE
-            body += `\n\nThis pull request was auto-generated by [GitHub Actions](https://github.com/${this.options.repo}/actions/runs/${this.options.runId}).`;
-            const octokit = github.getOctokit(this.options.accessToken);
-            const split = ((_a = this.options.repo) !== null && _a !== void 0 ? _a : "/").split("/");
-            const owner = split[0];
-            const repo = split[1];
-            const request = {
-                owner: owner,
-                repo: repo,
-                title: title,
-                head: this.options.branch,
-                base: base,
-                body: body,
-                maintainer_can_modify: true,
-                draft: false
-            };
-            if (this.options.dryRun) {
-                core.info(`Skipped creating GitHub Pull Request for branch ${this.options.branch} to ${base}`);
-                return {
-                    number: "",
-                    url: ""
-                };
-            }
-            const response = yield octokit.pulls.create(request);
-            core.debug(JSON.stringify(response, null, 2));
-            core.info(`Created pull request #${response.data.number}: ${response.data.title}`);
-            core.info(`View the pull request at ${response.data.html_url}`);
-            const result = {
-                number: response.data.number,
-                url: response.data.html_url
-            };
-            if (this.options.labels) {
-                const labelsToApply = this.options.labels.split(',');
-                if (labelsToApply.length > 0) {
-                    try {
-                        yield octokit.issues.addLabels({
-                            owner: owner,
-                            repo: repo,
-                            issue_number: result.number,
-                            labels: labelsToApply
-                        });
-                    }
-                    catch (error) {
-                        core.error(`Failed to apply label(s) to Pull Request #${result.number}`);
-                        core.error(error);
-                    }
-                }
-            }
-            return result;
-        });
-    }
-    execGit(args, ignoreErrors = false) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let commandOutput = "";
-            let commandError = "";
-            const options = {
-                cwd: this.repoPath,
-                errStream: new NullWritable(),
-                outStream: new NullWritable(),
-                ignoreReturnCode: ignoreErrors,
-                silent: ignoreErrors,
-                listeners: {
-                    stdout: (data) => {
-                        commandOutput += data.toString();
-                    },
-                    stderr: (data) => {
-                        commandError += data.toString();
-                    }
-                }
-            };
-            yield exec.exec("git", args, options);
-            if (commandError && !ignoreErrors) {
-                throw new Error(commandError);
-            }
-            return commandOutput.trimEnd();
-        });
-    }
-    getDotNetReleases() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const httpClient = new http_client_1.HttpClient("martincostello/update-dotnet-sdk", [], {
-                allowRetries: true,
-                maxRetries: 3
+        const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
+        let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
+        if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
+            body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
+        }
+        else {
+            body += `which also updates the .NET runtime from version [\`\`${versions.current.runtimeVersion}\`\`](${versions.current.releaseNotes}) to version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}).`;
+        }
+        if (versions.latest.security && versions.latest.securityIssues.length > 0) {
+            body += `\n\nThis release includes fixes for the following security issue(s):`;
+            versions.latest.securityIssues.forEach(issue => {
+                body += `\n  * [${issue.id}](${issue.url})`;
             });
-            const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/master/release-notes/${this.options.channel}/releases.json`;
-            core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
-            const releasesResponse = yield httpClient.getJson(releasesUrl);
-            if (releasesResponse.statusCode >= 400) {
-                throw new Error(`Failed to get releases JSON for channel ${this.options.channel} - HTTP status ${releasesResponse.statusCode}`);
+        }
+        // TODO Update to support GHE
+        body += `\n\nThis pull request was auto-generated by [GitHub Actions](https://github.com/${this.options.repo}/actions/runs/${this.options.runId}).`;
+        const octokit = github.getOctokit(this.options.accessToken);
+        const split = ((_a = this.options.repo) !== null && _a !== void 0 ? _a : "/").split("/");
+        const owner = split[0];
+        const repo = split[1];
+        const request = {
+            owner: owner,
+            repo: repo,
+            title: title,
+            head: this.options.branch,
+            base: base,
+            body: body,
+            maintainer_can_modify: true,
+            draft: false
+        };
+        if (this.options.dryRun) {
+            core.info(`Skipped creating GitHub Pull Request for branch ${this.options.branch} to ${base}`);
+            return {
+                number: "",
+                url: ""
+            };
+        }
+        const response = await octokit.pulls.create(request);
+        core.debug(JSON.stringify(response, null, 2));
+        core.info(`Created pull request #${response.data.number}: ${response.data.title}`);
+        core.info(`View the pull request at ${response.data.html_url}`);
+        const result = {
+            number: response.data.number,
+            url: response.data.html_url
+        };
+        if (this.options.labels) {
+            const labelsToApply = this.options.labels.split(',');
+            if (labelsToApply.length > 0) {
+                try {
+                    await octokit.issues.addLabels({
+                        owner: owner,
+                        repo: repo,
+                        issue_number: result.number,
+                        labels: labelsToApply
+                    });
+                }
+                catch (error) {
+                    core.error(`Failed to apply label(s) to Pull Request #${result.number}`);
+                    core.error(error);
+                }
             }
-            return releasesResponse.result || {};
+        }
+        return result;
+    }
+    async execGit(args, ignoreErrors = false) {
+        let commandOutput = "";
+        let commandError = "";
+        const options = {
+            cwd: this.repoPath,
+            errStream: new NullWritable(),
+            outStream: new NullWritable(),
+            ignoreReturnCode: ignoreErrors,
+            silent: ignoreErrors,
+            listeners: {
+                stdout: (data) => {
+                    commandOutput += data.toString();
+                },
+                stderr: (data) => {
+                    commandError += data.toString();
+                }
+            }
+        };
+        await exec.exec("git", args, options);
+        if (commandError && !ignoreErrors) {
+            throw new Error(commandError);
+        }
+        return commandOutput.trimEnd();
+    }
+    async getDotNetReleases() {
+        const httpClient = new http_client_1.HttpClient("martincostello/update-dotnet-sdk", [], {
+            allowRetries: true,
+            maxRetries: 3
         });
+        const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/master/release-notes/${this.options.channel}/releases.json`;
+        core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
+        const releasesResponse = await httpClient.getJson(releasesUrl);
+        if (releasesResponse.statusCode >= 400) {
+            throw new Error(`Failed to get releases JSON for channel ${this.options.channel} - HTTP status ${releasesResponse.statusCode}`);
+        }
+        return releasesResponse.result || {};
     }
     static getReleaseForSdk(sdkVersion, releaseInfo) {
         let releases = releaseInfo["releases"];
@@ -240,59 +223,57 @@ class DotNetSdkUpdater {
         }
         return result;
     }
-    applySdkUpdate(globalJson, releaseInfo, result) {
-        return __awaiter(this, void 0, void 0, function* () {
-            core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
-            // Get the base branch to use later to create the Pull Request
-            const base = yield this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
-            // Apply the update to the file system
-            globalJson.sdk.version = releaseInfo.latest.sdkVersion;
-            const json = JSON.stringify(globalJson, null, 2) + os.EOL;
-            fs.writeFileSync(this.options.globalJsonPath, json, { encoding: "utf8" });
-            core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
-            // Configure Git
-            if (!this.options.branch) {
-                this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
-            }
-            if (!this.options.commitMessage) {
-                this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
-            }
-            if (this.options.userName) {
-                yield this.execGit(["config", "user.name", this.options.userName]);
-                core.info(`Updated git user name to '${this.options.userName}'`);
-            }
-            if (this.options.userEmail) {
-                yield this.execGit(["config", "user.email", this.options.userEmail]);
-                core.info(`Updated git user email to '${this.options.userEmail}'`);
-            }
-            if (this.options.repo) {
-                // TODO Update to support GHE
-                yield this.execGit(["remote", "set-url", "origin", `https://github.com/${this.options.repo}.git`]);
-                yield this.execGit(["fetch", "origin"], true);
-            }
-            core.debug(`Branch: ${this.options.branch}`);
-            core.debug(`Commit message: ${this.options.commitMessage}`);
-            core.debug(`User name: ${this.options.userName}`);
-            core.debug(`User email: ${this.options.userEmail}`);
-            const branchExists = yield this.execGit(["rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}`], true);
-            if (branchExists) {
-                core.info(`The ${this.options.branch} branch already exists`);
-                return undefined;
-            }
-            yield this.execGit(["checkout", "-b", this.options.branch], true);
-            core.info(`Created git branch ${this.options.branch}`);
-            yield this.execGit(["add", this.options.globalJsonPath]);
-            core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
-            yield this.execGit(["commit", "-m", this.options.commitMessage]);
-            const sha1 = yield this.execGit(["log", "--format='%H'", "-n", "1"]);
-            const shortSha1 = sha1.replace("'", "").substring(0, 7);
-            core.info(`Commited .NET SDK update to git (${shortSha1})`);
-            if (!this.options.dryRun && this.options.repo) {
-                yield this.execGit(["push", "-u", "origin", this.options.branch], true);
-                core.info(`Pushed changes to repository (${this.options.repo})`);
-            }
-            return base;
-        });
+    async applySdkUpdate(globalJson, releaseInfo, result) {
+        core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
+        // Get the base branch to use later to create the Pull Request
+        const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
+        // Apply the update to the file system
+        globalJson.sdk.version = releaseInfo.latest.sdkVersion;
+        const json = JSON.stringify(globalJson, null, 2) + os.EOL;
+        fs.writeFileSync(this.options.globalJsonPath, json, { encoding: "utf8" });
+        core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
+        // Configure Git
+        if (!this.options.branch) {
+            this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
+        }
+        if (!this.options.commitMessage) {
+            this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
+        }
+        if (this.options.userName) {
+            await this.execGit(["config", "user.name", this.options.userName]);
+            core.info(`Updated git user name to '${this.options.userName}'`);
+        }
+        if (this.options.userEmail) {
+            await this.execGit(["config", "user.email", this.options.userEmail]);
+            core.info(`Updated git user email to '${this.options.userEmail}'`);
+        }
+        if (this.options.repo) {
+            // TODO Update to support GHE
+            await this.execGit(["remote", "set-url", "origin", `https://github.com/${this.options.repo}.git`]);
+            await this.execGit(["fetch", "origin"], true);
+        }
+        core.debug(`Branch: ${this.options.branch}`);
+        core.debug(`Commit message: ${this.options.commitMessage}`);
+        core.debug(`User name: ${this.options.userName}`);
+        core.debug(`User email: ${this.options.userEmail}`);
+        const branchExists = await this.execGit(["rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}`], true);
+        if (branchExists) {
+            core.info(`The ${this.options.branch} branch already exists`);
+            return undefined;
+        }
+        await this.execGit(["checkout", "-b", this.options.branch], true);
+        core.info(`Created git branch ${this.options.branch}`);
+        await this.execGit(["add", this.options.globalJsonPath]);
+        core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
+        await this.execGit(["commit", "-m", this.options.commitMessage]);
+        const sha1 = await this.execGit(["log", "--format='%H'", "-n", "1"]);
+        const shortSha1 = sha1.replace("'", "").substring(0, 7);
+        core.info(`Commited .NET SDK update to git (${shortSha1})`);
+        if (!this.options.dryRun && this.options.repo) {
+            await this.execGit(["push", "-u", "origin", this.options.branch], true);
+            core.info(`Pushed changes to repository (${this.options.repo})`);
+        }
+        return base;
     }
 }
 exports.DotNetSdkUpdater = DotNetSdkUpdater;
@@ -308,7 +289,7 @@ class NullWritable extends stream_1.Writable {
 
 /***/ }),
 
-/***/ 2689:
+/***/ 3401:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -334,58 +315,47 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
-const core = __importStar(__webpack_require__(2507));
+const core = __importStar(__webpack_require__(8298));
 const fs = __importStar(__webpack_require__(5747));
 const path = __importStar(__webpack_require__(5622));
-const DotNetSdkUpdater_1 = __webpack_require__(424);
-function run() {
+const DotNetSdkUpdater_1 = __webpack_require__(5868);
+async function run() {
     var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const accessToken = core.getInput("repo-token", { required: true });
-            const globalJsonFileName = core.getInput("global-json-file", { required: true });
-            const globalJsonPath = path.normalize(globalJsonFileName);
-            if (!fs.existsSync(globalJsonPath)) {
-                core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
-                return;
-            }
-            const options = {
-                accessToken: accessToken,
-                branch: core.getInput("branch-name", { required: false }),
-                channel: core.getInput("channel", { required: false }),
-                commitMessage: core.getInput("commit-message", { required: false }),
-                dryRun: core.getInput("dry-run", { required: false }) === "true",
-                globalJsonPath: globalJsonPath,
-                labels: (_a = core.getInput("labels", { required: false })) !== null && _a !== void 0 ? _a : "",
-                repo: process.env.GITHUB_REPOSITORY,
-                runId: process.env.GITHUB_RUN_ID,
-                userEmail: core.getInput("user-email", { required: false }),
-                userName: core.getInput("user-name", { required: false })
-            };
-            const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(options);
-            const result = yield updater.tryUpdateSdk();
-            core.setOutput("pull-request-number", result.pullRequestNumber);
-            core.setOutput("pull-request-html-url", result.pullRequestUrl);
-            core.setOutput("sdk-updated", result.updated);
-            core.setOutput("sdk-version", result.version);
+    try {
+        const accessToken = core.getInput("repo-token", { required: true });
+        const globalJsonFileName = core.getInput("global-json-file", { required: true });
+        const globalJsonPath = path.normalize(globalJsonFileName);
+        if (!fs.existsSync(globalJsonPath)) {
+            core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
+            return;
         }
-        catch (error) {
-            core.error("Failed to check for updates to .NET SDK");
-            core.error(error);
-            core.setFailed(error.message);
-        }
-    });
+        const options = {
+            accessToken: accessToken,
+            branch: core.getInput("branch-name", { required: false }),
+            channel: core.getInput("channel", { required: false }),
+            commitMessage: core.getInput("commit-message", { required: false }),
+            dryRun: core.getInput("dry-run", { required: false }) === "true",
+            globalJsonPath: globalJsonPath,
+            labels: (_a = core.getInput("labels", { required: false })) !== null && _a !== void 0 ? _a : "",
+            repo: process.env.GITHUB_REPOSITORY,
+            runId: process.env.GITHUB_RUN_ID,
+            userEmail: core.getInput("user-email", { required: false }),
+            userName: core.getInput("user-name", { required: false })
+        };
+        const updater = new DotNetSdkUpdater_1.DotNetSdkUpdater(options);
+        const result = await updater.tryUpdateSdk();
+        core.setOutput("pull-request-number", result.pullRequestNumber);
+        core.setOutput("pull-request-html-url", result.pullRequestUrl);
+        core.setOutput("sdk-updated", result.updated);
+        core.setOutput("sdk-version", result.version);
+    }
+    catch (error) {
+        core.error("Failed to check for updates to .NET SDK");
+        core.error(error);
+        core.setFailed(error.message);
+    }
 }
 exports.run = run;
 if (require.main === require.cache[eval('__filename')]) {
@@ -395,7 +365,7 @@ if (require.main === require.cache[eval('__filename')]) {
 
 /***/ }),
 
-/***/ 3852:
+/***/ 6544:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -409,7 +379,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const os = __importStar(__webpack_require__(2087));
-const utils_1 = __webpack_require__(1111);
+const utils_1 = __webpack_require__(2985);
 /**
  * Commands
  *
@@ -481,7 +451,7 @@ function escapeProperty(s) {
 
 /***/ }),
 
-/***/ 2507:
+/***/ 8298:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -503,9 +473,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const command_1 = __webpack_require__(3852);
-const file_command_1 = __webpack_require__(7542);
-const utils_1 = __webpack_require__(1111);
+const command_1 = __webpack_require__(6544);
+const file_command_1 = __webpack_require__(7707);
+const utils_1 = __webpack_require__(2985);
 const os = __importStar(__webpack_require__(2087));
 const path = __importStar(__webpack_require__(5622));
 /**
@@ -726,7 +696,7 @@ exports.getState = getState;
 
 /***/ }),
 
-/***/ 7542:
+/***/ 7707:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -744,7 +714,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const fs = __importStar(__webpack_require__(5747));
 const os = __importStar(__webpack_require__(2087));
-const utils_1 = __webpack_require__(1111);
+const utils_1 = __webpack_require__(2985);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
@@ -762,7 +732,7 @@ exports.issueCommand = issueCommand;
 
 /***/ }),
 
-/***/ 1111:
+/***/ 2985:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -788,7 +758,7 @@ exports.toCommandValue = toCommandValue;
 
 /***/ }),
 
-/***/ 6995:
+/***/ 5245:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -810,7 +780,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const tr = __importStar(__webpack_require__(2796));
+const tr = __importStar(__webpack_require__(9624));
 /**
  * Exec a command.
  * Output will be streamed to the live console.
@@ -839,7 +809,7 @@ exports.exec = exec;
 
 /***/ }),
 
-/***/ 2796:
+/***/ 9624:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -865,8 +835,8 @@ const os = __importStar(__webpack_require__(2087));
 const events = __importStar(__webpack_require__(8614));
 const child = __importStar(__webpack_require__(3129));
 const path = __importStar(__webpack_require__(5622));
-const io = __importStar(__webpack_require__(8748));
-const ioUtil = __importStar(__webpack_require__(5163));
+const io = __importStar(__webpack_require__(1171));
+const ioUtil = __importStar(__webpack_require__(6706));
 /* eslint-disable @typescript-eslint/unbound-method */
 const IS_WINDOWS = process.platform === 'win32';
 /*
@@ -1446,7 +1416,7 @@ class ExecState extends events.EventEmitter {
 
 /***/ }),
 
-/***/ 2595:
+/***/ 5523:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -1503,7 +1473,7 @@ exports.Context = Context;
 
 /***/ }),
 
-/***/ 2621:
+/***/ 7534:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1529,8 +1499,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__webpack_require__(2595));
-const utils_1 = __webpack_require__(4662);
+const Context = __importStar(__webpack_require__(5523));
+const utils_1 = __webpack_require__(7676);
 exports.context = new Context.Context();
 /**
  * Returns a hydrated octokit ready to use for GitHub Actions
@@ -1546,7 +1516,7 @@ exports.getOctokit = getOctokit;
 
 /***/ }),
 
-/***/ 3355:
+/***/ 9080:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1572,7 +1542,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0;
-const httpClient = __importStar(__webpack_require__(1404));
+const httpClient = __importStar(__webpack_require__(544));
 function getAuthString(token, options) {
     if (!token && !options.auth) {
         throw new Error('Parameter token or opts.auth is required');
@@ -1596,7 +1566,7 @@ exports.getApiBaseUrl = getApiBaseUrl;
 
 /***/ }),
 
-/***/ 4662:
+/***/ 7676:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1622,12 +1592,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
-const Context = __importStar(__webpack_require__(2595));
-const Utils = __importStar(__webpack_require__(3355));
+const Context = __importStar(__webpack_require__(5523));
+const Utils = __importStar(__webpack_require__(9080));
 // octokit + plugins
-const core_1 = __webpack_require__(359);
-const plugin_rest_endpoint_methods_1 = __webpack_require__(985);
-const plugin_paginate_rest_1 = __webpack_require__(2900);
+const core_1 = __webpack_require__(1514);
+const plugin_rest_endpoint_methods_1 = __webpack_require__(7780);
+const plugin_paginate_rest_1 = __webpack_require__(1139);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
 const defaults = {
@@ -1657,7 +1627,7 @@ exports.getOctokitOptions = getOctokitOptions;
 
 /***/ }),
 
-/***/ 1404:
+/***/ 544:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -1665,7 +1635,7 @@ exports.getOctokitOptions = getOctokitOptions;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const http = __webpack_require__(8605);
 const https = __webpack_require__(7211);
-const pm = __webpack_require__(5055);
+const pm = __webpack_require__(5804);
 let tunnel;
 var HttpCodes;
 (function (HttpCodes) {
@@ -2084,7 +2054,7 @@ class HttpClient {
         if (useProxy) {
             // If using proxy, need tunnel
             if (!tunnel) {
-                tunnel = __webpack_require__(8409);
+                tunnel = __webpack_require__(271);
             }
             const agentOptions = {
                 maxSockets: maxSockets,
@@ -2200,7 +2170,7 @@ exports.HttpClient = HttpClient;
 
 /***/ }),
 
-/***/ 5055:
+/***/ 5804:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2265,7 +2235,7 @@ exports.checkBypass = checkBypass;
 
 /***/ }),
 
-/***/ 5163:
+/***/ 6706:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2467,7 +2437,7 @@ function isUnixExecutable(stats) {
 
 /***/ }),
 
-/***/ 8748:
+/***/ 1171:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2485,7 +2455,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const childProcess = __webpack_require__(3129);
 const path = __webpack_require__(5622);
 const util_1 = __webpack_require__(1669);
-const ioUtil = __webpack_require__(5163);
+const ioUtil = __webpack_require__(6706);
 const exec = util_1.promisify(childProcess.exec);
 /**
  * Copies a file or folder.
@@ -2764,7 +2734,7 @@ function copyFile(srcFile, destFile, force) {
 
 /***/ }),
 
-/***/ 792:
+/***/ 6782:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2821,7 +2791,7 @@ exports.createTokenAuth = createTokenAuth;
 
 /***/ }),
 
-/***/ 359:
+/***/ 1514:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2829,11 +2799,11 @@ exports.createTokenAuth = createTokenAuth;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var universalUserAgent = __webpack_require__(6677);
-var beforeAfterHook = __webpack_require__(2167);
-var request = __webpack_require__(4013);
-var graphql = __webpack_require__(9444);
-var authToken = __webpack_require__(792);
+var universalUserAgent = __webpack_require__(7403);
+var beforeAfterHook = __webpack_require__(5563);
+var request = __webpack_require__(2764);
+var graphql = __webpack_require__(9078);
+var authToken = __webpack_require__(6782);
 
 function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
@@ -3003,7 +2973,7 @@ exports.Octokit = Octokit;
 
 /***/ }),
 
-/***/ 2929:
+/***/ 3389:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -3011,8 +2981,8 @@ exports.Octokit = Octokit;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var isPlainObject = __webpack_require__(9907);
-var universalUserAgent = __webpack_require__(6677);
+var isPlainObject = __webpack_require__(8374);
+var universalUserAgent = __webpack_require__(7403);
 
 function lowercaseKeys(object) {
   if (!object) {
@@ -3401,7 +3371,7 @@ exports.endpoint = endpoint;
 
 /***/ }),
 
-/***/ 9444:
+/***/ 9078:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -3409,8 +3379,8 @@ exports.endpoint = endpoint;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var request = __webpack_require__(4013);
-var universalUserAgent = __webpack_require__(6677);
+var request = __webpack_require__(2764);
+var universalUserAgent = __webpack_require__(7403);
 
 const VERSION = "4.5.7";
 
@@ -3517,7 +3487,7 @@ exports.withCustomRequest = withCustomRequest;
 
 /***/ }),
 
-/***/ 2900:
+/***/ 1139:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3657,7 +3627,7 @@ exports.paginateRest = paginateRest;
 
 /***/ }),
 
-/***/ 985:
+/***/ 7780:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -4819,7 +4789,7 @@ exports.restEndpointMethods = restEndpointMethods;
 
 /***/ }),
 
-/***/ 9026:
+/***/ 320:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -4829,8 +4799,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __webpack_require__(2581);
-var once = _interopDefault(__webpack_require__(2042));
+var deprecation = __webpack_require__(5543);
+var once = _interopDefault(__webpack_require__(5001));
 
 const logOnce = once(deprecation => console.warn(deprecation));
 /**
@@ -4882,7 +4852,7 @@ exports.RequestError = RequestError;
 
 /***/ }),
 
-/***/ 4013:
+/***/ 2764:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -4892,11 +4862,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var endpoint = __webpack_require__(2929);
-var universalUserAgent = __webpack_require__(6677);
-var isPlainObject = __webpack_require__(9907);
-var nodeFetch = _interopDefault(__webpack_require__(7315));
-var requestError = __webpack_require__(9026);
+var endpoint = __webpack_require__(3389);
+var universalUserAgent = __webpack_require__(7403);
+var isPlainObject = __webpack_require__(8374);
+var nodeFetch = _interopDefault(__webpack_require__(7545));
+var requestError = __webpack_require__(320);
 
 const VERSION = "5.4.10";
 
@@ -5038,12 +5008,12 @@ exports.request = request;
 
 /***/ }),
 
-/***/ 2167:
+/***/ 5563:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var register = __webpack_require__(2062)
-var addHook = __webpack_require__(1357)
-var removeHook = __webpack_require__(287)
+var register = __webpack_require__(2858)
+var addHook = __webpack_require__(3728)
+var removeHook = __webpack_require__(9960)
 
 // bind with array of arguments: https://stackoverflow.com/a/21792913
 var bind = Function.bind
@@ -5102,7 +5072,7 @@ module.exports.Collection = Hook.Collection
 
 /***/ }),
 
-/***/ 1357:
+/***/ 3728:
 /***/ ((module) => {
 
 module.exports = addHook
@@ -5155,7 +5125,7 @@ function addHook (state, kind, name, hook) {
 
 /***/ }),
 
-/***/ 2062:
+/***/ 2858:
 /***/ ((module) => {
 
 module.exports = register
@@ -5190,7 +5160,7 @@ function register (state, name, method, options) {
 
 /***/ }),
 
-/***/ 287:
+/***/ 9960:
 /***/ ((module) => {
 
 module.exports = removeHook
@@ -5214,7 +5184,7 @@ function removeHook (state, name, method) {
 
 /***/ }),
 
-/***/ 2581:
+/***/ 5543:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -5242,7 +5212,7 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
-/***/ 9907:
+/***/ 8374:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -5288,7 +5258,7 @@ exports.isPlainObject = isPlainObject;
 
 /***/ }),
 
-/***/ 7315:
+/***/ 7545:
 /***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
@@ -5453,7 +5423,7 @@ FetchError.prototype.name = 'FetchError';
 
 let convert;
 try {
-	convert = __webpack_require__(1963).convert;
+	convert = __webpack_require__(7220).convert;
 } catch (e) {}
 
 const INTERNALS = Symbol('Body internals');
@@ -6945,10 +6915,10 @@ exports.FetchError = FetchError;
 
 /***/ }),
 
-/***/ 2042:
+/***/ 5001:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var wrappy = __webpack_require__(9047)
+var wrappy = __webpack_require__(2736)
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
 
@@ -6994,15 +6964,15 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 8409:
+/***/ 271:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(2668);
+module.exports = __webpack_require__(2551);
 
 
 /***/ }),
 
-/***/ 2668:
+/***/ 2551:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -7274,7 +7244,7 @@ exports.debug = debug; // for test
 
 /***/ }),
 
-/***/ 6677:
+/***/ 7403:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -7300,7 +7270,7 @@ exports.getUserAgent = getUserAgent;
 
 /***/ }),
 
-/***/ 9047:
+/***/ 2736:
 /***/ ((module) => {
 
 // Returns a wrapper function that returns a wrapped callback
@@ -7340,7 +7310,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 1963:
+/***/ 7220:
 /***/ ((module) => {
 
 module.exports = eval("require")("encoding");
@@ -7498,6 +7468,6 @@ module.exports = require("zlib");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(2689);
+/******/ 	return __webpack_require__(3401);
 /******/ })()
 ;
