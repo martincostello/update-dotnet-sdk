@@ -101,10 +101,14 @@ async function createTestGitRepo(path: string, data: string): Promise<void> {
     ignoreReturnCode: true
   };
 
-  await exec.exec("git", ["init"], options);
-  await exec.exec("git", ["config", "core.safecrlf", "false"], options);
-  await exec.exec("git", ["config", "user.email", "test@test.local"], options);
-  await exec.exec("git", ["config", "user.name", "test"], options);
-  await exec.exec("git", ["add", "."], options);
-  await exec.exec("git", ["commit", "-m", "Initial commit"], options);
+  let execGit = async (...args: string[]) => {
+    await exec.exec("git", args, options);
+  };
+
+  await execGit("init");
+  await execGit("config", "core.safecrlf", "false");
+  await execGit("config", "user.email", "test@test.local");
+  await execGit("config", "user.name", "test");
+  await execGit("add", ".");
+  await execGit("commit", "-m", "Initial commit");
 }
