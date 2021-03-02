@@ -1,6 +1,6 @@
 {
   "name": "update-dotnet-sdk",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "private": true,
   "description": "A GitHub Action that updates the .NET SDK.",
   "main": "lib/update-dotnet-sdk.js",
