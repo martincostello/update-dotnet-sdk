@@ -237,10 +237,37 @@ export class DotNetSdkUpdater {
   private static getReleaseForSdk(sdkVersion: string, releaseInfo: any): ReleaseInfo {
 
     let releases: any[] = releaseInfo["releases"];
+    let foundSdk: any = null;
 
-    const foundRelease = releases.filter((info: any) => {
-      return info["sdk"]["version"] === sdkVersion;
+    let foundRelease = releases.filter((info: any) => {
+      const sdk = info["sdk"];
+      if (sdk["version"] === sdkVersion) {
+        foundSdk = sdk;
+        return true;
+      }
+      return false;
     });
+
+
+
+    if (foundRelease.length < 1) {
+      foundRelease = releases.filter((info: any) => {
+
+        const sdks: any[] = info["sdks"];
+
+        if (sdks !== null) {
+          for (let i = 0; i < sdks.length; i++) {
+            const sdk = sdks[i];
+            if (sdk["version"] === sdkVersion) {
+              foundSdk = sdk;
+              return true;
+            }
+          }
+        }
+
+        return false;
+      })
+    }
 
     if (foundRelease.length < 1) {
       throw new Error(`Failed to find release for .NET SDK version ${sdkVersion}`);
@@ -251,7 +278,7 @@ export class DotNetSdkUpdater {
     const result = {
       releaseNotes: release["release-notes"],
       runtimeVersion: release["runtime"]["version"],
-      sdkVersion: release["sdk"]["version"],
+      sdkVersion: foundSdk["version"],
       security: release["security"],
       securityIssues: <CveInfo[]>[]
     };
