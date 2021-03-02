@@ -121,10 +121,12 @@ export class DotNetSdkUpdater {
         issues = issues.filter(issue => versions.current.securityIssues.findIndex(other => other.id === issue.id) < 0);
       }
 
-      body += `\n\nThis release includes fixes for the following security issue(s):`;
-      issues.forEach(issue => {
-        body += `\n  * [${issue.id}](${issue.url})`;
-      });
+      if (issues.length > 0) {
+        body += `\n\nThis release includes fixes for the following security issue(s):`;
+        issues.forEach(issue => {
+          body += `\n  * [${issue.id}](${issue.url})`;
+        });
+      }
     }
 
     // TODO Update to support GHE
