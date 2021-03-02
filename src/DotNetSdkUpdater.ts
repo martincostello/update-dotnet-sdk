@@ -115,8 +115,14 @@ export class DotNetSdkUpdater {
 
     if (versions.latest.security && versions.latest.securityIssues.length > 0) {
 
+      let issues: CveInfo[] = versions.latest.securityIssues;
+
+      if (versions.current.security && versions.current.securityIssues.length > 0) {
+        issues = issues.filter(issue => versions.current.securityIssues.findIndex(other => other.id === issue.id) < 0);
+      }
+
       body += `\n\nThis release includes fixes for the following security issue(s):`;
-      versions.latest.securityIssues.forEach(issue => {
+      issues.forEach(issue => {
         body += `\n  * [${issue.id}](${issue.url})`;
       });
     }

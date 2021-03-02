@@ -106,8 +106,12 @@ class DotNetSdkUpdater {
             body += `which also updates the .NET runtime from version [\`\`${versions.current.runtimeVersion}\`\`](${versions.current.releaseNotes}) to version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}).`;
         }
         if (versions.latest.security && versions.latest.securityIssues.length > 0) {
+            let issues = versions.latest.securityIssues;
+            if (versions.current.security && versions.current.securityIssues.length > 0) {
+                issues = issues.filter(issue => versions.current.securityIssues.findIndex(other => other.id === issue.id) < 0);
+            }
             body += `\n\nThis release includes fixes for the following security issue(s):`;
-            versions.latest.securityIssues.forEach(issue => {
+            issues.forEach(issue => {
                 body += `\n  * [${issue.id}](${issue.url})`;
             });
         }
