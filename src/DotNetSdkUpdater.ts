@@ -182,7 +182,7 @@ export class DotNetSdkUpdater {
             labels: labelsToApply
           });
         }
-        catch (error) {
+        catch (error: any) {
           core.error(`Failed to apply label(s) to Pull Request #${result.number}`);
           core.error(error);
         }

@@ -43,10 +43,12 @@ export async function run() {
     core.setOutput("sdk-updated", result.updated);
     core.setOutput("sdk-version", result.version);
 
-  } catch (error) {
+  } catch (error: any) {
     core.error("Failed to check for updates to .NET SDK");
     core.error(error);
-    core.setFailed(error.message);
+    if (error instanceof Error) {
+      core.setFailed(error.message);
+    }
   }
 }
 
