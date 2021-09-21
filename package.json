@@ -35,7 +35,7 @@
     "@actions/io": "^1.1.1"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^27.0.2",
     "jest": "^26.4.2",
     "jest-circus": "^27.2.1",
     "ts-jest": "^26.5.6",
