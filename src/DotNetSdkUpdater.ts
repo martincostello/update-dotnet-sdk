@@ -294,12 +294,15 @@ export class DotNetSdkUpdater {
     if (result.security) {
 
       let issues: any[] = release["cve-list"];
-      result.securityIssues = issues.map((issue: any) =>
-        ({
-          id: issue["cve-id"],
-          url: issue["cve-url"],
-        })
-      );
+
+      if (issues) {
+        result.securityIssues = issues.map((issue: any) =>
+          ({
+            id: issue["cve-id"],
+            url: issue["cve-url"],
+          })
+        );
+      }
     }
 
     return result;
