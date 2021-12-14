@@ -56,13 +56,15 @@ describe("update-dotnet-sdk tests", () => {
       issues: {
         addLabels: () => Promise.resolve({})
       },
-      pulls: {
-        create: () => Promise.resolve({
-          data: {
-            number: "42",
-            html_url: "https://github.com/martincostello/update-dotnet-sdk/pull/42"
-          }
-        })
+      rest: {
+        pulls: {
+          create: () => Promise.resolve({
+            data: {
+              number: "42",
+              html_url: "https://github.com/martincostello/update-dotnet-sdk/pull/42"
+            }
+          })
+        }
       }
     });
 

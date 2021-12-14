@@ -140,7 +140,7 @@ class DotNetSdkUpdater {
                 url: ""
             };
         }
-        const response = await octokit.pulls.create(request);
+        const response = await octokit.rest.pulls.create(request);
         core.debug(JSON.stringify(response, null, 2));
         core.info(`Created pull request #${response.data.number}: ${response.data.title}`);
         core.info(`View the pull request at ${response.data.html_url}`);

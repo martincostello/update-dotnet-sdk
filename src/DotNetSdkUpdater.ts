@@ -157,7 +157,7 @@ export class DotNetSdkUpdater {
       };
     }
 
-    const response = await octokit.pulls.create(request);
+    const response = await octokit.rest.pulls.create(request);
 
     core.debug(JSON.stringify(response, null, 2));
 
