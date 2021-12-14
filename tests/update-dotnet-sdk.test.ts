@@ -53,10 +53,10 @@ describe("update-dotnet-sdk tests", () => {
     await createTestGitRepo(globalJsonPath, jsonContents);
 
     github.getOctokit = jest.fn().mockReturnValue({
-      issues: {
-        addLabels: () => Promise.resolve({})
-      },
       rest: {
+        issues: {
+          addLabels: () => Promise.resolve({})
+        },
         pulls: {
           create: () => Promise.resolve({
             data: {

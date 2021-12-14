@@ -152,7 +152,7 @@ class DotNetSdkUpdater {
             const labelsToApply = this.options.labels.split(',');
             if (labelsToApply.length > 0) {
                 try {
-                    await octokit.issues.addLabels({
+                    await octokit.rest.issues.addLabels({
                         owner: owner,
                         repo: repo,
                         issue_number: result.number,
