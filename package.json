@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@octokit/types": "^6.34.0",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.4.1",
     "jest": "^26.4.2",
     "jest-circus": "^27.5.1",
     "ts-jest": "^26.5.6",
