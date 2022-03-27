@@ -104,7 +104,7 @@ export class DotNetSdkUpdater {
 
     const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
 
-    let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
+    let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/main/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
 
     if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
       body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
@@ -229,7 +229,7 @@ export class DotNetSdkUpdater {
       maxRetries: 3
     });
 
-    const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/master/release-notes/${this.options.channel}/releases.json`;
+    const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${this.options.channel}/releases.json`;
 
     core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
 
