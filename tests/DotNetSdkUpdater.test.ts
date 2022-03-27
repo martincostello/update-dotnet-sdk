@@ -21,13 +21,13 @@ describe("DotNetSdkUpdater tests", () => {
     expect(actual.current).not.toBeNull();
     expect(actual.latest).not.toBeNull();
 
-    expect(actual.current.releaseNotes).toBe("https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1.0/3.1.0.md");
+    expect(actual.current.releaseNotes).toBe("https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.0/3.1.0.md");
     expect(actual.current.runtimeVersion).toBe("3.1.0");
     expect(actual.current.sdkVersion).toBe("3.1.100");
     expect(actual.current.security).toBe(false);
     expect(actual.current.securityIssues).not.toBeNull();
 
-    expect(actual.latest.releaseNotes).toBe("https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1.10/3.1.10.md");
+    expect(actual.latest.releaseNotes).toBe("https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md");
     expect(actual.latest.runtimeVersion).toBe("3.1.10");
     expect(actual.latest.sdkVersion).toBe("3.1.404");
     expect(actual.latest.security).toBe(false);
@@ -47,7 +47,7 @@ describe("DotNetSdkUpdater tests", () => {
     expect(actual.current).not.toBeNull();
     expect(actual.latest).not.toBeNull();
 
-    expect(actual.current.releaseNotes).toBe("https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0.3/5.0.200-sdk.md");
+    expect(actual.current.releaseNotes).toBe("https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0.3/5.0.200-sdk.md");
     expect(actual.current.runtimeVersion).toBe("5.0.3");
     expect(actual.current.sdkVersion).toBe("5.0.103");
     expect(actual.current.security).toBe(true);
@@ -56,7 +56,7 @@ describe("DotNetSdkUpdater tests", () => {
     expect(actual.current.securityIssues[0].id).toBe("CVE-2021-1721");
     expect(actual.current.securityIssues[1].id).toBe("CVE-2021-24112");
 
-    expect(actual.latest.releaseNotes).toBe("https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0.3/5.0.200-sdk.md");
+    expect(actual.latest.releaseNotes).toBe("https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0.3/5.0.200-sdk.md");
     expect(actual.latest.runtimeVersion).toBe("5.0.3");
     expect(actual.latest.sdkVersion).toBe("5.0.200");
     expect(actual.latest.security).toBe(true);
@@ -79,12 +79,12 @@ describe("DotNetSdkUpdater tests", () => {
     expect(actual.current).not.toBeNull();
     expect(actual.latest).not.toBeNull();
 
-    expect(actual.current.releaseNotes).toBe("https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1.10/3.1.10.md");
+    expect(actual.current.releaseNotes).toBe("https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md");
     expect(actual.current.runtimeVersion).toBe("3.1.10");
     expect(actual.current.sdkVersion).toBe("3.1.404");
     expect(actual.current.security).toBe(false);
 
-    expect(actual.latest.releaseNotes).toBe("https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1.10/3.1.10.md");
+    expect(actual.latest.releaseNotes).toBe("https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md");
     expect(actual.latest.runtimeVersion).toBe("3.1.10");
     expect(actual.latest.sdkVersion).toBe("3.1.404");
     expect(actual.latest.security).toBe(false);

@@ -104,7 +104,7 @@ export class DotNetSdkUpdater {
 
     const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
 
-    let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
+    let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/main/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
 
     if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
       body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
@@ -229,7 +229,7 @@ export class DotNetSdkUpdater {
       maxRetries: 3
     });
 
-    const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/master/release-notes/${this.options.channel}/releases.json`;
+    const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${this.options.channel}/releases.json`;
 
     core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
 
@@ -328,7 +328,29 @@ export class DotNetSdkUpdater {
     }
 
     if (!this.options.commitMessage) {
-      this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
+
+      const currentVersion = releaseInfo.current.sdkVersion.split('.');
+      const latestVersion = releaseInfo.latest.sdkVersion.split('.');
+
+      const updateKind =
+        parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
+        parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
+        'patch';
+
+      const messageLines = [
+        'Update .NET SDK',
+        '',
+        `Update .NET SDK to version ${releaseInfo.latest.sdkVersion}.`,
+        '',
+        '---',
+        'updated-dependencies:',
+        '- dependency-name: Microsoft.NET.Sdk',
+        `  update-type: version-update:semver-${updateKind}`,
+        '...',
+        '',
+        ''
+      ];
+      this.options.commitMessage = messageLines.join('\n');
     }
 
     if (this.options.userName) {
@@ -370,7 +392,7 @@ export class DotNetSdkUpdater {
     const sha1 = await this.execGit([ "log", "--format='%H'", "-n", "1" ]);
     const shortSha1 = sha1.replace("'", "").substring(0, 7);
 
-    core.info(`Commited .NET SDK update to git (${shortSha1})`);
+    core.info(`Committed .NET SDK update to git (${shortSha1})`);
 
     if (!this.options.dryRun && this.options.repo) {
       await this.execGit([ "push", "-u", "origin", this.options.branch ], true);
