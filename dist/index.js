@@ -11,7 +11,11 @@ module.exports =
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -98,7 +102,7 @@ class DotNetSdkUpdater {
     async createPullRequest(base, versions) {
         var _a;
         const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
-        let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/master/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
+        let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/main/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
         if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
             body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
         }
@@ -196,7 +200,7 @@ class DotNetSdkUpdater {
             allowRetries: true,
             maxRetries: 3
         });
-        const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/master/release-notes/${this.options.channel}/releases.json`;
+        const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${this.options.channel}/releases.json`;
         core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
         const releasesResponse = await httpClient.getJson(releasesUrl);
         if (releasesResponse.statusCode >= 400) {
@@ -266,7 +270,25 @@ class DotNetSdkUpdater {
             this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
         }
         if (!this.options.commitMessage) {
-            this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
+            const currentVersion = releaseInfo.current.sdkVersion.split('.');
+            const latestVersion = releaseInfo.latest.sdkVersion.split('.');
+            const updateKind = latestVersion[0] > currentVersion[0] ? 'major' :
+                latestVersion[1] > currentVersion[1] ? 'minor' :
+                    'patch';
+            const messageLines = [
+                'Update .NET SDK',
+                '',
+                `Update .NET SDK to version ${releaseInfo.latest.sdkVersion}.`,
+                '',
+                '---',
+                'updated-dependencies:',
+                '- dependency-name: Microsoft.NET.Sdk',
+                `  update-type: version-update:semver-${updateKind}`,
+                '...',
+                '',
+                ''
+            ];
+            this.options.commitMessage = messageLines.join('\n');
         }
         if (this.options.userName) {
             await this.execGit(["config", "user.name", this.options.userName]);
@@ -297,7 +319,7 @@ class DotNetSdkUpdater {
         await this.execGit(["commit", "-m", this.options.commitMessage]);
         const sha1 = await this.execGit(["log", "--format='%H'", "-n", "1"]);
         const shortSha1 = sha1.replace("'", "").substring(0, 7);
-        core.info(`Commited .NET SDK update to git (${shortSha1})`);
+        core.info(`Committed .NET SDK update to git (${shortSha1})`);
         if (!this.options.dryRun && this.options.repo) {
             await this.execGit(["push", "-u", "origin", this.options.branch], true);
             core.info(`Pushed changes to repository (${this.options.repo})`);
@@ -327,7 +349,11 @@ class NullWritable extends stream_1.Writable {
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];

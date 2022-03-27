@@ -328,7 +328,29 @@ export class DotNetSdkUpdater {
     }
 
     if (!this.options.commitMessage) {
-      this.options.commitMessage = `Update .NET SDK\n\nUpdate .NET SDK to version ${releaseInfo.latest.sdkVersion}.`;
+
+      const currentVersion = releaseInfo.current.sdkVersion.split('.');
+      const latestVersion = releaseInfo.latest.sdkVersion.split('.');
+
+      const updateKind =
+        latestVersion[0] > currentVersion[0] ? 'major' :
+        latestVersion[1] > currentVersion[1] ? 'minor' :
+        'patch';
+
+      const messageLines = [
+        'Update .NET SDK',
+        '',
+        `Update .NET SDK to version ${releaseInfo.latest.sdkVersion}.`,
+        '',
+        '---',
+        'updated-dependencies:',
+        '- dependency-name: Microsoft.NET.Sdk',
+        `  update-type: version-update:semver-${updateKind}`,
+        '...',
+        '',
+        ''
+      ];
+      this.options.commitMessage = messageLines.join('\n');
     }
 
     if (this.options.userName) {
