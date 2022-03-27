@@ -333,8 +333,8 @@ export class DotNetSdkUpdater {
       const latestVersion = releaseInfo.latest.sdkVersion.split('.');
 
       const updateKind =
-        latestVersion[0] > currentVersion[0] ? 'major' :
-        latestVersion[1] > currentVersion[1] ? 'minor' :
+        parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
+        parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
         'patch';
 
       const messageLines = [
