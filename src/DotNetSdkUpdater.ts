@@ -37,6 +37,32 @@ export class DotNetSdkUpdater {
     };
   }
 
+  public static generateCommitMessage(currentSdkVersion: string, latestSdkVersion: string): string {
+    const currentVersion = currentSdkVersion.split('.');
+    const latestVersion = latestSdkVersion.split('.');
+
+    const updateKind =
+      parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
+      parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
+      'patch';
+
+    const messageLines = [
+      'Update .NET SDK',
+      '',
+      `Update .NET SDK to version ${latestSdkVersion}.`,
+      '',
+      '---',
+      'updated-dependencies:',
+      '- dependency-name: Microsoft.NET.Sdk',
+      '  dependency-type: direct:production',
+      `  update-type: version-update:semver-${updateKind}`,
+      '...',
+      '',
+      ''
+    ];
+    return messageLines.join('\n');
+  }
+
   public async tryUpdateSdk(): Promise<UpdateResult> {
 
     const globalJson = JSON.parse(
@@ -328,29 +354,10 @@ export class DotNetSdkUpdater {
     }
 
     if (!this.options.commitMessage) {
-
-      const currentVersion = releaseInfo.current.sdkVersion.split('.');
-      const latestVersion = releaseInfo.latest.sdkVersion.split('.');
-
-      const updateKind =
-        parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
-        parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
-        'patch';
-
-      const messageLines = [
-        'Update .NET SDK',
-        '',
-        `Update .NET SDK to version ${releaseInfo.latest.sdkVersion}.`,
-        '',
-        '---',
-        'updated-dependencies:',
-        '- dependency-name: Microsoft.NET.Sdk',
-        `  update-type: version-update:semver-${updateKind}`,
-        '...',
-        '',
-        ''
-      ];
-      this.options.commitMessage = messageLines.join('\n');
+      this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(
+        releaseInfo.current.sdkVersion,
+        releaseInfo.latest.sdkVersion
+      );
     }
 
     if (this.options.userName) {

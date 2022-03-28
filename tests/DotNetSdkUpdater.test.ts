@@ -90,4 +90,19 @@ describe("DotNetSdkUpdater tests", () => {
     expect(actual.latest.security).toBe(false);
 
   }, 10000);
+
+  it.each([
+    ["2.1.100", "3.0.101", "major"],
+    ["2.1.100", "3.1.101", "major"],
+    ["3.1.100", "3.1.101", "patch"],
+    ["3.1.100", "3.1.200", "patch"],
+    ["3.0.100", "3.1.100", "minor"],
+    ["5.0.100", "6.0.100", "major"]
+  ])("Generates correct release notes from %s to %s as a %s update", (currentSdkVersion, latestSdkVersion, expected) => {
+    const actual = updater.DotNetSdkUpdater.generateCommitMessage(currentSdkVersion, latestSdkVersion);
+    expect(actual).toContain(`Update .NET SDK to version ${latestSdkVersion}.`);
+    expect(actual).toContain("dependency-name: Microsoft.NET.Sdk");
+    expect(actual).toContain("dependency-type: direct:production");
+    expect(actual).toContain(`update-type: version-update:semver-${expected}`);
+  });
 });

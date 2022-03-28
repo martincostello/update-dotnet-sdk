@@ -56,6 +56,28 @@ class DotNetSdkUpdater {
             latest: latestRelease
         };
     }
+    static generateCommitMessage(currentSdkVersion, latestSdkVersion) {
+        const currentVersion = currentSdkVersion.split('.');
+        const latestVersion = latestSdkVersion.split('.');
+        const updateKind = parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
+            parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
+                'patch';
+        const messageLines = [
+            'Update .NET SDK',
+            '',
+            `Update .NET SDK to version ${latestSdkVersion}.`,
+            '',
+            '---',
+            'updated-dependencies:',
+            '- dependency-name: Microsoft.NET.Sdk',
+            '  dependency-type: direct:production',
+            `  update-type: version-update:semver-${updateKind}`,
+            '...',
+            '',
+            ''
+        ];
+        return messageLines.join('\n');
+    }
     async tryUpdateSdk() {
         const globalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: "utf8" }));
         let sdkVersion = "";
@@ -270,25 +292,7 @@ class DotNetSdkUpdater {
             this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
         }
         if (!this.options.commitMessage) {
-            const currentVersion = releaseInfo.current.sdkVersion.split('.');
-            const latestVersion = releaseInfo.latest.sdkVersion.split('.');
-            const updateKind = parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
-                parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
-                    'patch';
-            const messageLines = [
-                'Update .NET SDK',
-                '',
-                `Update .NET SDK to version ${releaseInfo.latest.sdkVersion}.`,
-                '',
-                '---',
-                'updated-dependencies:',
-                '- dependency-name: Microsoft.NET.Sdk',
-                `  update-type: version-update:semver-${updateKind}`,
-                '...',
-                '',
-                ''
-            ];
-            this.options.commitMessage = messageLines.join('\n');
+            this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(releaseInfo.current.sdkVersion, releaseInfo.latest.sdkVersion);
         }
         if (this.options.userName) {
             await this.execGit(["config", "user.name", this.options.userName]);
