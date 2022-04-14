@@ -130,7 +130,7 @@ export class DotNetSdkUpdater {
 
     const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
 
-    let body = `Updates the .NET SDK to version [\`\`${versions.latest.sdkVersion}\`\`](https://github.com/dotnet/core/blob/main/release-notes/${this.options.channel}/${versions.latest.runtimeVersion}/${versions.latest.sdkVersion}-download.md), `;
+    let body = `Updates the .NET SDK to version \`${versions.latest.sdkVersion}\`, `;
 
     if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
       body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
