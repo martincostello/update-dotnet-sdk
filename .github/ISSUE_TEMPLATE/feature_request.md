@@ -1,9 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for a feature of this action
-title: ''
-labels: question
-assignees: ''
+labels: feature-request
 
 ---
 
