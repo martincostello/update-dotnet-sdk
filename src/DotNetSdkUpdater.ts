@@ -380,8 +380,7 @@ export class DotNetSdkUpdater {
     }
 
     if (this.options.repo) {
-      // TODO Update to support GHE
-      await this.execGit([ "remote", "set-url", "origin", `https://github.com/${this.options.repo}.git` ]);
+      await this.execGit([ "remote", "set-url", "origin", `${this.options.serverUrl}/${this.options.repo}.git` ]);
       await this.execGit([ "fetch", "origin" ], true);
     }
 
