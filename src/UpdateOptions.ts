@@ -21,6 +21,8 @@ export interface UpdateOptions {
 
   runId?: string;
 
+  serverUrl?: string;
+
   userEmail: string;
 
   userName: string;

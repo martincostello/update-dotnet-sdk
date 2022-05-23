@@ -31,6 +31,7 @@ export async function run() {
       labels: core.getInput("labels", { required: false }) ?? "",
       repo: process.env.GITHUB_REPOSITORY,
       runId: process.env.GITHUB_RUN_ID,
+      serverUrl: process.env.GITHUB_SERVER_URL ?? "https://github.com",
       userEmail: core.getInput("user-email", { required: false }),
       userName: core.getInput("user-name", { required: false })
     };

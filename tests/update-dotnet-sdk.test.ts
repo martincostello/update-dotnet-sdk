@@ -19,6 +19,7 @@ describe("update-dotnet-sdk tests", () => {
 
   const inputs = {
     "GITHUB_REPOSITORY": "",
+    "GITHUB_SERVER_URL": "https://github.local",
     "INPUT_GLOBAL-JSON-FILE": globalJsonPath,
     "INPUT_LABELS": "foo,bar",
     "INPUT_REPO-TOKEN": "my-token",
@@ -61,7 +62,7 @@ describe("update-dotnet-sdk tests", () => {
           create: () => Promise.resolve({
             data: {
               number: "42",
-              html_url: "https://github.com/martincostello/update-dotnet-sdk/pull/42"
+              html_url: "https://github.local/martincostello/update-dotnet-sdk/pull/42"
             }
           })
         }
@@ -73,7 +74,7 @@ describe("update-dotnet-sdk tests", () => {
     expect(core.error).toHaveBeenCalledTimes(0);
     expect(core.setFailed).toHaveBeenCalledTimes(0);
 
-    assertWriteCalled(`::set-output name=pull-request-html-url::https://github.com/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
+    assertWriteCalled(`::set-output name=pull-request-html-url::https://github.local/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
     assertWriteCalled(`::set-output name=pull-request-number::42${os.EOL}`);
     assertWriteCalled(`::set-output name=sdk-updated::true${os.EOL}`);
 
