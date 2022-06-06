@@ -239,7 +239,11 @@ export class DotNetSdkUpdater {
       }
     };
 
-    await exec.exec("git", args, options);
+    try {
+      await exec.exec("git", args, options);
+    } catch (error: any) {
+      throw new Error(`The command 'git ${args.join(' ')}' failed: ${error}`);
+    }
 
     if (commandError && !ignoreErrors) {
       throw new Error(commandError);
