@@ -5,6 +5,8 @@ export interface UpdateOptions {
 
   accessToken: string;
 
+  apiUrl?: string;
+
   branch: string;
 
   channel: string;
@@ -20,6 +22,8 @@ export interface UpdateOptions {
   repo?: string;
 
   runId?: string;
+
+  serverUrl?: string;
 
   userEmail: string;
 

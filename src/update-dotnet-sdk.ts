@@ -23,6 +23,7 @@ export async function run() {
 
     const options: UpdateOptions = {
       accessToken: accessToken,
+      apiUrl: process.env.GITHUB_API_URL ?? "https://api.github.com",
       branch: core.getInput("branch-name", { required: false }),
       channel: core.getInput("channel", { required: false }),
       commitMessage: core.getInput("commit-message", { required: false }),
@@ -31,6 +32,7 @@ export async function run() {
       labels: core.getInput("labels", { required: false }) ?? "",
       repo: process.env.GITHUB_REPOSITORY,
       runId: process.env.GITHUB_RUN_ID,
+      serverUrl: process.env.GITHUB_SERVER_URL ?? "https://github.com",
       userEmail: core.getInput("user-email", { required: false }),
       userName: core.getInput("user-name", { required: false })
     };
