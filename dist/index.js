@@ -228,6 +228,10 @@ class DotNetSdkUpdater {
         if (commandError && !ignoreErrors) {
             throw new Error(commandError);
         }
+        core.debug(`git std-out: ${commandOutput}`);
+        if (commandError) {
+            core.debug(`git std-err: ${commandError}`);
+        }
         return commandOutput.trimEnd();
     }
     async getDotNetReleases() {
