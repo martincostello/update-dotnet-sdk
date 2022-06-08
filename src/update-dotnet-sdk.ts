@@ -23,6 +23,7 @@ export async function run() {
 
     const options: UpdateOptions = {
       accessToken: accessToken,
+      apiUrl: process.env.GITHUB_API_URL ?? "https://api.github.com",
       branch: core.getInput("branch-name", { required: false }),
       channel: core.getInput("channel", { required: false }),
       commitMessage: core.getInput("commit-message", { required: false }),

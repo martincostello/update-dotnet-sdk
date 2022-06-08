@@ -18,6 +18,7 @@ const globalJsonPath = path.join(tempDir, "global.json");
 describe("update-dotnet-sdk tests", () => {
 
   const inputs = {
+    "GITHUB_API_URL": "https://github.local/api/v3",
     "GITHUB_REPOSITORY": "",
     "GITHUB_SERVER_URL": "https://github.local",
     "INPUT_GLOBAL-JSON-FILE": globalJsonPath,
