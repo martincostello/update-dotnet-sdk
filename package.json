@@ -35,7 +35,7 @@
     "@actions/io": "^1.1.2"
   },
   "devDependencies": {
-    "@octokit/types": "^6.38.1",
+    "@octokit/types": "^6.38.2",
     "@types/jest": "^27.5.0",
     "jest": "^26.4.2",
     "jest-circus": "^27.5.1",
