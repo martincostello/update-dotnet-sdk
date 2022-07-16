@@ -10,7 +10,7 @@ import * as path from 'path';
 
 const github = require('@actions/github');
 
-import {run} from '../src/update-dotnet-sdk';
+import {run} from '../src/main';
 
 import {afterEach, beforeEach, describe, expect, jest, test} from '@jest/globals';
 
