@@ -16,6 +16,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
+        include:
+          - os: macos-latest
+            codecov_os: macos
+          - os: ubuntu-latest
+            codecov_os: linux
+          - os: windows-latest
+            codecov_os: windows
 
     steps:
 
@@ -36,3 +43,9 @@ jobs:
     - name: Build and Test
       shell: pwsh
       run: ./build.ps1
+
+    - uses: codecov/codecov-action@v3
+      name: Upload coverage to Codecov
+      with:
+        file: ./coverage/lcov.info
+        flags: ${{ matrix.codecov_os }}
