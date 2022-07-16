@@ -134,8 +134,7 @@ class DotNetSdkUpdater {
         }
         if (versions.latest.security && versions.latest.securityIssues.length > 0) {
             let issues = versions.latest.securityIssues;
-            if (versions.current.security &&
-                versions.current.securityIssues.length > 0) {
+            if (versions.current.security && versions.current.securityIssues.length > 0) {
                 issues = issues.filter(issue => versions.current.securityIssues.findIndex(other => other.id === issue.id) < 0);
             }
             if (issues.length > 0) {
@@ -301,8 +300,7 @@ class DotNetSdkUpdater {
         core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
         // Configure Git
         if (!this.options.branch) {
-            this.options.branch =
-                `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
+            this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
         }
         if (!this.options.commitMessage) {
             this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(releaseInfo.current.sdkVersion, releaseInfo.latest.sdkVersion);
@@ -316,24 +314,14 @@ class DotNetSdkUpdater {
             core.info(`Updated git user email to '${this.options.userEmail}'`);
         }
         if (this.options.repo) {
-            await this.execGit([
-                'remote',
-                'set-url',
-                'origin',
-                `${this.options.serverUrl}/${this.options.repo}.git`
-            ]);
+            await this.execGit(['remote', 'set-url', 'origin', `${this.options.serverUrl}/${this.options.repo}.git`]);
             await this.execGit(['fetch', 'origin'], true);
         }
         core.debug(`Branch: ${this.options.branch}`);
         core.debug(`Commit message: ${this.options.commitMessage}`);
         core.debug(`User name: ${this.options.userName}`);
         core.debug(`User email: ${this.options.userEmail}`);
-        const branchExists = await this.execGit([
-            'rev-parse',
-            '--verify',
-            '--quiet',
-            `remotes/origin/${this.options.branch}`
-        ], true);
+        const branchExists = await this.execGit(['rev-parse', '--verify', '--quiet', `remotes/origin/${this.options.branch}`], true);
         if (branchExists) {
             core.info(`The ${this.options.branch} branch already exists`);
             return undefined;
