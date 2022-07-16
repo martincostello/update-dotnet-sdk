@@ -2,12 +2,8 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 export interface UpdateResult {
-
-  pullRequestNumber: string;
-
+  pullRequestNumber: number;
   pullRequestUrl: string;
-
   updated: boolean;
-
   version: string;
 }

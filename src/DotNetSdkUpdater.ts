@@ -1,21 +1,20 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 
-const core = require("@actions/core");
-const exec = require("@actions/exec");
-const github = require("@actions/github");
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import * as github from '@actions/github';
 
-import { HttpClient } from "@actions/http-client";
-import { UpdateOptions } from "./UpdateOptions";
-import { UpdateResult } from "./UpdateResult";
-import { Writable } from "stream";
+import {HttpClient} from '@actions/http-client';
+import {UpdateOptions} from './UpdateOptions';
+import {UpdateResult} from './UpdateResult';
+import {Writable} from 'stream';
 
 export class DotNetSdkUpdater {
-
   private options: UpdateOptions;
   private repoPath: string;
 
@@ -25,8 +24,7 @@ export class DotNetSdkUpdater {
   }
 
   public static getLatestRelease(currentSdkVersion: string, releaseInfo: any): SdkVersions {
-
-    const latestSdkVersion = releaseInfo["latest-sdk"];
+    const latestSdkVersion = releaseInfo['latest-sdk'];
 
     const currentRelease = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseInfo);
     const latestRelease = DotNetSdkUpdater.getReleaseForSdk(latestSdkVersion, releaseInfo);
@@ -42,9 +40,11 @@ export class DotNetSdkUpdater {
     const latestVersion = latestSdkVersion.split('.');
 
     const updateKind =
-      parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10) ? 'major' :
-      parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10) ? 'minor' :
-      'patch';
+      parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10)
+        ? 'major'
+        : parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10)
+        ? 'minor'
+        : 'patch';
 
     const messageLines = [
       'Update .NET SDK',
@@ -64,12 +64,9 @@ export class DotNetSdkUpdater {
   }
 
   public async tryUpdateSdk(): Promise<UpdateResult> {
+    const globalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, {encoding: 'utf8'}));
 
-    const globalJson = JSON.parse(
-      fs.readFileSync(this.options.globalJsonPath, { encoding: "utf8" })
-    );
-
-    let sdkVersion = "";
+    let sdkVersion = '';
 
     if (globalJson.sdk && globalJson.sdk.version) {
       sdkVersion = globalJson.sdk.version;
@@ -80,8 +77,7 @@ export class DotNetSdkUpdater {
     }
 
     if (!this.options.channel) {
-
-      const versionParts = sdkVersion.split(".");
+      const versionParts = sdkVersion.split('.');
 
       if (versionParts.length < 2) {
         throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
@@ -91,24 +87,25 @@ export class DotNetSdkUpdater {
     }
 
     const releases = await this.getDotNetReleases();
-    const releaseInfo = await DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
+    const releaseInfo = DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
 
     const result: UpdateResult = {
-      pullRequestNumber: "",
-      pullRequestUrl: "",
+      pullRequestNumber: 0,
+      pullRequestUrl: '',
       updated: false,
       version: releaseInfo.current.sdkVersion
     };
 
     core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
     core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
-    core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
+    core.info(
+      `Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`
+    );
 
     const versionUpdated = releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion;
 
     if (versionUpdated) {
-
-      const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo, result);
+      const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo);
 
       if (baseBranch) {
         const pullRequest = await this.createPullRequest(baseBranch, releaseInfo);
@@ -118,29 +115,25 @@ export class DotNetSdkUpdater {
         result.updated = true;
         result.version = releaseInfo.latest.sdkVersion;
       }
-
     } else {
-      core.info("The current .NET SDK version is up-to-date");
+      core.info('The current .NET SDK version is up-to-date');
     }
 
     return result;
   }
 
   private async createPullRequest(base: string, versions: SdkVersions): Promise<PullRequest> {
-
     const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
 
     let body = `Updates the .NET SDK to version \`${versions.latest.sdkVersion}\`, `;
 
     if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
       body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
-    }
-    else {
+    } else {
       body += `which also updates the .NET runtime from version [\`\`${versions.current.runtimeVersion}\`\`](${versions.current.releaseNotes}) to version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}).`;
     }
 
     if (versions.latest.security && versions.latest.securityIssues.length > 0) {
-
       let issues: CveInfo[] = versions.latest.securityIssues;
 
       if (versions.current.security && versions.current.securityIssues.length > 0) {
@@ -149,13 +142,13 @@ export class DotNetSdkUpdater {
 
       if (issues.length > 0) {
         body += `\n\nThis release includes fixes for the following security issue(s):`;
-        issues.forEach(issue => {
+        for (const issue of issues) {
           body += `\n  * [${issue.id}](${issue.url})`;
-        });
+        }
       }
     }
 
-    body += `\n\nThis pull request was auto-generated by [GitHub Actions](${this.options.serverUrl}/${this.options.repo}/actions/runs/${this.options.runId}).`
+    body += `\n\nThis pull request was auto-generated by [GitHub Actions](${this.options.serverUrl}/${this.options.repo}/actions/runs/${this.options.runId}).`;
 
     const options = {
       baseUrl: this.options.apiUrl
@@ -163,17 +156,17 @@ export class DotNetSdkUpdater {
 
     const octokit = github.getOctokit(this.options.accessToken, options);
 
-    const split = (this.options.repo ?? "/").split("/");
+    const split = (this.options.repo ?? '/').split('/');
     const owner = split[0];
     const repo = split[1];
 
     const request = {
-      owner: owner,
-      repo: repo,
-      title: title,
+      owner,
+      repo,
+      title,
       head: this.options.branch,
-      base: base,
-      body: body,
+      base,
+      body,
       maintainer_can_modify: true,
       draft: false
     };
@@ -181,8 +174,8 @@ export class DotNetSdkUpdater {
     if (this.options.dryRun) {
       core.info(`Skipped creating GitHub Pull Request for branch ${this.options.branch} to ${base}`);
       return {
-        number: "",
-        url: ""
+        number: 0,
+        url: ''
       };
     }
 
@@ -199,19 +192,17 @@ export class DotNetSdkUpdater {
     };
 
     if (this.options.labels) {
-
       const labelsToApply = this.options.labels.split(',');
 
       if (labelsToApply.length > 0) {
         try {
           await octokit.rest.issues.addLabels({
-            owner: owner,
-            repo: repo,
+            owner,
+            repo,
             issue_number: result.number,
             labels: labelsToApply
           });
-        }
-        catch (error: any) {
+        } catch (error: any) {
           core.error(`Failed to apply label(s) to Pull Request #${result.number}`);
           core.error(error);
         }
@@ -222,16 +213,15 @@ export class DotNetSdkUpdater {
   }
 
   private async execGit(args: string[], ignoreErrors: Boolean = false): Promise<string> {
-
-    let commandOutput = "";
-    let commandError = "";
+    let commandOutput = '';
+    let commandError = '';
 
     const options = {
       cwd: this.repoPath,
       errStream: new NullWritable(),
       outStream: new NullWritable(),
-      ignoreReturnCode: ignoreErrors,
-      silent: ignoreErrors,
+      ignoreReturnCode: ignoreErrors as boolean | undefined,
+      silent: ignoreErrors as boolean | undefined,
       listeners: {
         stdout: (data: Buffer) => {
           commandOutput += data.toString();
@@ -243,7 +233,7 @@ export class DotNetSdkUpdater {
     };
 
     try {
-      await exec.exec("git", args, options);
+      await exec.exec('git', args, options);
     } catch (error: any) {
       throw new Error(`The command 'git ${args.join(' ')}' failed: ${error}`);
     }
@@ -261,9 +251,8 @@ export class DotNetSdkUpdater {
     return commandOutput.trimEnd();
   }
 
-  private async getDotNetReleases() : Promise<any> {
-
-    const httpClient = new HttpClient("martincostello/update-dotnet-sdk", [], {
+  private async getDotNetReleases(): Promise<any> {
+    const httpClient = new HttpClient('martincostello/update-dotnet-sdk', [], {
       allowRetries: true,
       maxRetries: 3
     });
@@ -282,30 +271,25 @@ export class DotNetSdkUpdater {
   }
 
   private static getReleaseForSdk(sdkVersion: string, releaseInfo: any): ReleaseInfo {
-
-    let releases: any[] = releaseInfo["releases"];
+    const releases: any[] = releaseInfo['releases'];
     let foundSdk: any = null;
 
     let foundRelease = releases.filter((info: any) => {
-      const sdk = info["sdk"];
-      if (sdk["version"] === sdkVersion) {
+      const sdk = info['sdk'];
+      if (sdk['version'] === sdkVersion) {
         foundSdk = sdk;
         return true;
       }
       return false;
     });
 
-
-
     if (foundRelease.length < 1) {
       foundRelease = releases.filter((info: any) => {
-
-        const sdks: any[] = info["sdks"];
+        const sdks: any[] = info['sdks'];
 
         if (sdks !== null) {
-          for (let i = 0; i < sdks.length; i++) {
-            const sdk = sdks[i];
-            if (sdk["version"] === sdkVersion) {
+          for (const sdk of sdks) {
+            if (sdk['version'] === sdkVersion) {
               foundSdk = sdk;
               return true;
             }
@@ -313,7 +297,7 @@ export class DotNetSdkUpdater {
         }
 
         return false;
-      })
+      });
     }
 
     if (foundRelease.length < 1) {
@@ -323,42 +307,38 @@ export class DotNetSdkUpdater {
     const release = foundRelease[0];
 
     const result = {
-      releaseNotes: release["release-notes"],
-      runtimeVersion: release["runtime"]["version"],
-      sdkVersion: foundSdk["version"],
-      security: release["security"],
-      securityIssues: <CveInfo[]>[]
+      releaseNotes: release['release-notes'],
+      runtimeVersion: release['runtime']['version'],
+      sdkVersion: foundSdk['version'],
+      security: release['security'],
+      securityIssues: [] as CveInfo[]
     };
 
     if (result.security) {
-
-      let issues: any[] = release["cve-list"];
+      const issues: any[] = release['cve-list'];
 
       if (issues) {
-        result.securityIssues = issues.map((issue: any) =>
-          ({
-            id: issue["cve-id"],
-            url: issue["cve-url"],
-          })
-        );
+        result.securityIssues = issues.map((issue: any) => ({
+          id: issue['cve-id'],
+          url: issue['cve-url']
+        }));
       }
     }
 
     return result;
   }
 
-  private async applySdkUpdate(globalJson: any, releaseInfo: SdkVersions, result: UpdateResult): Promise<string | undefined> {
-
+  private async applySdkUpdate(globalJson: any, releaseInfo: SdkVersions): Promise<string | undefined> {
     core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
 
     // Get the base branch to use later to create the Pull Request
-    const base = await this.execGit(["rev-parse", "--abbrev-ref", "HEAD"]);
+    const base = await this.execGit(['rev-parse', '--abbrev-ref', 'HEAD']);
 
     // Apply the update to the file system
     globalJson.sdk.version = releaseInfo.latest.sdkVersion;
     const json = JSON.stringify(globalJson, null, 2) + os.EOL;
 
-    fs.writeFileSync(this.options.globalJsonPath, json, { encoding: "utf8" });
+    fs.writeFileSync(this.options.globalJsonPath, json, {encoding: 'utf8'});
     core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
 
     // Configure Git
@@ -367,25 +347,22 @@ export class DotNetSdkUpdater {
     }
 
     if (!this.options.commitMessage) {
-      this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(
-        releaseInfo.current.sdkVersion,
-        releaseInfo.latest.sdkVersion
-      );
+      this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(releaseInfo.current.sdkVersion, releaseInfo.latest.sdkVersion);
     }
 
     if (this.options.userName) {
-      await this.execGit([ "config", "user.name", this.options.userName ]);
+      await this.execGit(['config', 'user.name', this.options.userName]);
       core.info(`Updated git user name to '${this.options.userName}'`);
     }
 
     if (this.options.userEmail) {
-      await this.execGit([ "config", "user.email", this.options.userEmail ]);
+      await this.execGit(['config', 'user.email', this.options.userEmail]);
       core.info(`Updated git user email to '${this.options.userEmail}'`);
     }
 
     if (this.options.repo) {
-      await this.execGit([ "remote", "set-url", "origin", `${this.options.serverUrl}/${this.options.repo}.git` ]);
-      await this.execGit([ "fetch", "origin" ], true);
+      await this.execGit(['remote', 'set-url', 'origin', `${this.options.serverUrl}/${this.options.repo}.git`]);
+      await this.execGit(['fetch', 'origin'], true);
     }
 
     core.debug(`Branch: ${this.options.branch}`);
@@ -393,28 +370,28 @@ export class DotNetSdkUpdater {
     core.debug(`User name: ${this.options.userName}`);
     core.debug(`User email: ${this.options.userEmail}`);
 
-    const branchExists = await this.execGit([ "rev-parse", "--verify", "--quiet", `remotes/origin/${this.options.branch}` ], true);
+    const branchExists = await this.execGit(['rev-parse', '--verify', '--quiet', `remotes/origin/${this.options.branch}`], true);
 
     if (branchExists) {
       core.info(`The ${this.options.branch} branch already exists`);
       return undefined;
     }
 
-    await this.execGit([ "checkout", "-b", this.options.branch ], true);
+    await this.execGit(['checkout', '-b', this.options.branch], true);
     core.info(`Created git branch ${this.options.branch}`);
 
-    await this.execGit([ "add", this.options.globalJsonPath ]);
+    await this.execGit(['add', this.options.globalJsonPath]);
     core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
 
-    await this.execGit([ "commit", "-m", this.options.commitMessage ]);
+    await this.execGit(['commit', '-m', this.options.commitMessage]);
 
-    const sha1 = await this.execGit([ "log", "--format='%H'", "-n", "1" ]);
-    const shortSha1 = sha1.replace("'", "").substring(0, 7);
+    const sha1 = await this.execGit(['log', "--format='%H'", '-n', '1']);
+    const shortSha1 = sha1.replace("'", '').substring(0, 7);
 
     core.info(`Committed .NET SDK update to git (${shortSha1})`);
 
     if (!this.options.dryRun && this.options.repo) {
-      await this.execGit([ "push", "-u", "origin", this.options.branch ], true);
+      await this.execGit(['push', '-u', 'origin', this.options.branch], true);
       core.info(`Pushed changes to repository (${this.options.repo})`);
     }
 
@@ -428,7 +405,7 @@ interface CveInfo {
 }
 
 interface PullRequest {
-  number: string;
+  number: number;
   url: string;
 }
 
@@ -449,7 +426,7 @@ class NullWritable extends Writable {
   _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
     callback();
   }
-  _writev(_chunks: Array<{chunk: any; encoding: string}>, callback: (error?: Error | null) => void): void {
+  _writev(_chunks: {chunk: any; encoding: string}[], callback: (error?: Error | null) => void): void {
     callback();
   }
 }
