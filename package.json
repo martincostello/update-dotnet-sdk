@@ -3,7 +3,7 @@
   "version": "2.0.1",
   "private": true,
   "description": "A GitHub Action that updates the .NET SDK.",
-  "main": "lib/update-dotnet-sdk.js",
+  "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write src/**/*.ts",
