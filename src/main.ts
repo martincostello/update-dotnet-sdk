@@ -15,7 +15,8 @@ export async function run(): Promise<void> {
       required: true,
     });
 
-    const globalJsonPath = path.normalize(globalJsonFileName);
+    let globalJsonPath = path.normalize(globalJsonFileName);
+    globalJsonPath = path.resolve(globalJsonPath);
 
     if (!fs.existsSync(globalJsonPath)) {
       core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
