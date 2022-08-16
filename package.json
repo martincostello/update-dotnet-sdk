@@ -40,7 +40,7 @@
     "@actions/io": "^1.1.2"
   },
   "devDependencies": {
-    "@octokit/types": "^6.41.0",
+    "@octokit/types": "^7.0.0",
     "@types/node": "^18.7.5",
     "@typescript-eslint/parser": "^5.33.0",
     "@vercel/ncc": "^0.34.0",
