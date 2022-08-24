@@ -37,8 +37,8 @@ jobs:
     - name: Install packages
       shell: pwsh
       run: |
-        npm i -g @vercel/ncc
-        npm install
+        npm install --global @vercel/ncc
+        npm ci
 
     - name: Build and Test
       shell: pwsh
