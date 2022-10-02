@@ -77,9 +77,9 @@ describe('update-dotnet-sdk tests', () => {
     expect(core.error).toHaveBeenCalledTimes(0);
     expect(core.setFailed).toHaveBeenCalledTimes(0);
 
-    assertWriteCalled(`::set-output name=pull-request-html-url::https://github.local/martincostello/update-dotnet-sdk/pull/42${os.EOL}`);
-    assertWriteCalled(`::set-output name=pull-request-number::42${os.EOL}`);
-    assertWriteCalled(`::set-output name=sdk-updated::true${os.EOL}`);
+    assertOutputValue('pull-request-html-url', 'https://github.local/martincostello/update-dotnet-sdk/pull/42');
+    assertOutputValue('pull-request-number', '42');
+    assertOutputValue('sdk-updated', 'true');
 
     const globalJson = JSON.parse(fs.readFileSync(globalJsonPath, {encoding: 'utf8'}));
 
@@ -89,8 +89,17 @@ describe('update-dotnet-sdk tests', () => {
   }, 30000);
 });
 
-function assertWriteCalled(message: string): void {
-  expect(process.stdout.write).toHaveBeenCalledWith(message);
+function assertOutputValue(name: string, value: string): void {
+  const outputPath = process.env['GITHUB_OUTPUT'];
+  if (outputPath) {
+    const buffer = fs.readFileSync(outputPath);
+    const content = buffer.toString();
+    expect(content).toContain(`${name}<<`);
+    expect(content).toContain(`${os.EOL}${value}${os.EOL}`);
+  } else {
+    const expected = `::set-output name=${name}::${value}${os.EOL}`
+    expect(process.stdout.write).toHaveBeenCalledWith(expected);
+  }
 }
 
 async function createTestGitRepo(path: string, data: string): Promise<void> {
