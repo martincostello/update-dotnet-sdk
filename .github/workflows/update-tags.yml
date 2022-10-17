@@ -3,6 +3,7 @@ name: update-tags
 on:
   push:
     tags: [ v* ]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,7 +20,7 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          const version = "${{ env.GITHUB_REF_NAME }}".split('.')[0];
+          const version = "${{ github.ref_name }}".split('.')[0];
           let floating = null;
           try {
             floating = await github.rest.git.getRef({
