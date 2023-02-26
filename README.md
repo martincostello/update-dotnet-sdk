@@ -53,7 +53,9 @@ that are available from NuGet.org if the .NET SDK is updated.
 ```yaml
 name: update-dotnet-sdk
 
-# TODO Add comment about using a PAT to allow workflows to be queued.
+# Using a real user/email is recommended instead of using GITHUB_TOKEN if you use GitHub Actions for your CI.
+# Otherwise, pull requests opened by this workflow, and commits pushed, will not queue your CI status checks.
+# See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow.
 env:
   GIT_COMMIT_USER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
   GIT_COMMIT_USER_NAME: github-actions[bot]
@@ -71,6 +73,7 @@ on:
   # Manual trigger to update the .NET SDK on-demand.
   workflow_dispatch:
 
+# Specify minimal permissions if using GITHUB_TOKEN
 permissions:
   contents: write
   pull-requests: write
