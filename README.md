@@ -164,14 +164,25 @@ jobs:
 
           # Build a commit message similar to dependabot that can be parsed to
           # determine what updates were performed in a particular Git commit.
-          $commitMessageLines = @(
-            "Update .NET NuGet packages",
-            "",
-            "Update .NET dependencies to their latest versions for the .NET ${{ steps.update-dotnet-sdk.outputs.sdk-version }} SDK.",
-            "",
-            "---",
-            "updated-dependencies:"
-          )
+          $commitMessageLines = @()
+
+          if ($dependencies.Count -eq 1) {
+            $commitMessageLines += "Bump $($dependencies[0].Name) from $($dependencies[0].ResolvedVersion) to $($dependencies[0].LatestVersion)"
+            $commitMessageLines += ""
+            $commitMessageLines += "Bumps $($dependencies[0].Name) from $($dependencies[0].ResolvedVersion) to $($dependencies[0].LatestVersion)."
+          } else {
+            $commitMessageLines += "Bump .NET NuGet packages"
+            $commitMessageLines += ""
+            $commitMessageLines += "Bumps .NET dependencies to their latest versions for the .NET ${{ steps.update-dotnet-sdk.outputs.sdk-version }} SDK."
+            $commitMessageLines += ""
+            foreach ($dependency in $dependencies) {
+              $commitMessageLines += "Bumps $($dependency.Name) from $($dependency.ResolvedVersion) to $($dependency.LatestVersion)."
+            }
+          }
+
+          $commitMessageLines += ""
+          $commitMessageLines += "---"
+          $commitMessageLines += "updated-dependencies:"
 
           foreach ($dependency in $dependencies) {
             $commitMessageLines += "- dependency-name: $($dependency.Name)"
