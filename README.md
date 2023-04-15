@@ -75,14 +75,19 @@ on:
 
 # Specify minimal permissions if using GITHUB_TOKEN
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
   update-dotnet-sdk:
     name: Update .NET SDK
     runs-on: ubuntu-latest
     if: ${{ github.event.repository.fork == false }}
+
+    # Specify minimal permissions if using GITHUB_TOKEN
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
 
