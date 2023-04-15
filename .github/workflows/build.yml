@@ -33,10 +33,10 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
 
     - name: Setup Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
       with:
         node-version: '16.x'
 
@@ -50,7 +50,7 @@ jobs:
       shell: pwsh
       run: ./build.ps1
 
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@40a12dcee2df644d47232dde008099a3e9e4f865 # v3.1.2
       name: Upload coverage to Codecov
       with:
         file: ./coverage/lcov.info
