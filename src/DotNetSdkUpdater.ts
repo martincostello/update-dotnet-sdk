@@ -386,7 +386,7 @@ export class DotNetSdkUpdater {
     await this.execGit(['commit', '-m', this.options.commitMessage]);
 
     const sha1 = await this.execGit(['log', "--format='%H'", '-n', '1']);
-    const shortSha1 = sha1.replace("'", '').substring(0, 7);
+    const shortSha1 = sha1.replace(/'/g, '').substring(0, 7);
 
     core.info(`Committed .NET SDK update to git (${shortSha1})`);
 
