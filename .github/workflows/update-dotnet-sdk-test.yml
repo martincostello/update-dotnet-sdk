@@ -23,13 +23,13 @@ jobs:
   print-outputs:
     name: Print outcome
     needs: update-sdk
-    if: ${{ needs.update-sdk.outputs.sdk-updated }}
     runs-on: ubuntu-latest
 
     steps:
 
     - name: Print update details
       run: |
+        echo "SDK updated: ${{ needs.update-sdk.outputs.sdk-updated }}"
+        echo "SDK version: ${{ steps.update.outputs.sdk-version }}"
         echo "PR number: ${{ steps.update.outputs.pull-request-number }}"
         echo "PR URL: ${{ steps.update.outputs.pull-request-html-url }}"
-        echo "SDK version: ${{ steps.update.outputs.sdk-version }}"
