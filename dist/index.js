@@ -332,7 +332,7 @@ class DotNetSdkUpdater {
         core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
         await this.execGit(['commit', '-m', this.options.commitMessage]);
         const sha1 = await this.execGit(['log', "--format='%H'", '-n', '1']);
-        const shortSha1 = sha1.replace("'", '').substring(0, 7);
+        const shortSha1 = sha1.replace(/'/g, '').substring(0, 7);
         core.info(`Committed .NET SDK update to git (${shortSha1})`);
         if (!this.options.dryRun && this.options.repo) {
             await this.execGit(['push', '-u', 'origin', this.options.branch], true);
