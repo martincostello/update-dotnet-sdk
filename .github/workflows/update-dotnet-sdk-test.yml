@@ -13,10 +13,10 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      update-nuget-packages: false
     with:
       global-json-file: './_global.json'
       labels: dependencies
+      update-nuget-packages: false
     secrets:
       repo-token: ${{ secrets.GITHUB_TOKEN }}
 
