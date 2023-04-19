@@ -66,6 +66,9 @@ on:
 env:
   TERM: xterm
 
+permissions:
+  contents: read
+
 jobs:
 
   update-dotnet-sdk:
