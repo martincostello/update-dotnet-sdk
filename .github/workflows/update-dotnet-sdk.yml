@@ -58,6 +58,19 @@ on:
         required: false
         type: string
         default: 'ubuntu-latest'
+    outputs:
+      pull-request-html-url:
+        description: 'The HTML URL of the Pull Request created by the action if the .NET SDK is updated.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.pull-request-html-url }}
+      pull-request-number:
+        description: 'The number of the Pull Request created by the action if the .NET SDK is updated.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.pull-request-number }}
+      sdk-updated:
+        description: 'Whether the .NET SDK was updated by the action.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.sdk-updated }}
+      sdk-version:
+        description: 'The latest version of the .NET SDK for the specified channel when the action completed.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.sdk-version }}
     secrets:
       repo-token:
         description: 'The GitHub access token to use to clone the repository, push changes and create a Pull Request for any SDK update.'
