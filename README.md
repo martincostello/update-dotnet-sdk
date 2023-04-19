@@ -6,7 +6,7 @@
 
 This action updates the .NET SDK version specified by a `global.json` file stored in a GitHub repository.
 
-An example Pull Request created by the action can be found [here](https://github.com/martincostello/update-dotnet-sdk/pull/10).
+An example Pull Request created by the action can be found [here][example-pull-request].
 
 ## Example Usage
 
@@ -48,13 +48,12 @@ jobs:
 
 ### Advanced Example Workflow
 
-Below is an example of a full GitHub Actions workflow to automate .NET SDK updates
-that will also use the [dotnet-outdated](https://github.com/dotnet-outdated/dotnet-outdated)
-.NET Global Tool to update any NuGet packages for the current .NET SDK release channel
-that are available from NuGet.org if the .NET SDK is updated.
+Below is an example of a full GitHub Actions workflow to automate .NET SDK updates that will
+also use the [dotnet-outdated][dotnet-outdated] .NET Global Tool to update any NuGet packages
+for the current .NET SDK release channel that are available from NuGet.org if the .NET SDK is updated.
 
-This action leverages a [GitHub reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
-that is included in this repository, which can be found [here](https://github.com/martincostello/update-dotnet-sdk/blob/main/.github/workflows/update-dotnet-sdk.yml).
+This action leverages a [GitHub reusable workflow][reusable-workflow-docs] that is included
+in this repository, which can be found [here][reusable-workflow].
 
 ```yaml
 name: update-dotnet-sdk
@@ -131,14 +130,24 @@ jobs:
 | `sdk-updated` | Whether the .NET SDK was updated by the action. |
 | `sdk-version` | The latest version of the .NET SDK for the specified channel when the action completed. |
 
+All of the above inputs and outputs are also available with the [reusable workflow][reusable-workflow].
+
 ## Feedback
 
-Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/martincostello/update-dotnet-sdk/issues).
+Any feedback or issues can be added to the issues for this project in [GitHub][issues].
 
 ## Repository
 
-The repository is hosted in [GitHub](https://github.com/martincostello/update-dotnet-sdk): <https://github.com/martincostello/update-dotnet-sdk.git>
+The repository is hosted in [GitHub][update-dotnet-sdk]: <https://github.com/martincostello/update-dotnet-sdk.git>
 
 ## License
 
-This project is licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt) license.
+This project is licensed under the [Apache 2.0][license] license.
+
+[dotnet-outdated]: https://github.com/dotnet-outdated/dotnet-outdated
+[example-pull-request]: https://github.com/martincostello/update-dotnet-sdk/pull/10
+[issues]: https://github.com/martincostello/update-dotnet-sdk/issues
+[license]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[reusable-workflow]: https://github.com/martincostello/update-dotnet-sdk/blob/main/.github/workflows/update-dotnet-sdk.yml
+[reusable-workflow-docs]: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+[update-dotnet-sdk]: https://github.com/martincostello/update-dotnet-sdk
