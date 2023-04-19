@@ -80,7 +80,7 @@ jobs:
 
   update-sdk:
 
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@main
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
 
     # Set minimum required write permissions if using GITHUB_TOKEN.
     #permissions:
