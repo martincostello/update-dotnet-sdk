@@ -27,11 +27,12 @@ name: update-dotnet-sdk
 
 on:
 
-  # Scheduled trigger to check for .NET SDK updates once every six hours.
+  # Run at 2100 UTC on Tuesday every week to pick up any updates from
+  # Patch Tuesday which occur on the second Tuesday of the month (PST).
   schedule:
-    - cron:  '0 */6 * * *'
+    - cron:  '00 21 * * TUE'
 
-  # Manual trigger to update the .NET SDK on-demand.
+  # Support running the workflow manually on-demand.
   workflow_dispatch:
 
 jobs:
@@ -52,17 +53,11 @@ that will also use the [dotnet-outdated](https://github.com/dotnet-outdated/dotn
 .NET Global Tool to update any NuGet packages for the current .NET SDK release channel
 that are available from NuGet.org if the .NET SDK is updated.
 
+This action leverages a [GitHub reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows)
+that is included in this repository, which can be found [here](https://github.com/martincostello/update-dotnet-sdk/blob/main/.github/workflows/update-dotnet-sdk.yml).
+
 ```yaml
 name: update-dotnet-sdk
-
-# Using a real user/email is recommended instead of using GITHUB_TOKEN if you use GitHub Actions for your CI.
-# Otherwise, pull requests opened by this workflow, and commits pushed, will not queue your CI status checks.
-# See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow.
-env:
-  GIT_COMMIT_USER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-  GIT_COMMIT_USER_NAME: github-actions[bot]
-  REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  TERM: xterm
 
 on:
 
@@ -75,148 +70,35 @@ on:
   # Manual trigger to update the .NET SDK on-demand.
   workflow_dispatch:
 
-# Specify minimal permissions if using GITHUB_TOKEN
+# Set the minumum permissions for GITHUB_TOKEN.
+# Use the commented-out additional permission if using GITHUB_TOKEN.
 permissions:
   contents: read
-  pull-requests: read
+  #pull-requests: read
 
 jobs:
-  update-dotnet-sdk:
-    name: Update .NET SDK
-    runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork == false }}
 
-    # Specify minimal permissions if using GITHUB_TOKEN
-    permissions:
-      contents: write
-      pull-requests: write
+  update-sdk:
 
-    steps:
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@main
 
-    # Checkout the repository to check for updates.
-    # A token is specified so that pushes to the repository using
-    # a user-specfied GitHub PAT trigger GitHub Actions workflows.
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        token: ${{ env.REPO_TOKEN }}
+    # Set minimum required write permissions if using GITHUB_TOKEN.
+    #permissions:
+    #  contents: write
+    #  pull-requests: write
 
-    # Run the action that checks for updates to the .NET SDK.
-    - name: Update .NET SDK
-      id: update-dotnet-sdk
-      uses: martincostello/update-dotnet-sdk@v2
-      with:
-        repo-token: ${{ env.REPO_TOKEN }}
-        user-email: ${{ env.GIT_COMMIT_USER_EMAIL }}
-        user-name: ${{ env.GIT_COMMIT_USER_NAME }}
-
-    # If the .NET SDK was updated, also check for updates to .NET
-    # NuGet packages that are published as part of a new release.
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
-      if : ${{ steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
-
-    - name: Update NuGet packages
-      if : ${{ steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
-      shell: pwsh
-      env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: true
-        DOTNET_NOLOGO: true
-        DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
-        NUGET_XMLDOC_MODE: skip
-      run: |
-        $ErrorActionPreference = "Stop"
-
-        # Install the dotnet outdated global tool.
-        dotnet tool install --global dotnet-outdated-tool
-
-        # Get the path to a temporary file that dotnet outdated can write to
-        # that can be parsed to determine what packages updates were performed.
-        $tempPath = [System.IO.Path]::GetTempPath()
-        $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
-
-        Write-Host "Checking for .NET NuGet package(s) to update..."
-
-        # Check for .NET NuGet package updates and apply any required updates
-        # to the project file(s). Updates are locked to the current major version
-        # so that only package updates for the current .NET SDK release channel
-        # are performed when upgrades are made by the tool.
-        dotnet outdated `
-          --upgrade `
-          --version-lock Major `
-          --output $updatesPath `
-          --include "Microsoft.AspNetCore." `
-          --include "Microsoft.EntityFrameworkCore." `
-          --include "Microsoft.Extensions." `
-          --include "Microsoft.NET.Test.Sdk" `
-          --include "System."
-
-        $dependencies = @()
-
-        # If there were any updates, determine the unique set of package
-        # updates that were applied to the repository's projects.
-        if (Test-Path $updatesPath) {
-          $dependencies = `
-            Get-Content -Path $updatesPath | `
-            ConvertFrom-Json | `
-            Select-Object -ExpandProperty projects | `
-            Select-Object -ExpandProperty TargetFrameworks | `
-            Select-Object -ExpandProperty Dependencies | `
-            Sort-Object -Property Name -Unique
-        }
-
-        if ($dependencies.Count -gt 0) {
-          Write-Host "Found $($dependencies.Count) .NET NuGet package(s) to update." -ForegroundColor Green
-
-          # Build a commit message similar to dependabot that can be parsed to
-          # determine what updates were performed in a particular Git commit.
-          $commitMessageLines = @()
-
-          if ($dependencies.Count -eq 1) {
-            $commitMessageLines += "Bump $($dependencies[0].Name) from $($dependencies[0].ResolvedVersion) to $($dependencies[0].LatestVersion)"
-            $commitMessageLines += ""
-            $commitMessageLines += "Bumps $($dependencies[0].Name) from $($dependencies[0].ResolvedVersion) to $($dependencies[0].LatestVersion)."
-          } else {
-            $commitMessageLines += "Bump .NET NuGet packages"
-            $commitMessageLines += ""
-            $commitMessageLines += "Bumps .NET dependencies to their latest versions for the .NET ${{ steps.update-dotnet-sdk.outputs.sdk-version }} SDK."
-            $commitMessageLines += ""
-            foreach ($dependency in $dependencies) {
-              $commitMessageLines += "Bumps $($dependency.Name) from $($dependency.ResolvedVersion) to $($dependency.LatestVersion)."
-            }
-          }
-
-          $commitMessageLines += ""
-          $commitMessageLines += "---"
-          $commitMessageLines += "updated-dependencies:"
-
-          foreach ($dependency in $dependencies) {
-            $commitMessageLines += "- dependency-name: $($dependency.Name)"
-            $commitMessageLines += "  dependency-type: direct:production"
-            $commitMessageLines += "  update-type: version-update:semver-$($dependency.UpgradeSeverity.ToLowerInvariant())"
-          }
-
-          $commitMessageLines += "..."
-          $commitMessageLines += ""
-          $commitMessageLines += ""
-
-          $commitMessage = $commitMessageLines -join "`n"
-
-          # Ensure the same Git user is used as the commit to update the .NET SDK.
-          git config user.email "${{ env.GIT_COMMIT_USER_EMAIL }}"
-          git config user.name "${{ env.GIT_COMMIT_USER_NAME }}"
-
-          # Push the changes to the same branch as the commit for the .NET SDK update.
-          git add .
-          git commit -m $commitMessage
-          git push
-
-          Write-Host "Pushed update to $($dependencies.Count) NuGet package(s)." -ForegroundColor Green
-        }
-        else {
-          Write-Host "There are no .NET NuGet packages to update." -ForegroundColor Green
-        }
+    # Using a real user/email is recommended instead of using GITHUB_TOKEN, otherwise pull
+    # requests opened by this workflow, and commits pushed, will not queue your CI status checks.
+    # Similarly, the approve-and-merge workflow will also not run if GITHUB_TOKEN is used.
+    # See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+    # The Git commit user name and email are set as variables in the organization or repository settings.
+    # See https://docs.github.com/en/actions/learn-github-actions/variables
+    with:
+      labels: "dependencies,.NET"
+      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
+      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
+    secrets:
+      repo-token: ${{ secrets.ACCESS_TOKEN }}
 ```
 
 ## Inputs
@@ -255,7 +137,7 @@ Any feedback or issues can be added to the issues for this project in [GitHub](h
 
 ## Repository
 
-The repository is hosted in [GitHub](https://github.com/martincostello/update-dotnet-sdk): https://github.com/martincostello/update-dotnet-sdk.git
+The repository is hosted in [GitHub](https://github.com/martincostello/update-dotnet-sdk): <https://github.com/martincostello/update-dotnet-sdk.git>
 
 ## License
 
