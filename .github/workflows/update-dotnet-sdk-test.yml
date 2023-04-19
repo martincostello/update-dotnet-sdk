@@ -22,7 +22,7 @@ jobs:
   print-outputs:
     name: Print outcome
     needs: update-sdk
-    if: ${{ needs.update-sdk.outputs.sdk-updated == 'true' }}
+    if: ${{ needs.update-sdk.outputs.sdk-updated }}
     runs-on: ubuntu-latest
 
     steps:
