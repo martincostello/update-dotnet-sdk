@@ -120,12 +120,6 @@ jobs:
             }
           }
 
-    # If a GitHub access token was provided, use that
-    - name: Use GitHub access token
-      if: ${{ steps.validate-secrets.outputs.use-github-app != 'true' }}
-      shell: pwsh
-      run: Write-Host "ACCESS_TOKEN=${{ secrets.repo-token }}" >> $env:GITHUB_ENV
-
     # If credentials for a GitHub application were provided, use them to generate a GitHub access token
     - name: Generate GitHub application token
       id: generate-application-token
@@ -136,10 +130,15 @@ jobs:
         application_private_key: ${{ secrets.application-private-key }}
         permissions: "contents:write, pull_requests:write"
 
-    - name: Use GitHub application token
-      if: ${{ steps.validate-secrets.outputs.use-github-app == 'true' }}
+    - name: Assign GitHub token
+      id: assign-token
       shell: pwsh
-      run: Write-Host "ACCESS_TOKEN=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_ENV
+      run: |
+        if (![string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
+            Write-Host "access-token=${{ secrets.repo-token }}" >> $env:GITHUB_OUTPUT
+        } else {
+            Write-Host "access-token=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_OUTPUT
+        }
 
     # Checkout the repository so the global.json file can be inspected and
     # updated if a new patch version of the SDK is available. The token is
@@ -149,7 +148,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       with:
-        token: ${{ env.ACCESS_TOKEN }}
+        token: ${{ steps.assign-token.outcome.outputs.access-token }}
 
     # Run the action to check if a new version of the .NET SDK is available
     # for the same release channel as the SDK specified in global.json.
@@ -163,7 +162,7 @@ jobs:
         dry-run: ${{ inputs.dry-run }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
-        repo-token: ${{ env.ACCESS_TOKEN }}
+        repo-token: ${{ steps.assign-token.outcome.outputs.access-token }}
         user-email: ${{ inputs.user-email }}
         user-name: ${{ inputs.user-name }}
 
