@@ -113,15 +113,15 @@ jobs:
           }
           else {
             if ('${{ secrets.application-id }}'.length === 0 ||
-                '${{ secrets.application-private-key }}'.length === 0)) {
+                '${{ secrets.application-private-key }}'.length === 0) {
               core.setFailed('Either the repo-token or application-id and application-private-key secrets must be set.');
             } else {
               core.setOutput('use-github-app', 'true');
             }
           }
 
-    # If a GitHub personal access token was provided, use that
-    - name: Use GitHub token
+    # If a GitHub access token was provided, use that
+    - name: Use GitHub access token
       if: ${{ steps.validate-secrets.outputs.use-github-app != 'true' }}
       shell: pwsh
       run: Write-Host "ACCESS_TOKEN=${{ secrets.repo-token }}" >> $env:GITHUB_ENV
