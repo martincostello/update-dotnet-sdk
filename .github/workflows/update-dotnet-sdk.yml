@@ -74,7 +74,13 @@ on:
     secrets:
       repo-token:
         description: 'The GitHub access token to use to clone the repository, push changes and create a Pull Request for any SDK update.'
-        required: true
+        required: false
+      application-id:
+        description: 'The ID of a GitHub Application to generate a GitHub Access token for to use to clone the repository, push changes and create a Pull Request for any SDK update.'
+        required: false
+      application-private-key:
+        description: 'The private key of a GitHub Application to generate a GitHub Access token for to use to clone the repository, push changes and create a Pull Request for any SDK update.'
+        required: false
 
 env:
   TERM: xterm
@@ -96,6 +102,45 @@ jobs:
 
     steps:
 
+    # Ensure that one of the required type of secrets has been specified
+    - name: Validate secrets
+      id: validate-secrets
+      uses: actions/github-script@v3
+      with:
+        script: |
+          if ('${{ secrets.repo-token }}'.length !== 0) {
+            core.setOutput('use-github-app', 'false');
+          }
+          else {
+            if ('${{ secrets.application-id }}'.length === 0 ||
+                '${{ secrets.application-private-key }}'.length === 0)) {
+              core.setFailed('Either the repo-token or application-id and application-private-key secrets must be set.');
+            } else {
+              core.setOutput('use-github-app', 'true');
+            }
+          }
+
+    # If a GitHub personal access token was provided, use that
+    - name: Use GitHub token
+      if: ${{ steps.validate-secrets.outputs.use-github-app != 'true' }}
+      shell: pwsh
+      run: Write-Host "ACCESS_TOKEN=${{ secrets.repo-token }}" >> $env:GITHUB_ENV
+
+    # If credentials for a GitHub application were provided, use them to generate a GitHub access token
+    - name: Generate GitHub application token
+      id: generate-application-token
+      if: ${{ steps.validate-secrets.outputs.use-github-app == 'true' }}
+      uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+      with:
+        application_id: ${{ secrets.application-id }}
+        application_private_key: ${{ secrets.application-private-key }}
+        permissions: "contents:write, pull_requests:write, workflows:write"
+
+    - name: Use GitHub application token
+      if: ${{ steps.validate-secrets.outputs.use-github-app == 'true' }}
+      shell: pwsh
+      run: Write-Host "ACCESS_TOKEN=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_ENV
+
     # Checkout the repository so the global.json file can be inspected and
     # updated if a new patch version of the SDK is available. The token is
     # used so that the workflow can push any changes back to the repository
@@ -104,7 +149,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       with:
-        token: ${{ secrets.repo-token }}
+        token: ${{ env.ACCESS_TOKEN }}
 
     # Run the action to check if a new version of the .NET SDK is available
     # for the same release channel as the SDK specified in global.json.
@@ -118,7 +163,7 @@ jobs:
         dry-run: ${{ inputs.dry-run }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
-        repo-token: ${{ secrets.repo-token }}
+        repo-token: ${{ env.ACCESS_TOKEN }}
         user-email: ${{ inputs.user-email }}
         user-name: ${{ inputs.user-name }}
 
