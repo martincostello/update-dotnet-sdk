@@ -135,9 +135,9 @@ jobs:
       shell: pwsh
       run: |
         if (![string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
-            Write-Host "access-token=${{ secrets.repo-token }}" >> $env:GITHUB_OUTPUT
+            "access-token=${{ secrets.repo-token }}" >> $env:GITHUB_OUTPUT
         } else {
-            Write-Host "access-token=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_OUTPUT
+            "access-token=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_OUTPUT
         }
 
     # Checkout the repository so the global.json file can be inspected and
