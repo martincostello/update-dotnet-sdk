@@ -134,7 +134,7 @@ jobs:
       with:
         application_id: ${{ secrets.application-id }}
         application_private_key: ${{ secrets.application-private-key }}
-        permissions: "contents:write, pull_requests:write, workflows:write"
+        permissions: "contents:write, pull_requests:write"
 
     - name: Use GitHub application token
       if: ${{ steps.validate-secrets.outputs.use-github-app == 'true' }}
