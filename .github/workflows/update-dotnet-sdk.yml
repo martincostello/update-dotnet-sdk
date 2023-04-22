@@ -108,12 +108,12 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-          if ('${{ secrets.repo-token }}'.length !== 0) {
+          if (`${{ secrets.repo-token }}`.length !== 0) {
             core.setOutput('use-github-app', 'false');
           }
           else {
-            if ('${{ secrets.application-id }}'.length === 0 ||
-                '${{ secrets.application-private-key }}'.length === 0) {
+            if (`${{ secrets.application-id }}`.length === 0 ||
+                `${{ secrets.application-private-key }}`.length === 0) {
               core.setFailed('Either the repo-token or application-id and application-private-key secrets must be set.');
             } else {
               core.setOutput('use-github-app', 'true');
