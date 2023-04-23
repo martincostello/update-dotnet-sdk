@@ -48,7 +48,7 @@ jobs:
 
 ### Advanced Workflow
 
-Below is an example of an advanced GitHub Actions workflow to automate .NET SDK updates that will
+Below are examples of an advanced GitHub Actions workflow to automate .NET SDK updates that will
 also use the [dotnet-outdated][dotnet-outdated] .NET Global Tool to update any NuGet packages
 for the current .NET SDK release channel that are available from NuGet.org if the .NET SDK is updated.
 
@@ -56,8 +56,10 @@ This workflow leverages a [GitHub reusable workflow][reusable-workflow-docs] tha
 in this repository, which can be found [here][reusable-workflow].
 
 The workflow supports being used with a GitHub [personal access token][personal-access-token],
-a [GitHub app][github-apps], or [`GITHUB_TOKEN`][github-token] (not recommended due to restrictions
-when [triggering a workflow from another workflow][triggering-workflows-from-a-workflow]).
+a [GitHub app][github-apps], or [`GITHUB_TOKEN`][github-token].
+
+> **Note**
+> Using `GITHUB_TOKEN` is not recommended due to restrictions when [triggering a workflow from another workflow][triggering-workflows-from-a-workflow].
 
 #### With a Personal Access Token
 
@@ -86,7 +88,7 @@ permissions:
   contents: read
 
 # The Git commit user name and email are set as variables in the organization or repository settings.
-# See https://docs.github.com/en/actions/learn-github-actions/variables.
+# See https://docs.github.com/actions/learn-github-actions/variables.
 jobs:
   update-sdk:
     uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
@@ -125,7 +127,7 @@ permissions:
   contents: read
 
 # The Git commit user name and email are set as variables in the organization or repository settings.
-# See https://docs.github.com/en/actions/learn-github-actions/variables.
+# See https://docs.github.com/actions/learn-github-actions/variables.
 # You can obtain the user name and email for the GitHub app by running the following
 # command using the GitHub CLI (https://cli.github.com/) in a terminal and substituting the values as shown below:
 #
@@ -241,6 +243,6 @@ This project is licensed under the [Apache 2.0][license] license.
 [license]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [personal-access-token]: https://docs.github.com/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [reusable-workflow]: https://github.com/martincostello/update-dotnet-sdk/blob/main/.github/workflows/update-dotnet-sdk.yml
-[reusable-workflow-docs]: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+[reusable-workflow-docs]: https://docs.github.com/actions/using-workflows/reusing-workflows
 [update-dotnet-sdk]: https://github.com/martincostello/update-dotnet-sdk
 [triggering-workflows-from-a-workflow]: https://docs.github.com/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
