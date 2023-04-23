@@ -199,10 +199,10 @@ jobs:
         # The --include flags are used to only update Microsoft-published
         # NuGet packages that are typically published with a new patch
         # release of .NET that accompanies a new .NET SDK release.
-        $eligblePackages = "${{ inputs.include-nuget-packages }}".Split(',')
+        $eligiblePackages = "${{ inputs.include-nuget-packages }}".Split(',')
         $includePackages = @()
 
-        foreach ($package in $eligblePackages) {
+        foreach ($package in $eligiblePackages) {
           $includePackages += "--include"
           $includePackages += $package
         }
