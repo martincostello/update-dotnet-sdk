@@ -20,19 +20,21 @@ steps:
 
 ### Example Workflow
 
-Below is an example of a full GitHub Actions workflow to automate .NET SDK updates.
+Below is a minimal example of a full GitHub Actions workflow to automate .NET SDK updates.
 
 ```yml
 name: update-dotnet-sdk
 
 on:
 
-  # Run at 2100 UTC on Tuesday every week to pick up any updates from
-  # Patch Tuesday which occur on the second Tuesday of the month (PST).
+  # Scheduled trigger to check for .NET SDK updates at 2000 UTC every
+  # Tuesday so that a run will coincide with monthly Update Tuesday releases,
+  # which occur on the second Tuesday of the month (Pacific Standard Time),
+  # for security and non-security improvements to the .NET SDK and runtime.
   schedule:
-    - cron:  '00 21 * * TUE'
+    - cron:  '00 20 * * TUE'
 
-  # Support running the workflow manually on-demand.
+  # Manual trigger to update the .NET SDK on-demand.
   workflow_dispatch:
 
 jobs:
@@ -73,14 +75,8 @@ See the [GitHub documentation][personal-access-token] for more information on cr
 name: update-dotnet-sdk
 
 on:
-
-  # Scheduled trigger to check for .NET SDK updates at 2000 UTC every
-  # Tuesday so that a run will coincide with monthly Update Tuesday releases
-  # for security and non-security improvements to the .NET SDK and runtime.
   schedule:
     - cron:  '00 20 * * TUE'
-
-  # Manual trigger to update the .NET SDK on-demand.
   workflow_dispatch:
 
 # No additional permissions are required for GITHUB_TOKEN as we are using a PAT.
@@ -112,14 +108,8 @@ See the [GitHub documentation][create-github-app] for more information on creati
 name: update-dotnet-sdk
 
 on:
-
-  # Scheduled trigger to check for .NET SDK updates at 2000 UTC every
-  # Tuesday so that a run will coincide with monthly Update Tuesday releases
-  # for security and non-security improvements to the .NET SDK and runtime.
   schedule:
     - cron:  '00 20 * * TUE'
-
-  # Manual trigger to update the .NET SDK on-demand.
   workflow_dispatch:
 
 # No additional permissions are required for GITHUB_TOKEN as we are using an app.
@@ -164,14 +154,8 @@ See the [GitHub documentation][github-token] for more information on `GITHUB_TOK
 name: update-dotnet-sdk
 
 on:
-
-  # Scheduled trigger to check for .NET SDK updates at 2000 UTC every
-  # Tuesday so that a run will coincide with monthly Update Tuesday releases
-  # for security and non-security improvements to the .NET SDK and runtime.
   schedule:
     - cron:  '00 20 * * TUE'
-
-  # Manual trigger to update the .NET SDK on-demand.
   workflow_dispatch:
 
 permissions:
