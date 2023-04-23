@@ -153,10 +153,10 @@ perform the updates as GitHub Actions. The token must have at least `write` perm
 for `contents` and `pull-requests` to be able to push changes to the repository and open
 a pull request.
 
-Using a real user/email is recommended instead of using `GITHUB_TOKEN`, otherwise pull
-requests opened by this workflow, and commits pushed, will not queue your CI status checks
-if you use GitHub Actions for your CI. More information about this restriction can be
-found [here][triggering-workflows-from-a-workflow].
+Using a personal access token or a GitHub app is recommended instead of using `GITHUB_TOKEN`,
+otherwise pull requests opened by this workflow, and commits pushed, will not queue your CI
+status checks if you use GitHub Actions for your CI. More information about this restriction
+can be found [here][triggering-workflows-from-a-workflow].
 
 See the [GitHub documentation][github-token] for more information on `GITHUB_TOKEN`.
 
