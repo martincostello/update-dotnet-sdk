@@ -49,6 +49,8 @@ outputs:
     description: 'Whether the .NET SDK was updated by the action.'
   sdk-version:
     description: 'The latest version of the .NET SDK for the specified channel when the action completed.'
+  security:
+    description: 'Whether any .NET SDK update includes security fixes.'
 runs:
   using: 'node16'
   main: 'dist/index.js'

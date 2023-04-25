@@ -80,6 +80,7 @@ describe('update-dotnet-sdk tests', () => {
     assertOutputValue('pull-request-html-url', 'https://github.local/martincostello/update-dotnet-sdk/pull/42');
     assertOutputValue('pull-request-number', '42');
     assertOutputValue('sdk-updated', 'true');
+    assertOutputValue('security', 'true');
 
     const globalJson = JSON.parse(fs.readFileSync(globalJsonPath, {encoding: 'utf8'}));
 

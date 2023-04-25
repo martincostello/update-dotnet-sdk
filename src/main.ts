@@ -46,6 +46,7 @@ export async function run(): Promise<void> {
     core.setOutput('pull-request-html-url', result.pullRequestUrl);
     core.setOutput('sdk-updated', result.updated);
     core.setOutput('sdk-version', result.version);
+    core.setOutput('security', result.security);
   } catch (error: any) {
     core.error('Failed to check for updates to .NET SDK');
     core.error(error);
