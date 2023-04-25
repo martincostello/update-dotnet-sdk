@@ -31,5 +31,6 @@ jobs:
       run: |
         echo "SDK updated: ${{ needs.update-sdk.outputs.sdk-updated }}"
         echo "SDK version: ${{ needs.update-sdk.outputs.sdk-version }}"
+        echo "Security: ${{ needs.update-sdk.outputs.security }}"
         echo "PR number: ${{ needs.update-sdk.outputs.pull-request-number }}"
         echo "PR URL: ${{ needs.update-sdk.outputs.pull-request-html-url }}"

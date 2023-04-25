@@ -4,6 +4,7 @@
 export interface UpdateResult {
   pullRequestNumber: number;
   pullRequestUrl: string;
+  security: boolean;
   updated: boolean;
   version: string;
 }

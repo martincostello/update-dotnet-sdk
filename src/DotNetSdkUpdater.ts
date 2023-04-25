@@ -93,6 +93,7 @@ export class DotNetSdkUpdater {
       pullRequestNumber: 0,
       pullRequestUrl: '',
       updated: false,
+      security: false,
       version: releaseInfo.current.sdkVersion,
     };
 
@@ -112,6 +113,7 @@ export class DotNetSdkUpdater {
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
 
+        result.security = releaseInfo.latest.security;
         result.updated = true;
         result.version = releaseInfo.latest.sdkVersion;
       }

@@ -71,6 +71,9 @@ on:
       sdk-version:
         description: 'The latest version of the .NET SDK for the specified channel when the action completed.'
         value: ${{ jobs.update-dotnet-sdk.outputs.sdk-version }}
+      security:
+        description: 'Whether any .NET SDK update includes security fixes.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.security }}
     secrets:
       repo-token:
         description: 'The GitHub access token to use to clone the repository, push changes and create a Pull Request for any SDK update.'
@@ -99,6 +102,7 @@ jobs:
       pull-request-number: ${{ steps.update-dotnet-sdk.outputs.pull-request-number }}
       sdk-updated: ${{ steps.update-dotnet-sdk.outputs.sdk-updated }}
       sdk-version: ${{ steps.update-dotnet-sdk.outputs.sdk-version }}
+      security: ${{ steps.update-dotnet-sdk.outputs.security }}
 
     steps:
 

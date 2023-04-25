@@ -203,6 +203,7 @@ jobs:
 | `pull-request-html-url` | The HTML URL of the Pull Request created by the action if the .NET SDK is updated. |
 | `sdk-updated` | Whether the .NET SDK was updated by the action. |
 | `sdk-version` | The latest version of the .NET SDK for the specified channel when the action completed. |
+| `security` | Whether any .NET SDK update includes security fixes. |
 
 All of the above inputs and outputs are also available with the [reusable workflow][reusable-workflow].
 

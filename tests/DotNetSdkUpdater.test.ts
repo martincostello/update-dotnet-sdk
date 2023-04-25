@@ -79,6 +79,26 @@ describe('DotNetSdkUpdater tests', () => {
     expect(actual.latest.security).toBe(false);
   }, 10000);
 
+  test('Gets correct info if a newer SDK is not available', async () => {
+    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-6.0.json'), {encoding: 'utf8'}));
+
+    const actual = await updater.DotNetSdkUpdater.getLatestRelease('6.0.100', releaseInfo);
+
+    expect(actual).not.toBeNull();
+    expect(actual.current).not.toBeNull();
+    expect(actual.latest).not.toBeNull();
+
+    expect(actual.current.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.0/6.0.0.md');
+    expect(actual.current.runtimeVersion).toBe('6.0.0');
+    expect(actual.current.sdkVersion).toBe('6.0.100');
+    expect(actual.current.security).toBe(false);
+
+    expect(actual.latest.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.16/6.0.16.md');
+    expect(actual.latest.runtimeVersion).toBe('6.0.16');
+    expect(actual.latest.sdkVersion).toBe('6.0.408');
+    expect(actual.latest.security).toBe(true);
+  }, 10000);
+
   test.each([
     ['2.1.100', '3.0.101', 'major'],
     ['2.1.100', '3.1.101', 'major'],
