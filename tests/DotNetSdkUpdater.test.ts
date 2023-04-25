@@ -144,6 +144,30 @@ describe('DotNetSdkUpdater tests', () => {
     expect(actual.securityIssues[1].id).toBe('CVE-2023-21808');
   }, 10000);
 
+  test('Gets correct info between preview releases', async () => {
+    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-8.0.json'), {encoding: 'utf8'}));
+
+    const actual = await updater.DotNetSdkUpdater.getLatestRelease('8.0.100-preview.1.23115.2', releaseInfo);
+
+    expect(actual).not.toBeNull();
+    expect(actual.current).not.toBeNull();
+    expect(actual.latest).not.toBeNull();
+
+    expect(actual.current.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md');
+    expect(actual.current.runtimeVersion).toBe('8.0.0-preview.1.23110.8');
+    expect(actual.current.sdkVersion).toBe('8.0.100-preview.1.23115.2');
+    expect(actual.current.security).toBe(false);
+
+    expect(actual.latest.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.3.md');
+    expect(actual.latest.runtimeVersion).toBe('8.0.0-preview.3.23174.8');
+    expect(actual.latest.sdkVersion).toBe('8.0.100-preview.3.23178.7');
+    expect(actual.latest.security).toBe(false);
+
+    expect(actual.security).toBe(false);
+    expect(actual.securityIssues).not.toBeNull();
+    expect(actual.securityIssues.length).toBe(0);
+  }, 10000);
+
   test.each([
     ['2.1.100', '3.0.101', 'major'],
     ['2.1.100', '3.1.101', 'major'],
