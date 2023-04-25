@@ -46,13 +46,12 @@ class DotNetSdkUpdater {
         this.options = options;
         this.repoPath = path.dirname(this.options.globalJsonPath);
     }
-    static getLatestRelease(currentSdkVersion, releaseInfo) {
-        const latestSdkVersion = releaseInfo['latest-sdk'];
-        const currentRelease = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseInfo);
-        const latestRelease = DotNetSdkUpdater.getReleaseForSdk(latestSdkVersion, releaseInfo);
+    static getLatestRelease(currentSdkVersion, channel) {
+        const current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, channel);
+        const latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
         return {
-            current: currentRelease,
-            latest: latestRelease,
+            current,
+            latest,
         };
     }
     static generateCommitMessage(currentSdkVersion, latestSdkVersion) {
@@ -95,26 +94,27 @@ class DotNetSdkUpdater {
             }
             this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
         }
-        const releases = await this.getDotNetReleases();
-        const releaseInfo = DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
+        const releaseChannel = await this.getDotNetReleaseChannel(this.options.channel);
+        const update = DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
         const result = {
             pullRequestNumber: 0,
             pullRequestUrl: '',
             updated: false,
-            version: releaseInfo.current.sdkVersion,
+            security: false,
+            version: update.current.sdkVersion,
         };
-        core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
-        core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
-        core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`);
-        const versionUpdated = releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion;
-        if (versionUpdated) {
-            const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo);
+        core.info(`Current .NET SDK version is ${update.current.sdkVersion}`);
+        core.info(`Current .NET runtime version is ${update.current.runtimeVersion}`);
+        core.info(`Latest .NET SDK version for channel '${this.options.channel}' is ${update.latest.sdkVersion} (runtime version ${update.latest.runtimeVersion})`);
+        if (update.current.sdkVersion !== update.latest.sdkVersion) {
+            const baseBranch = await this.applySdkUpdate(globalJson, update);
             if (baseBranch) {
-                const pullRequest = await this.createPullRequest(baseBranch, releaseInfo);
+                const pullRequest = await this.createPullRequest(baseBranch, update);
                 result.pullRequestNumber = pullRequest.number;
                 result.pullRequestUrl = pullRequest.url;
+                result.security = update.latest.security;
                 result.updated = true;
-                result.version = releaseInfo.latest.sdkVersion;
+                result.version = update.latest.sdkVersion;
             }
         }
         else {
@@ -229,36 +229,33 @@ class DotNetSdkUpdater {
         }
         return commandOutput.trimEnd();
     }
-    async getDotNetReleases() {
+    async getDotNetReleaseChannel(channel) {
         const httpClient = new http_client_1.HttpClient('martincostello/update-dotnet-sdk', [], {
             allowRetries: true,
             maxRetries: 3,
         });
-        const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${this.options.channel}/releases.json`;
-        core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
-        const releasesResponse = await httpClient.getJson(releasesUrl);
-        if (releasesResponse.statusCode >= 400) {
-            throw new Error(`Failed to get releases JSON for channel ${this.options.channel} - HTTP status ${releasesResponse.statusCode}`);
+        const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${channel}/releases.json`;
+        core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}...`);
+        const response = await httpClient.getJson(releasesUrl);
+        if (response.statusCode >= 400) {
+            throw new Error(`Failed to get releases JSON for channel ${channel} - HTTP status ${response.statusCode}`);
         }
-        return releasesResponse.result || {};
+        else if (!response.result) {
+            throw new Error(`Failed to get releases JSON for channel ${channel}.`);
+        }
+        return response.result;
     }
-    static getReleaseForSdk(sdkVersion, releaseInfo) {
-        const releases = releaseInfo['releases'];
+    static getReleaseForSdk(sdkVersion, channel) {
+        let releasesForSdk = channel.releases.filter((info) => info.sdk.version === sdkVersion);
         let foundSdk = null;
-        let foundRelease = releases.filter((info) => {
-            const sdk = info['sdk'];
-            if (sdk['version'] === sdkVersion) {
-                foundSdk = sdk;
-                return true;
-            }
-            return false;
-        });
-        if (foundRelease.length < 1) {
-            foundRelease = releases.filter((info) => {
-                const sdks = info['sdks'];
-                if (sdks !== null) {
-                    for (const sdk of sdks) {
-                        if (sdk['version'] === sdkVersion) {
+        if (releasesForSdk.length === 1) {
+            foundSdk = releasesForSdk[0].sdk;
+        }
+        else if (releasesForSdk.length < 1) {
+            releasesForSdk = channel.releases.filter((info) => {
+                if (info.sdks !== null) {
+                    for (const sdk of info.sdks) {
+                        if (sdk.version === sdkVersion) {
                             foundSdk = sdk;
                             return true;
                         }
@@ -267,15 +264,15 @@ class DotNetSdkUpdater {
                 return false;
             });
         }
-        if (foundRelease.length < 1) {
+        if (releasesForSdk.length < 1 || !foundSdk) {
             throw new Error(`Failed to find release for .NET SDK version ${sdkVersion}`);
         }
-        const release = foundRelease[0];
+        const release = releasesForSdk[0];
         const result = {
             releaseNotes: release['release-notes'],
-            runtimeVersion: release['runtime']['version'],
-            sdkVersion: foundSdk['version'],
-            security: release['security'],
+            runtimeVersion: release.runtime.version,
+            sdkVersion: foundSdk.version,
+            security: release.security,
             securityIssues: [],
         };
         if (result.security) {
@@ -289,21 +286,21 @@ class DotNetSdkUpdater {
         }
         return result;
     }
-    async applySdkUpdate(globalJson, releaseInfo) {
-        core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
+    async applySdkUpdate(globalJson, versions) {
+        core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}...`);
         // Get the base branch to use later to create the Pull Request
         const base = await this.execGit(['rev-parse', '--abbrev-ref', 'HEAD']);
         // Apply the update to the file system
-        globalJson.sdk.version = releaseInfo.latest.sdkVersion;
+        globalJson.sdk.version = versions.latest.sdkVersion;
         const json = JSON.stringify(globalJson, null, 2) + os.EOL;
         fs.writeFileSync(this.options.globalJsonPath, json, { encoding: 'utf8' });
-        core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
+        core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}`);
         // Configure Git
         if (!this.options.branch) {
-            this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
+            this.options.branch = `update-dotnet-sdk-${versions.latest.sdkVersion}`.toLowerCase();
         }
         if (!this.options.commitMessage) {
-            this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(releaseInfo.current.sdkVersion, releaseInfo.latest.sdkVersion);
+            this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(versions.current.sdkVersion, versions.latest.sdkVersion);
         }
         if (this.options.userName) {
             await this.execGit(['config', 'user.name', this.options.userName]);
@@ -424,6 +421,7 @@ async function run() {
         core.setOutput('pull-request-html-url', result.pullRequestUrl);
         core.setOutput('sdk-updated', result.updated);
         core.setOutput('sdk-version', result.version);
+        core.setOutput('security', result.security);
     }
     catch (error) {
         core.error('Failed to check for updates to .NET SDK');
