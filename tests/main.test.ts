@@ -104,7 +104,7 @@ function assertOutputValue(name: string, value: string): void {
 
 async function createTestGitRepo(path: string, data: string): Promise<void> {
   if (!fs.existsSync(tempDir)) {
-    io.mkdirP(tempDir);
+    await io.mkdirP(tempDir);
   }
 
   fs.appendFileSync(path, data);
