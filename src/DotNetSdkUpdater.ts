@@ -34,23 +34,28 @@ export class DotNetSdkUpdater {
       securityIssues: latest.securityIssues,
     };
 
-    const versionParts = current.runtimeVersion.split('.');
-    const versionMajor = parseInt(versionParts[0], 10);
-    const versionMinor = parseInt(versionParts[1], 10);
+    const currentParts = current.runtimeVersion.split('.');
+    const latestParts = latest.runtimeVersion.split('.');
 
-    const currentPatch = parseInt(versionParts[2], 10);
-    const latestPatch = parseInt(latest.runtimeVersion.split('.')[2], 10);
+    const versionMajor = parseInt(currentParts[0], 10);
+    const versionMinor = parseInt(currentParts[1], 10);
 
-    const patchDelta = latestPatch - currentPatch;
+    // Do not attempt to compute the patch delta if either SDK version is a preview
+    if (!currentParts[2].includes('-') && !latestParts[2].includes('-')) {
+      const currentPatch = parseInt(currentParts[2], 10);
+      const latestPatch = parseInt(latestParts[2], 10);
 
-    if (patchDelta > 1) {
-      for (let patch = currentPatch; patch < latestPatch; patch++) {
-        const version = `${versionMajor}.${versionMinor}.${patch}`;
-        const release = channel.releases.find((p) => p.runtime.version === version);
-        if (release) {
-          result.security = result.security || release.security;
-          if (release['cve-list']) {
-            result.securityIssues = result.securityIssues.concat(DotNetSdkUpdater.mapCves(release['cve-list']));
+      const patchDelta = latestPatch - currentPatch;
+
+      if (patchDelta > 1) {
+        for (let patch = currentPatch; patch < latestPatch; patch++) {
+          const version = `${versionMajor}.${versionMinor}.${patch}`;
+          const release = channel.releases.find((p) => p.runtime.version === version);
+          if (release) {
+            result.security = result.security || release.security;
+            if (release['cve-list']) {
+              result.securityIssues = result.securityIssues.concat(DotNetSdkUpdater.mapCves(release['cve-list']));
+            }
           }
         }
       }
