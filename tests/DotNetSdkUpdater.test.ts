@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as updater from '../src/DotNetSdkUpdater';
 
 import {describe, expect, test} from '@jest/globals';
+import {UpdateOptions} from '../src/UpdateOptions';
 
 describe('DotNetSdkUpdater tests', () => {
   test('Gets correct info if a newer SDK is available for the same MSBuild version', async () => {
@@ -156,5 +157,23 @@ describe('DotNetSdkUpdater tests', () => {
     expect(actual).toContain('dependency-name: Microsoft.NET.Sdk');
     expect(actual).toContain('dependency-type: direct:production');
     expect(actual).toContain(`update-type: version-update:semver-${expected}`);
+  });
+
+  test('Sorts the CVEs in the pull request description', () => {
+    const channel = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
+    const versions = updater.DotNetSdkUpdater.getLatestRelease('7.0.100', channel);
+    const options: UpdateOptions = {
+      accessToken: '',
+      branch: '',
+      channel: '7.0',
+      commitMessage: '',
+      dryRun: false,
+      globalJsonPath: '',
+      labels: '',
+      userEmail: '',
+      userName: '',
+    };
+    const actual = updater.DotNetSdkUpdater.generatePullRequestBody(versions, options);
+    expect(actual).toContain('\n  * [CVE-2022-41089](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089)\n  * [CVE-2023-21808](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808)');
   });
 });
