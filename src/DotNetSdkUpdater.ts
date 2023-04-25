@@ -23,15 +23,13 @@ export class DotNetSdkUpdater {
     this.repoPath = path.dirname(this.options.globalJsonPath);
   }
 
-  public static getLatestRelease(currentSdkVersion: string, releaseInfo: any): SdkVersions {
-    const latestSdkVersion = releaseInfo['latest-sdk'];
-
-    const currentRelease = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseInfo);
-    const latestRelease = DotNetSdkUpdater.getReleaseForSdk(latestSdkVersion, releaseInfo);
+  public static getLatestRelease(currentSdkVersion: string, channel: ReleaseChannel): SdkVersions {
+    const current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, channel);
+    const latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
 
     return {
-      current: currentRelease,
-      latest: latestRelease,
+      current,
+      latest,
     };
   }
 
@@ -64,7 +62,7 @@ export class DotNetSdkUpdater {
   }
 
   public async tryUpdateSdk(): Promise<UpdateResult> {
-    const globalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: 'utf8' }));
+    const globalJson: GlobalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: 'utf8' }));
 
     let sdkVersion = '';
 
@@ -86,36 +84,34 @@ export class DotNetSdkUpdater {
       this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
     }
 
-    const releases = await this.getDotNetReleases();
-    const releaseInfo = DotNetSdkUpdater.getLatestRelease(sdkVersion, releases);
+    const releaseChannel = await this.getDotNetReleaseChannel(this.options.channel);
+    const update = DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
 
     const result: UpdateResult = {
       pullRequestNumber: 0,
       pullRequestUrl: '',
       updated: false,
       security: false,
-      version: releaseInfo.current.sdkVersion,
+      version: update.current.sdkVersion,
     };
 
-    core.info(`Current .NET SDK version is ${releaseInfo.current.sdkVersion}`);
-    core.info(`Current .NET runtime version is ${releaseInfo.current.runtimeVersion}`);
+    core.info(`Current .NET SDK version is ${update.current.sdkVersion}`);
+    core.info(`Current .NET runtime version is ${update.current.runtimeVersion}`);
     core.info(
-      `Latest .NET SDK version for channel '${this.options.channel}' is ${releaseInfo.latest.sdkVersion} (runtime version ${releaseInfo.latest.runtimeVersion})`
+      `Latest .NET SDK version for channel '${this.options.channel}' is ${update.latest.sdkVersion} (runtime version ${update.latest.runtimeVersion})`
     );
 
-    const versionUpdated = releaseInfo.current.sdkVersion !== releaseInfo.latest.sdkVersion;
-
-    if (versionUpdated) {
-      const baseBranch = await this.applySdkUpdate(globalJson, releaseInfo);
+    if (update.current.sdkVersion !== update.latest.sdkVersion) {
+      const baseBranch = await this.applySdkUpdate(globalJson, update);
 
       if (baseBranch) {
-        const pullRequest = await this.createPullRequest(baseBranch, releaseInfo);
+        const pullRequest = await this.createPullRequest(baseBranch, update);
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
 
-        result.security = releaseInfo.latest.security;
+        result.security = update.latest.security;
         result.updated = true;
-        result.version = releaseInfo.latest.sdkVersion;
+        result.version = update.latest.sdkVersion;
       }
     } else {
       core.info('The current .NET SDK version is up-to-date');
@@ -253,74 +249,65 @@ export class DotNetSdkUpdater {
     return commandOutput.trimEnd();
   }
 
-  private async getDotNetReleases(): Promise<any> {
+  private async getDotNetReleaseChannel(channel: string): Promise<ReleaseChannel> {
     const httpClient = new HttpClient('martincostello/update-dotnet-sdk', [], {
       allowRetries: true,
       maxRetries: 3,
     });
 
-    const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${this.options.channel}/releases.json`;
+    const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${channel}/releases.json`;
 
-    core.debug(`Downloading .NET ${this.options.channel} release notes JSON from ${releasesUrl}...`);
+    core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}...`);
 
-    const releasesResponse = await httpClient.getJson<any>(releasesUrl);
+    const response = await httpClient.getJson<ReleaseChannel>(releasesUrl);
 
-    if (releasesResponse.statusCode >= 400) {
-      throw new Error(`Failed to get releases JSON for channel ${this.options.channel} - HTTP status ${releasesResponse.statusCode}`);
+    if (response.statusCode >= 400) {
+      throw new Error(`Failed to get releases JSON for channel ${channel} - HTTP status ${response.statusCode}`);
+    } else if (!response.result) {
+      throw new Error(`Failed to get releases JSON for channel ${channel}.`);
     }
 
-    return releasesResponse.result || {};
+    return response.result;
   }
 
-  private static getReleaseForSdk(sdkVersion: string, releaseInfo: any): ReleaseInfo {
-    const releases: any[] = releaseInfo['releases'];
-    let foundSdk: any = null;
+  private static getReleaseForSdk(sdkVersion: string, channel: ReleaseChannel): ReleaseInfo {
+    let releasesForSdk = channel.releases.filter((info: Release) => info.sdk.version === sdkVersion);
+    let foundSdk: Sdk | null = null;
 
-    let foundRelease = releases.filter((info: any) => {
-      const sdk = info['sdk'];
-      if (sdk['version'] === sdkVersion) {
-        foundSdk = sdk;
-        return true;
-      }
-      return false;
-    });
-
-    if (foundRelease.length < 1) {
-      foundRelease = releases.filter((info: any) => {
-        const sdks: any[] = info['sdks'];
-
-        if (sdks !== null) {
-          for (const sdk of sdks) {
-            if (sdk['version'] === sdkVersion) {
+    if (releasesForSdk.length === 1) {
+      foundSdk = releasesForSdk[0].sdk;
+    } else if (releasesForSdk.length < 1) {
+      releasesForSdk = channel.releases.filter((info: Release) => {
+        if (info.sdks !== null) {
+          for (const sdk of info.sdks) {
+            if (sdk.version === sdkVersion) {
               foundSdk = sdk;
               return true;
             }
           }
         }
-
         return false;
       });
     }
 
-    if (foundRelease.length < 1) {
+    if (releasesForSdk.length < 1 || !foundSdk) {
       throw new Error(`Failed to find release for .NET SDK version ${sdkVersion}`);
     }
 
-    const release = foundRelease[0];
+    const release = releasesForSdk[0];
 
     const result = {
       releaseNotes: release['release-notes'],
-      runtimeVersion: release['runtime']['version'],
-      sdkVersion: foundSdk['version'],
-      security: release['security'],
+      runtimeVersion: release.runtime.version,
+      sdkVersion: foundSdk.version,
+      security: release.security,
       securityIssues: [] as CveInfo[],
     };
 
     if (result.security) {
-      const issues: any[] = release['cve-list'];
-
+      const issues = release['cve-list'];
       if (issues) {
-        result.securityIssues = issues.map((issue: any) => ({
+        result.securityIssues = issues.map((issue: Cve) => ({
           id: issue['cve-id'],
           url: issue['cve-url'],
         }));
@@ -330,26 +317,26 @@ export class DotNetSdkUpdater {
     return result;
   }
 
-  private async applySdkUpdate(globalJson: any, releaseInfo: SdkVersions): Promise<string | undefined> {
-    core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}...`);
+  private async applySdkUpdate(globalJson: GlobalJson, versions: SdkVersions): Promise<string | undefined> {
+    core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}...`);
 
     // Get the base branch to use later to create the Pull Request
     const base = await this.execGit(['rev-parse', '--abbrev-ref', 'HEAD']);
 
     // Apply the update to the file system
-    globalJson.sdk.version = releaseInfo.latest.sdkVersion;
+    globalJson.sdk.version = versions.latest.sdkVersion;
     const json = JSON.stringify(globalJson, null, 2) + os.EOL;
 
     fs.writeFileSync(this.options.globalJsonPath, json, { encoding: 'utf8' });
-    core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${releaseInfo.latest.sdkVersion}`);
+    core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}`);
 
     // Configure Git
     if (!this.options.branch) {
-      this.options.branch = `update-dotnet-sdk-${releaseInfo.latest.sdkVersion}`.toLowerCase();
+      this.options.branch = `update-dotnet-sdk-${versions.latest.sdkVersion}`.toLowerCase();
     }
 
     if (!this.options.commitMessage) {
-      this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(releaseInfo.current.sdkVersion, releaseInfo.latest.sdkVersion);
+      this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(versions.current.sdkVersion, versions.latest.sdkVersion);
     }
 
     if (this.options.userName) {
@@ -422,6 +409,53 @@ interface ReleaseInfo {
 interface SdkVersions {
   current: ReleaseInfo;
   latest: ReleaseInfo;
+}
+
+interface ReleaseChannel {
+  'channel-version': string;
+  'latest-release': string;
+  'latest-release-date': string;
+  'latest-runtime': string;
+  'latest-sdk': string;
+  'release-type': string;
+  'support-phase': string;
+  'eol-date"': string;
+  'lifecycle-policy"': string;
+  'releases': Release[];
+}
+
+interface Release {
+  'release-date': string;
+  'release-version': string;
+  'security': boolean;
+  'cve-list': Cve[];
+  'release-notes': string;
+  'runtime': Runtime;
+  'sdk': Sdk;
+  'sdks': Sdk[];
+  'aspnetcore-runtime': Runtime;
+}
+
+interface Runtime {
+  'version': string;
+  'version-display': string;
+}
+
+interface Sdk {
+  'version': string;
+  'version-display': string;
+  'runtime-version': string;
+}
+
+interface Cve {
+  'cve-id': string;
+  'cve-url': string;
+}
+
+interface GlobalJson {
+  sdk: {
+    version: string;
+  };
 }
 
 class NullWritable extends Writable {
