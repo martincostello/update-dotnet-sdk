@@ -27,10 +27,36 @@ export class DotNetSdkUpdater {
     const current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, channel);
     const latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
 
-    return {
+    const result = {
       current,
       latest,
+      security: latest.security,
+      securityIssues: latest.securityIssues,
     };
+
+    const versionParts = current.runtimeVersion.split('.');
+    const versionMajor = parseInt(versionParts[0], 10);
+    const versionMinor = parseInt(versionParts[1], 10);
+
+    const currentPatch = parseInt(versionParts[2], 10);
+    const latestPatch = parseInt(latest.runtimeVersion.split('.')[2], 10);
+
+    const patchDelta = latestPatch - currentPatch;
+
+    if (patchDelta > 1) {
+      for (let patch = currentPatch; patch < latestPatch; patch++) {
+        const version = `${versionMajor}.${versionMinor}.${patch}`;
+        const release = channel.releases.find((p) => p.runtime.version === version);
+        if (release) {
+          result.security = result.security || release.security;
+          if (release['cve-list']) {
+            result.securityIssues = result.securityIssues.concat(DotNetSdkUpdater.mapCves(release['cve-list']));
+          }
+        }
+      }
+    }
+
+    return result;
   }
 
   public static generateCommitMessage(currentSdkVersion: string, latestSdkVersion: string): string {
@@ -109,7 +135,7 @@ export class DotNetSdkUpdater {
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
 
-        result.security = update.latest.security;
+        result.security = update.security;
         result.updated = true;
         result.version = update.latest.sdkVersion;
       }
@@ -120,27 +146,22 @@ export class DotNetSdkUpdater {
     return result;
   }
 
-  private async createPullRequest(base: string, versions: SdkVersions): Promise<PullRequest> {
-    const title = `Update .NET SDK to ${versions.latest.sdkVersion}`;
+  private async createPullRequest(base: string, update: SdkVersions): Promise<PullRequest> {
+    const title = `Update .NET SDK to ${update.latest.sdkVersion}`;
 
-    let body = `Updates the .NET SDK to version \`${versions.latest.sdkVersion}\`, `;
+    let body = `Updates the .NET SDK to version \`${update.latest.sdkVersion}\`, `;
 
-    if (versions.latest.runtimeVersion === versions.current.runtimeVersion) {
-      body += `which includes version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}) of the .NET runtime.`;
+    if (update.latest.runtimeVersion === update.current.runtimeVersion) {
+      body += `which includes version [\`\`${update.latest.runtimeVersion}\`\`](${update.latest.releaseNotes}) of the .NET runtime.`;
     } else {
-      body += `which also updates the .NET runtime from version [\`\`${versions.current.runtimeVersion}\`\`](${versions.current.releaseNotes}) to version [\`\`${versions.latest.runtimeVersion}\`\`](${versions.latest.releaseNotes}).`;
+      body += `which also updates the .NET runtime from version [\`\`${update.current.runtimeVersion}\`\`](${update.current.releaseNotes}) to version [\`\`${update.latest.runtimeVersion}\`\`](${update.latest.releaseNotes}).`;
     }
 
-    if (versions.latest.security && versions.latest.securityIssues.length > 0) {
-      let issues: CveInfo[] = versions.latest.securityIssues;
-
-      if (versions.current.security && versions.current.securityIssues.length > 0) {
-        issues = issues.filter((issue) => versions.current.securityIssues.findIndex((other) => other.id === issue.id) < 0);
-      }
-
-      if (issues.length > 0) {
+    if (update.security && update.securityIssues.length > 0) {
+      update.securityIssues.sort((a, b) => a.id.localeCompare(b.id));
+      if (update.securityIssues.length > 0) {
         body += `\n\nThis release includes fixes for the following security issue(s):`;
-        for (const issue of issues) {
+        for (const issue of update.securityIssues) {
           body += `\n  * [${issue.id}](${issue.url})`;
         }
       }
@@ -307,14 +328,18 @@ export class DotNetSdkUpdater {
     if (result.security) {
       const issues = release['cve-list'];
       if (issues) {
-        result.securityIssues = issues.map((issue: Cve) => ({
-          id: issue['cve-id'],
-          url: issue['cve-url'],
-        }));
+        result.securityIssues = DotNetSdkUpdater.mapCves(issues);
       }
     }
 
     return result;
+  }
+
+  private static mapCves(cves: Cve[]): CveInfo[] {
+    return cves.map((issue: Cve) => ({
+      id: issue['cve-id'],
+      url: issue['cve-url'],
+    }));
   }
 
   private async applySdkUpdate(globalJson: GlobalJson, versions: SdkVersions): Promise<string | undefined> {
@@ -409,6 +434,8 @@ interface ReleaseInfo {
 interface SdkVersions {
   current: ReleaseInfo;
   latest: ReleaseInfo;
+  security: boolean;
+  securityIssues: CveInfo[];
 }
 
 interface ReleaseChannel {
