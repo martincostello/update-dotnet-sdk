@@ -406,7 +406,7 @@ export class DotNetSdkUpdater {
     await this.execGit(['add', this.options.globalJsonPath]);
     core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
 
-    await this.execGit(['commit', '-m', this.options.commitMessage]);
+    await this.execGit(['commit', '-m', this.options.commitMessage, '-s']);
 
     const sha1 = await this.execGit(['log', "--format='%H'", '-n', '1']);
     const shortSha1 = sha1.replace(/'/g, '').substring(0, 7);

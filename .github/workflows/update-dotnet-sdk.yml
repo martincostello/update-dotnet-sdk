@@ -274,7 +274,7 @@ jobs:
           git config user.name "${{ inputs.user-name }}"
 
           git add .
-          git commit -m $commitMessage
+          git commit -m $commitMessage -s
           git push
 
           Write-Host "Pushed update to $($dependencies.Count) NuGet package(s)." -ForegroundColor Green
