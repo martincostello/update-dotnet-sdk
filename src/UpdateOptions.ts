@@ -8,6 +8,7 @@ export interface UpdateOptions {
   channel: string;
   commitMessage: string;
   dryRun: boolean;
+  generateStepSummary: boolean;
   globalJsonPath: string;
   labels: string;
   repo?: string;

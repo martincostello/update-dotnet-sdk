@@ -18,6 +18,11 @@ on:
         required: false
         type: string
         default: ''
+      generate-step-summary:
+        description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
+        required: false
+        type: boolean
+        default: true
       global-json-file:
         description: 'The optional path to the global.json file to update.'
         required: false
@@ -164,6 +169,7 @@ jobs:
         channel: ${{ inputs.channel }}
         commit-message: ${{ inputs.commit-message }}
         dry-run: ${{ inputs.dry-run }}
+        generate-step-summary: ${{ inputs.generate-step-summary }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
         repo-token: ${{ steps.assign-token.outputs.access-token }}

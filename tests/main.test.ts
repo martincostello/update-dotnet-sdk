@@ -16,12 +16,14 @@ import {afterEach, beforeEach, describe, expect, jest, test} from '@jest/globals
 
 const tempDir = path.join(os.tmpdir(), 'update-dotnet-sdk-temp');
 const globalJsonPath = path.join(tempDir, 'global.json');
+const githubStepSummary = path.join(tempDir, 'github-step-summary.md');
 
 describe('update-dotnet-sdk tests', () => {
   const inputs = {
     'GITHUB_API_URL': 'https://github.local/api/v3',
     'GITHUB_REPOSITORY': '',
     'GITHUB_SERVER_URL': 'https://github.local',
+    'GITHUB_STEP_SUMMARY': githubStepSummary,
     'INPUT_GLOBAL-JSON-FILE': globalJsonPath,
     'INPUT_LABELS': 'foo,bar',
     'INPUT_REPO-TOKEN': 'my-token',
@@ -42,7 +44,8 @@ describe('update-dotnet-sdk tests', () => {
 
   afterEach(async () => {
     try {
-      await io.rmRF(path.join(tempDir, 'global.json'));
+      await io.rmRF(globalJsonPath);
+      await io.rmRF(githubStepSummary);
       await io.rmRF(tempDir);
     } catch {
       console.log('Failed to remove test directories');
