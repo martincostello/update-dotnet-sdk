@@ -30,6 +30,7 @@ export async function run(): Promise<void> {
       channel: core.getInput('channel', { required: false }),
       commitMessage: core.getInput('commit-message', { required: false }),
       dryRun: core.getInput('dry-run', { required: false }) === 'true',
+      generateStepSummary: core.getInput('generate-step-summary', { required: false }) === 'true',
       globalJsonPath,
       labels: core.getInput('labels', { required: false }) ?? '',
       repo: process.env.GITHUB_REPOSITORY,

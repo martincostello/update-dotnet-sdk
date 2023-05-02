@@ -115,6 +115,46 @@ export class DotNetSdkUpdater {
     return body;
   }
 
+  public static async generateSummary(update: SdkVersions, today: Date): Promise<string> {
+    const daysSinceRelease = Math.floor((today.getTime() - update.latest.releaseDate.getTime()) / (24 * 60 * 60 * 1000));
+    const daysUnit = daysSinceRelease === 1 ? 'day' : 'days';
+    const iso8601Date = update.latest.releaseDate.toISOString().split('T')[0];
+
+    let summary = core.summary
+      .addHeading(`.NET SDK ${update.latest.sdkVersion}`, 1)
+      .addRaw(`An update from version ${update.current.sdkVersion} to ${update.latest.sdkVersion} of the .NET SDK is available.`)
+      .addBreak()
+      .addBreak()
+      .addRaw(`This version of the .NET SDK was released on ${iso8601Date} (${daysSinceRelease} ${daysUnit} ago).`)
+      .addBreak()
+      .addBreak()
+      .addLink(`Release notes`, update.latest.releaseNotes);
+
+    if (update.security) {
+      summary = summary
+        .addHeading('Security Issues', 2)
+        .addRaw('This update includes fixes for the following security issues:')
+        .addBreak()
+        .addBreak()
+        .addList(
+          update.securityIssues.map((p) => p.id),
+          false
+        );
+    }
+
+    const result = summary.stringify();
+
+    try {
+      await summary.write();
+    } catch (err) {
+      // Swallow errors attempting to write to GITHUB_STEP_SUMMARY
+    } finally {
+      summary.emptyBuffer();
+    }
+
+    return result;
+  }
+
   public async tryUpdateSdk(): Promise<UpdateResult> {
     const globalJson: GlobalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: 'utf8' }));
 
@@ -166,6 +206,10 @@ export class DotNetSdkUpdater {
         result.security = update.security;
         result.updated = true;
         result.version = update.latest.sdkVersion;
+
+        if (this.options.generateStepSummary) {
+          await DotNetSdkUpdater.generateSummary(update, new Date());
+        }
       }
     } else {
       core.info('The current .NET SDK version is up-to-date');
@@ -327,6 +371,7 @@ export class DotNetSdkUpdater {
     const release = releasesForSdk[0];
 
     const result = {
+      releaseDate: new Date(release['release-date']),
       releaseNotes: release['release-notes'],
       runtimeVersion: release.runtime.version,
       sdkVersion: foundSdk.version,
@@ -433,6 +478,7 @@ interface PullRequest {
 }
 
 interface ReleaseInfo {
+  releaseDate: Date;
   releaseNotes: string;
   runtimeVersion: string;
   sdkVersion: string;

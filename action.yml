@@ -20,6 +20,10 @@ inputs:
     description: 'The optional Git commit message to use.'
     required: false
     default: ''
+  generate-step-summary:
+    description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
+    required: false
+    default: true
   global-json-file:
     description: 'The optional path to the global.json file to update.'
     required: false
