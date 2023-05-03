@@ -94,7 +94,7 @@ export class DotNetSdkUpdater {
     return messageLines.join('\n');
   }
 
-  public static generatePullRequestBody(update: SdkVersions, options: UpdateOptions): string {
+  public static generatePullRequestBody(update: SdkVersions, options: UpdateOptions, isGitHubEnterprise: boolean): string {
     let body = `Updates the .NET SDK to version \`${update.latest.sdkVersion}\`, `;
 
     if (update.latest.runtimeVersion === update.current.runtimeVersion) {
@@ -106,7 +106,7 @@ export class DotNetSdkUpdater {
     if (update.security && update.securityIssues.length > 0) {
       body += `\n\nThis release includes fixes for the following security issue(s):`;
       for (const issue of update.securityIssues) {
-        body += `\n  * [${issue.id}](${issue.url})`;
+        body += `\n- ${isGitHubEnterprise ? `[${issue.id}](${issue.url})` : issue.id}`;
       }
     }
 
@@ -218,7 +218,8 @@ export class DotNetSdkUpdater {
 
   private async createPullRequest(base: string, update: SdkVersions): Promise<PullRequest> {
     const title = `Update .NET SDK to ${update.latest.sdkVersion}`;
-    const body = DotNetSdkUpdater.generatePullRequestBody(update, this.options);
+    const isGitHubEnterprise = this.options.serverUrl !== 'https://github.com';
+    const body = DotNetSdkUpdater.generatePullRequestBody(update, this.options, isGitHubEnterprise);
 
     const options = {
       baseUrl: this.options.apiUrl,

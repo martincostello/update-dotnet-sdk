@@ -183,7 +183,10 @@ describe('DotNetSdkUpdater tests', () => {
     expect(actual).toContain(`update-type: version-update:semver-${expected}`);
   });
 
-  test('Sorts the CVEs in the pull request description', () => {
+  test.each([
+    [false, '\n- CVE-2022-41089\n- CVE-2023-21808'],
+    [true, '\n- [CVE-2022-41089](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089)\n- [CVE-2023-21808](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808)']
+  ])('Sorts the CVEs in the pull request description', (isGitHubEnterprise, expected) => {
     const channel = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
     const versions = updater.DotNetSdkUpdater.getLatestRelease('7.0.100', channel);
     const options: UpdateOptions = {
@@ -198,8 +201,8 @@ describe('DotNetSdkUpdater tests', () => {
       userEmail: '',
       userName: '',
     };
-    const actual = updater.DotNetSdkUpdater.generatePullRequestBody(versions, options);
-    expect(actual).toContain('\n  * [CVE-2022-41089](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089)\n  * [CVE-2023-21808](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808)');
+    const actual = updater.DotNetSdkUpdater.generatePullRequestBody(versions, options, isGitHubEnterprise);
+    expect(actual).toContain(expected);
   });
 
   test.each([
