@@ -144,13 +144,11 @@ export class DotNetSdkUpdater {
 
     const result = summary.stringify();
 
-    try {
+    if (process.env['GITHUB_STEP_SUMMARY']) {
       await summary.write();
-    } catch (err) {
-      // Swallow errors attempting to write to GITHUB_STEP_SUMMARY
-    } finally {
-      summary.emptyBuffer();
     }
+
+    summary.emptyBuffer();
 
     return result;
   }
