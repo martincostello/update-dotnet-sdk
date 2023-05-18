@@ -61,7 +61,9 @@ export class DotNetSdkUpdater {
       }
     }
 
-    result.securityIssues.sort((a, b) => a.id.localeCompare(b.id));
+    result.securityIssues = result.securityIssues
+      .filter((p) => !current.securityIssues.some((q) => q.id === p.id))
+      .sort((a, b) => a.id.localeCompare(b.id));
 
     return result;
   }
