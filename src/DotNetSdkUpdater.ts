@@ -61,6 +61,10 @@ export class DotNetSdkUpdater {
       }
     }
 
+    if (current.securityIssues.length > 0) {
+      result.securityIssues = result.securityIssues.filter((p) => !current.securityIssues.some((q) => q.id === p.id));
+    }
+
     result.securityIssues.sort((a, b) => a.id.localeCompare(b.id));
 
     return result;

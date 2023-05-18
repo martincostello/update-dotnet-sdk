@@ -65,9 +65,7 @@ describe('DotNetSdkUpdater tests', () => {
 
     expect(actual.security).toBe(true);
     expect(actual.securityIssues).not.toBeNull();
-    expect(actual.securityIssues.length).toBe(2);
-    expect(actual.securityIssues[0].id).toBe('CVE-2021-1721');
-    expect(actual.securityIssues[1].id).toBe('CVE-2021-24112');
+    expect(actual.securityIssues.length).toBe(0);
   }, 10000);
 
   test('Gets correct info if a newer SDK is not available', async () => {
@@ -118,7 +116,7 @@ describe('DotNetSdkUpdater tests', () => {
     expect(actual.securityIssues.length).not.toBe(0);
   }, 10000);
 
-  test('Gets correct info if a newer SDK is available that skips releases', async () => {
+  test('Gets correct info if a newer SDK is available that skips releases when latest is not a security release', async () => {
     const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
@@ -142,6 +140,57 @@ describe('DotNetSdkUpdater tests', () => {
     expect(actual.securityIssues.length).toBe(2);
     expect(actual.securityIssues[0].id).toBe('CVE-2022-41089');
     expect(actual.securityIssues[1].id).toBe('CVE-2023-21808');
+  }, 10000);
+
+  test('Gets correct info if a newer SDK is available that skips releases when latest is a security release', async () => {
+    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), {encoding: 'utf8'}));
+
+    const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
+
+    expect(actual).not.toBeNull();
+    expect(actual.current).not.toBeNull();
+    expect(actual.latest).not.toBeNull();
+
+    expect(actual.current.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md');
+    expect(actual.current.runtimeVersion).toBe('7.0.0');
+    expect(actual.current.sdkVersion).toBe('7.0.100');
+    expect(actual.current.security).toBe(false);
+
+    expect(actual.latest.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md');
+    expect(actual.latest.runtimeVersion).toBe('7.0.5');
+    expect(actual.latest.sdkVersion).toBe('7.0.302');
+    expect(actual.latest.security).toBe(true);
+
+    expect(actual.security).toBe(true);
+    expect(actual.securityIssues).not.toBeNull();
+    expect(actual.securityIssues.length).toBe(3);
+    expect(actual.securityIssues[0].id).toBe('CVE-2022-41089');
+    expect(actual.securityIssues[1].id).toBe('CVE-2023-21808');
+    expect(actual.securityIssues[2].id).toBe('CVE-2023-28260');
+  }, 10000);
+
+  test('Gets correct info if a newer SDK is available for the same runtime version', async () => {
+    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), {encoding: 'utf8'}));
+
+    const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.203', releaseInfo);
+
+    expect(actual).not.toBeNull();
+    expect(actual.current).not.toBeNull();
+    expect(actual.latest).not.toBeNull();
+
+    expect(actual.current.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md');
+    expect(actual.current.runtimeVersion).toBe('7.0.5');
+    expect(actual.current.sdkVersion).toBe('7.0.203');
+    expect(actual.current.security).toBe(true);
+
+    expect(actual.latest.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md');
+    expect(actual.latest.runtimeVersion).toBe('7.0.5');
+    expect(actual.latest.sdkVersion).toBe('7.0.302');
+    expect(actual.latest.security).toBe(true);
+
+    expect(actual.security).toBe(true);
+    expect(actual.securityIssues).not.toBeNull();
+    expect(actual.securityIssues.length).toBe(0);
   }, 10000);
 
   test('Gets correct info between preview releases', async () => {
