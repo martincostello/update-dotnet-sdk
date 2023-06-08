@@ -255,20 +255,29 @@ describe('DotNetSdkUpdater tests', () => {
   });
 
   test.each([
-    ['3.1', '3.1.403', '2023-05-02', '3.1.404', '903 days'],
-    ['5.0', '5.0.102', '2023-05-02', '5.0.200', '791 days'],
-    ['6.0', '6.0.407', '2023-05-02', '6.0.408', '21 days'],
-    ['7.0', '7.0.201', '2023-03-14', '7.0.202', '0 days'],
-    ['7.0', '7.0.201', '2023-03-15', '7.0.202', '1 day'],
-    ['7.0', '7.0.201', '2023-03-16', '7.0.202', '2 days'],
-    ['7.0', '7.0.201', '2023-05-02', '7.0.202', '49 days'],
-    ['8.0', '8.0.100-preview.2.23157.25', '2023-05-02', '8.0.100-preview.3.23178.7', '21 days']
-  ])('Generates correct GitHub step summary for %s from %s on %s', async (channelVersion, sdkVersion, date, expectedSdkVersion, expectedDaysAgo) => {
+    ['3.1', '3.1.403', '2023-05-02', '3.1.404', '903 days', []],
+    ['5.0', '5.0.102', '2023-05-02', '5.0.200', '791 days', ['CVE-2021-1721', 'CVE-2021-24112']],
+    ['6.0', '6.0.407', '2023-05-02', '6.0.408', '21 days', ['CVE-2023-28260']],
+    ['7.0', '7.0.201', '2023-03-14', '7.0.202', '0 days', []],
+    ['7.0', '7.0.201', '2023-03-15', '7.0.202', '1 day', []],
+    ['7.0', '7.0.201', '2023-03-16', '7.0.202', '2 days', []],
+    ['7.0', '7.0.201', '2023-05-02', '7.0.202', '49 days', []],
+    ['7.0.302', '7.0.203', '2023-05-02', '7.0.302', '21 days', []],
+    ['8.0', '8.0.100-preview.2.23157.25', '2023-05-02', '8.0.100-preview.3.23178.7', '21 days', []]
+  ])('Generates correct GitHub step summary for %s from %s on %s', async (channelVersion, sdkVersion, date, expectedSdkVersion, expectedDaysAgo, expectedSecurityIssues) => {
     const today = new Date(date);
     const channel = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', `releases-${channelVersion}.json`), {encoding: 'utf8'}));
     const versions = updater.DotNetSdkUpdater.getLatestRelease(sdkVersion, channel);
     const actual = await updater.DotNetSdkUpdater.generateSummary(versions, today);
     expect(actual).toContain(`<h1>.NET SDK ${expectedSdkVersion}</h1>`);
     expect(actual).toContain(`(${expectedDaysAgo} ago)`);
+    if (expectedSecurityIssues.length > 0) {
+      expect(actual).toContain('Security Issues');
+      for (const issue in expectedSecurityIssues) {
+        expect(actual).toContain(issue);
+      }
+    } else {
+      expect(actual).not.toContain('Security Issues');
+    }
   });
 });
