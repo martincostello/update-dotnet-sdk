@@ -134,7 +134,7 @@ export class DotNetSdkUpdater {
       .addBreak()
       .addLink(`Release notes`, update.latest.releaseNotes);
 
-    if (update.security) {
+    if (update.security && update.securityIssues.length > 0) {
       summary = summary
         .addHeading('Security Issues', 2)
         .addRaw('This update includes fixes for the following security issues:')
