@@ -155,7 +155,7 @@ jobs:
     # and that pushes as that user trigger any CI workflows that may trigger
     # on push, such as if any NuGet packages are updated after the PR is opened.
     - name: Checkout code
-      uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       with:
         token: ${{ steps.assign-token.outputs.access-token }}
 
