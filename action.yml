@@ -45,6 +45,8 @@ inputs:
     required: false
     default: false
 outputs:
+  branch-name:
+    description: 'The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated.'
   pull-request-number:
     description: 'The number of the Pull Request created by the action if the .NET SDK is updated.'
   pull-request-html-url:

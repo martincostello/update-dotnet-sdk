@@ -184,6 +184,7 @@ export class DotNetSdkUpdater {
     const update = DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
 
     const result: UpdateResult = {
+      branchName: '',
       pullRequestNumber: 0,
       pullRequestUrl: '',
       updated: false,
@@ -202,6 +203,7 @@ export class DotNetSdkUpdater {
 
       if (baseBranch) {
         const pullRequest = await this.createPullRequest(baseBranch, update);
+        result.branchName = pullRequest.branch;
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
 
@@ -249,6 +251,7 @@ export class DotNetSdkUpdater {
     if (this.options.dryRun) {
       core.info(`Skipped creating GitHub Pull Request for branch ${this.options.branch} to ${base}`);
       return {
+        branch: '',
         number: 0,
         url: '',
       };
@@ -262,6 +265,7 @@ export class DotNetSdkUpdater {
     core.info(`View the pull request at ${response.data.html_url}`);
 
     const result = {
+      branch: response.data.head.ref,
       number: response.data.number,
       url: response.data.html_url,
     };
@@ -476,6 +480,7 @@ interface CveInfo {
 }
 
 interface PullRequest {
+  branch: string;
   number: number;
   url: string;
 }
