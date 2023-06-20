@@ -43,6 +43,7 @@ export async function run(): Promise<void> {
     const updater = new DotNetSdkUpdater(options);
     const result = await updater.tryUpdateSdk();
 
+    core.setOutput('branch-name', result.branchName);
     core.setOutput('pull-request-number', result.pullRequestNumber);
     core.setOutput('pull-request-html-url', result.pullRequestUrl);
     core.setOutput('sdk-updated', result.updated);

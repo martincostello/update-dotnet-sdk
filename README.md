@@ -200,6 +200,7 @@ jobs:
 
 | **Name** | **Description** |
 |:--|:--|
+| `branch-name` | The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-request-number` | The number of the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-request-html-url` | The HTML URL of the Pull Request created by the action if the .NET SDK is updated. |
 | `sdk-updated` | Whether the .NET SDK was updated by the action. |

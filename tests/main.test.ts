@@ -68,7 +68,10 @@ describe('update-dotnet-sdk tests', () => {
             Promise.resolve({
               data: {
                 number: '42',
-                html_url: 'https://github.local/martincostello/update-dotnet-sdk/pull/42'
+                html_url: 'https://github.local/martincostello/update-dotnet-sdk/pull/42',
+                head: {
+                  ref: 'update-dotnet-sdk-3.1.201'
+                }
               }
             })
         }
@@ -80,6 +83,7 @@ describe('update-dotnet-sdk tests', () => {
     expect(core.error).toHaveBeenCalledTimes(0);
     expect(core.setFailed).toHaveBeenCalledTimes(0);
 
+    assertOutputValue('branch-name', 'update-dotnet-sdk-3.1.201');
     assertOutputValue('pull-request-html-url', 'https://github.local/martincostello/update-dotnet-sdk/pull/42');
     assertOutputValue('pull-request-number', '42');
     assertOutputValue('sdk-updated', 'true');
