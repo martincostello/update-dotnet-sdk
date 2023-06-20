@@ -64,6 +64,9 @@ on:
         type: string
         default: 'ubuntu-latest'
     outputs:
+      branch-name:
+        description: 'The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.branch-name }}
       pull-request-html-url:
         description: 'The HTML URL of the Pull Request created by the action if the .NET SDK is updated.'
         value: ${{ jobs.update-dotnet-sdk.outputs.pull-request-html-url }}
@@ -103,6 +106,7 @@ jobs:
     if: ${{ github.event.repository.fork == false }}
 
     outputs:
+      branch-name: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
       pull-request-html-url: ${{ steps.update-dotnet-sdk.outputs.pull-request-html-url }}
       pull-request-number: ${{ steps.update-dotnet-sdk.outputs.pull-request-number }}
       sdk-updated: ${{ steps.update-dotnet-sdk.outputs.sdk-updated }}
@@ -163,7 +167,7 @@ jobs:
     # for the same release channel as the SDK specified in global.json.
     - name: Update .NET SDK
       id: update-dotnet-sdk
-      uses: martincostello/update-dotnet-sdk@db0108271a0992bee4136ed9062c3e66555d00b0 # v2.2.2
+      uses: martincostello/update-dotnet-sdk@23961e295d59e98a067a7a080beff48e2cb829a4 # v2.2.3
       with:
         branch-name: ${{ inputs.branch-name }}
         channel: ${{ inputs.channel }}
