@@ -2,7 +2,7 @@
 
 [![Build status](https://github.com/martincostello/update-dotnet-sdk/workflows/build/badge.svg?branch=main&event=push)](https://github.com/martincostello/update-dotnet-sdk/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 [![codecov](https://codecov.io/gh/martincostello/update-dotnet-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/martincostello/update-dotnet-sdk)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/martincostello/update-dotnet-sdk/badge)](https://api.securityscorecards.dev/projects/github.com/martincostello/update-dotnet-sdk)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/martincostello/update-dotnet-sdk/badge)](https://securityscorecards.dev/viewer/?uri=github.com/martincostello/update-dotnet-sdk)
 
 This action updates the .NET SDK version specified by a `global.json` file stored in a GitHub repository.
 
