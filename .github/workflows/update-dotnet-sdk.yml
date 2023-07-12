@@ -43,6 +43,11 @@ on:
         required: false
         type: string
         default: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json'
+      exclude-nuget-packages:
+        description: 'A comma-separated list of NuGet package IDs (or substrings) to not update if update-nuget-packages is true.'
+        required: false
+        type: string
+        default: ''
       user-email:
         description: 'The optional email address to use for the Git commit.'
         required: false
@@ -206,6 +211,21 @@ jobs:
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
 
+        $eligiblePackages = "${{ inputs.include-nuget-packages }}".Split(',')
+        $ineligiblePackages = "${{ inputs.exclude-nuget-packages }}".Split(',')
+
+        $additionalArguments = @()
+
+        foreach ($package in $eligiblePackages) {
+          $additionalArguments += "--include"
+          $additionalArguments += $package
+        }
+
+        foreach ($package in $ineligiblePackages) {
+          $additionalArguments += "--exclude"
+          $additionalArguments += $package
+        }
+
         Write-Host "Checking for .NET NuGet package(s) to update..."
 
         # The --version-lock Major option is used to only update packages
@@ -213,19 +233,11 @@ jobs:
         # The --include flags are used to only update Microsoft-published
         # NuGet packages that are typically published with a new patch
         # release of .NET that accompanies a new .NET SDK release.
-        $eligiblePackages = "${{ inputs.include-nuget-packages }}".Split(',')
-        $includePackages = @()
-
-        foreach ($package in $eligiblePackages) {
-          $includePackages += "--include"
-          $includePackages += $package
-        }
-
         dotnet outdated `
           --upgrade `
           --version-lock Major `
           --output $updatesPath `
-          $includePackages
+          $additionalArguments
 
         $dependencies = @()
 
