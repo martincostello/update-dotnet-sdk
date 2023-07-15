@@ -330,16 +330,19 @@ export class DotNetSdkUpdater {
     return commandOutput.trimEnd();
   }
 
-  private async getDotNetReleaseChannel(channel: string): Promise<ReleaseChannel> {
-    const httpClient = new HttpClient('martincostello/update-dotnet-sdk', [], {
+  private static createHttpClient(): HttpClient {
+    return new HttpClient('martincostello/update-dotnet-sdk', [], {
       allowRetries: true,
       maxRetries: 3,
     });
+  }
 
+  private async getDotNetReleaseChannel(channel: string): Promise<ReleaseChannel> {
     const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${channel}/releases.json`;
 
     core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}...`);
 
+    const httpClient = DotNetSdkUpdater.createHttpClient();
     const response = await httpClient.getJson<ReleaseChannel>(releasesUrl);
 
     if (response.statusCode >= 400) {
