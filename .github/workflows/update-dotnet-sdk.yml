@@ -216,14 +216,18 @@ jobs:
 
         $additionalArguments = @()
 
-        foreach ($package in $eligiblePackages) {
-          $additionalArguments += "--include"
-          $additionalArguments += $package
+        if (-Not [string]::IsNullOrEmpty($eligiblePackages)) {
+          foreach ($package in $eligiblePackages) {
+            $additionalArguments += "--include"
+            $additionalArguments += $package
+          }
         }
 
-        foreach ($package in $ineligiblePackages) {
-          $additionalArguments += "--exclude"
-          $additionalArguments += $package
+        if (-Not [string]::IsNullOrEmpty($ineligiblePackages)) {
+          foreach ($package in $ineligiblePackages) {
+            $additionalArguments += "--exclude"
+            $additionalArguments += $package
+          }
         }
 
         Write-Host "Checking for .NET NuGet package(s) to update..."
