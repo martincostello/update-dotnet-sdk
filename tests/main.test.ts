@@ -83,13 +83,13 @@ describe('update-dotnet-sdk tests', () => {
     expect(core.error).toHaveBeenCalledTimes(0);
     expect(core.setFailed).toHaveBeenCalledTimes(0);
 
-    assertOutputValue('branch-name', 'update-dotnet-sdk-3.1.201');
-    assertOutputValue('pull-request-html-url', 'https://github.local/martincostello/update-dotnet-sdk/pull/42');
-    assertOutputValue('pull-request-number', '42');
-    assertOutputValue('sdk-updated', 'true');
-    assertOutputValue('security', 'true');
+    await assertOutputValue('branch-name', 'update-dotnet-sdk-3.1.201');
+    await assertOutputValue('pull-request-html-url', 'https://github.local/martincostello/update-dotnet-sdk/pull/42');
+    await assertOutputValue('pull-request-number', '42');
+    await assertOutputValue('sdk-updated', 'true');
+    await assertOutputValue('security', 'true');
 
-    const globalJson = JSON.parse(fs.readFileSync(globalJsonPath, {encoding: 'utf8'}));
+    const globalJson = JSON.parse(await fs.promises.readFile(globalJsonPath, {encoding: 'utf8'}));
 
     const actualVersion: string = globalJson.sdk.version;
 
@@ -97,10 +97,10 @@ describe('update-dotnet-sdk tests', () => {
   }, 30000);
 });
 
-function assertOutputValue(name: string, value: string): void {
+async function assertOutputValue(name: string, value: string): Promise<void> {
   const outputPath = process.env['GITHUB_OUTPUT'];
   if (outputPath) {
-    const buffer = fs.readFileSync(outputPath);
+    const buffer = await fs.promises.readFile(outputPath);
     const content = buffer.toString();
     expect(content).toContain(`${name}<<`);
     expect(content).toContain(`${os.EOL}${value}${os.EOL}`);
@@ -115,8 +115,8 @@ async function createTestGitRepo(path: string, data: string): Promise<void> {
     await io.mkdirP(tempDir);
   }
 
-  fs.appendFileSync(path, data);
-  fs.writeFileSync(path, data);
+  await fs.promises.appendFile(path, data);
+  await fs.promises.writeFile(path, data);
 
   const options = {
     cwd: tempDir,

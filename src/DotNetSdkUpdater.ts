@@ -158,7 +158,7 @@ export class DotNetSdkUpdater {
   }
 
   public async tryUpdateSdk(): Promise<UpdateResult> {
-    const globalJson: GlobalJson = JSON.parse(fs.readFileSync(this.options.globalJsonPath, { encoding: 'utf8' }));
+    const globalJson: GlobalJson = JSON.parse(await fs.promises.readFile(this.options.globalJsonPath, { encoding: 'utf8' }));
 
     let sdkVersion = '';
 
@@ -416,7 +416,7 @@ export class DotNetSdkUpdater {
     globalJson.sdk.version = versions.latest.sdkVersion;
     const json = JSON.stringify(globalJson, null, 2) + os.EOL;
 
-    fs.writeFileSync(this.options.globalJsonPath, json, { encoding: 'utf8' });
+    await fs.promises.writeFile(this.options.globalJsonPath, json, { encoding: 'utf8' });
     core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}`);
 
     // Configure Git
