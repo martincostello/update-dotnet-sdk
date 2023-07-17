@@ -11,7 +11,7 @@ import {UpdateOptions} from '../src/UpdateOptions';
 
 describe('DotNetSdkUpdater tests', () => {
   test('Gets correct info if a newer SDK is available for the same MSBuild version', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-3.1.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-3.1.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('3.1.100', releaseInfo);
 
@@ -37,7 +37,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info if a newer SDK is available for a different MSBuild version', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-5.0.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-5.0.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('5.0.103', releaseInfo);
 
@@ -69,7 +69,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info if a newer SDK is not available', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-3.1.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-3.1.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('3.1.404', releaseInfo);
 
@@ -93,7 +93,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info if a newer SDK is not available', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-6.0.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-6.0.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('6.0.100', releaseInfo);
 
@@ -117,7 +117,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info if a newer SDK is available that skips releases when latest is not a security release', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
 
@@ -143,7 +143,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info if a newer SDK is available that skips releases when latest is a security release', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
 
@@ -170,7 +170,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info if a newer SDK is available for the same runtime version', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.203', releaseInfo);
 
@@ -194,7 +194,7 @@ describe('DotNetSdkUpdater tests', () => {
   }, 10000);
 
   test('Gets correct info between preview releases', async () => {
-    const releaseInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-8.0.json'), {encoding: 'utf8'}));
+    const releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-8.0.json'), {encoding: 'utf8'}));
 
     const actual = await updater.DotNetSdkUpdater.getLatestRelease('8.0.100-preview.1.23115.2', releaseInfo);
 
@@ -235,8 +235,8 @@ describe('DotNetSdkUpdater tests', () => {
   test.each([
     [false, '\n- CVE-2022-41089\n- CVE-2023-21808'],
     [true, '\n- [CVE-2022-41089](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089)\n- [CVE-2023-21808](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808)']
-  ])('Sorts the CVEs in the pull request description', (isGitHubEnterprise, expected) => {
-    const channel = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
+  ])('Sorts the CVEs in the pull request description', async (isGitHubEnterprise, expected) => {
+    const channel = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.json'), {encoding: 'utf8'}));
     const versions = updater.DotNetSdkUpdater.getLatestRelease('7.0.100', channel);
     const options: UpdateOptions = {
       accessToken: '',
@@ -266,7 +266,7 @@ describe('DotNetSdkUpdater tests', () => {
     ['8.0', '8.0.100-preview.2.23157.25', '2023-05-02', '8.0.100-preview.3.23178.7', '21 days', []]
   ])('Generates correct GitHub step summary for %s from %s on %s', async (channelVersion, sdkVersion, date, expectedSdkVersion, expectedDaysAgo, expectedSecurityIssues) => {
     const today = new Date(date);
-    const channel = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests', `releases-${channelVersion}.json`), {encoding: 'utf8'}));
+    const channel = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', `releases-${channelVersion}.json`), {encoding: 'utf8'}));
     const versions = updater.DotNetSdkUpdater.getLatestRelease(sdkVersion, channel);
     const actual = await updater.DotNetSdkUpdater.generateSummary(versions, today);
     expect(actual).toContain(`<h1>.NET SDK ${expectedSdkVersion}</h1>`);
