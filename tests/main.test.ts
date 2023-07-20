@@ -2,106 +2,50 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as core from '@actions/core';
-import * as io from '@actions/io';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { assertOutputValue, createGitRepo, execGit } from './TestHelpers';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { assertOutputValue } from './TestHelpers';
 import { run } from '../src/main';
+import { ActionFixture } from './ActionFixture';
 
-const github = require('@actions/github');
-
-describe('update-dotnet-sdk tests', () => {
-  let tempDir: string;
-  let globalJsonPath: string;
-  let githubStepSummary: string;
-  let inputs: any;
+describe.each([
+  ['3.1.201', '', '3.1', 'Update .NET SDK'],
+  ['3.1.201', 'chore:', '3.1', 'chore: Update .NET SDK'],
+  ['6.0.100', '', '6.0', 'Update .NET SDK'],
+  ['7.0.100', '', '7.0', 'Update .NET SDK'],
+])('update-dotnet-sdk tests', (
+  sdkVersion: string,
+  commitMessagePrefix: string,
+  expectedChannel: string,
+  expectedCommitMessage: string) => {
+  let fixture: ActionFixture;
 
   beforeEach(async () => {
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-    jest.spyOn(core, 'error').mockImplementation(() => {});
-    jest.spyOn(core, 'setFailed').mockImplementation(() => {});
-
-    tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'update-dotnet-sdk-'));
-    globalJsonPath = path.join(tempDir, 'global.json');
-    githubStepSummary = path.join(tempDir, 'github-step-summary.md');
-
-    inputs = {
-      'GITHUB_API_URL': 'https://github.local/api/v3',
-      'GITHUB_REPOSITORY': '',
-      'GITHUB_SERVER_URL': 'https://github.local',
-      'GITHUB_STEP_SUMMARY': githubStepSummary,
-      'INPUT_COMMIT-MESSAGE-PREFIX': 'chore: ',
-      'INPUT_GLOBAL-JSON-FILE': globalJsonPath,
-      'INPUT_LABELS': 'foo,bar',
-      'INPUT_REPO-TOKEN': 'my-token',
-      'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
-      'INPUT_USER-NAME': 'github-actions[bot]'
-    };
-
-    for (const key in inputs) {
-      process.env[key] = inputs[key as keyof typeof inputs];
-    }
+    fixture = new ActionFixture(sdkVersion);
+    fixture.commitMessagePrefix = commitMessagePrefix;
+    await fixture.initialize();
   });
 
   afterEach(async () => {
-    try {
-      await io.rmRF(tempDir);
-    } catch {
-      console.log(`Failed to remove test directory '${tempDir}'.`);
-    }
+    await fixture.destroy();
   }, 5000);
 
-  test('Updates the .NET SDK in global.json if a new version is available', async () => {
-    const sdkVersion = '3.1.201';
-    const jsonContents = `{
-      "sdk": {
-        "version": "${sdkVersion}"
-      }
-    }`;
-
-    await createGitRepo(globalJsonPath, jsonContents);
-
-    github.getOctokit = jest.fn().mockReturnValue({
-      rest: {
-        issues: {
-          addLabels: () => Promise.resolve({})
-        },
-        pulls: {
-          create: () =>
-            Promise.resolve({
-              data: {
-                number: '42',
-                html_url: 'https://github.local/martincostello/update-dotnet-sdk/pull/42',
-                head: {
-                  ref: 'update-dotnet-sdk-3.1.201'
-                }
-              }
-            })
-        }
-      }
-    });
-
+  test(`Updates the .NET ${sdkVersion} SDK in global.json if a new version is available`, async () => {
     await run();
 
     expect(core.error).toHaveBeenCalledTimes(0);
     expect(core.setFailed).toHaveBeenCalledTimes(0);
 
-    await assertOutputValue('branch-name', 'update-dotnet-sdk-3.1.201');
-    await assertOutputValue('pull-request-html-url', 'https://github.local/martincostello/update-dotnet-sdk/pull/42');
-    await assertOutputValue('pull-request-number', '42');
+    await assertOutputValue('branch-name', `update-dotnet-sdk-${sdkVersion}`);
+    await assertOutputValue('pull-request-html-url', `https://github.local/${fixture.repo}/pull/${fixture.pullNumber}`);
+    await assertOutputValue('pull-request-number', fixture.pullNumber);
     await assertOutputValue('sdk-updated', 'true');
     await assertOutputValue('security', 'true');
 
-    const globalJson = JSON.parse(await fs.promises.readFile(globalJsonPath, {encoding: 'utf8'}));
+    const actualSdkVersion = await fixture.sdkVersion();
+    expect(actualSdkVersion.startsWith(`${expectedChannel}.`)).toBe(true);
+    expect(actualSdkVersion).not.toBe(sdkVersion);
 
-    const actualVersion: string = globalJson.sdk.version;
-
-    expect(actualVersion).not.toBe(sdkVersion);
-
-    const commitMessage = await execGit(['log', '-1', '--pretty=%B'], tempDir);
-
-    expect(commitMessage.startsWith(`chore: Update .NET SDK`)).toBe(true);
+    const actualCommitMessage = await fixture.commitMessage();
+    expect(actualCommitMessage.startsWith(expectedCommitMessage)).toBe(true);
   }, 30000);
 });
