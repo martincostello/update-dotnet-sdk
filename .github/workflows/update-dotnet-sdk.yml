@@ -157,7 +157,7 @@ jobs:
       id: assign-token
       shell: pwsh
       run: |
-        if (![string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
+        if (-Not [string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
             "access-token=${{ secrets.repo-token }}" >> $env:GITHUB_OUTPUT
         } else {
             "access-token=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_OUTPUT
@@ -284,6 +284,10 @@ jobs:
             foreach ($dependency in $dependencies) {
               $commitMessageLines += "Bumps $($dependency.Name) from $($dependency.ResolvedVersion) to $($dependency.LatestVersion)."
             }
+          }
+
+          if (-Not [string]::IsNullOrEmpty("${{ inputs.commit-message-prefix }}")) {
+            $commitMessageLines[0] = "${{ inputs.commit-message-prefix }} $($commitMessageLines[0])"
           }
 
           $commitMessageLines += ""
