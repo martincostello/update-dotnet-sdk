@@ -3,22 +3,7 @@
 
 import * as exec from '@actions/exec';
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
-import { expect } from '@jest/globals';
-
-export async function assertOutputValue(name: string, value: string): Promise<void> {
-  const outputPath = process.env['GITHUB_OUTPUT'];
-  if (outputPath) {
-    const buffer = await fs.promises.readFile(outputPath);
-    const content = buffer.toString();
-    expect(content).toContain(`${name}<<`);
-    expect(content).toContain(`${os.EOL}${value}${os.EOL}`);
-  } else {
-    const expected = `::set-output name=${name}::${value}${os.EOL}`
-    expect(process.stdout.write).toHaveBeenCalledWith(expected);
-  }
-}
 
 export async function createGitRepo(globalJsonPath: string, data: string): Promise<void> {
   await fs.promises.writeFile(globalJsonPath, data);

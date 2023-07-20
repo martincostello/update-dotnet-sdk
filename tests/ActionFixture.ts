@@ -8,6 +8,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { jest } from '@jest/globals';
 import { createGitRepo, execGit } from './TestHelpers';
+import { run } from '../src/main';
 
 const github = require('@actions/github');
 
@@ -18,6 +19,8 @@ export class ActionFixture {
   private tempDir: string = '';
   private globalJsonPath: string = '';
   private githubStepSummary: string = '';
+  private outputPath: string = '';
+  private outputs: Record<string, string> = {};
 
   constructor(
     private initialSdkVersion: string,
@@ -36,7 +39,9 @@ export class ActionFixture {
     this.tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'update-dotnet-sdk-'));
     this.globalJsonPath = path.join(this.tempDir, 'global.json');
     this.githubStepSummary = path.join(this.tempDir, 'github-step-summary.md');
+    this.outputPath = path.join(this.tempDir, 'github-outputs');
 
+    await fs.promises.writeFile(this.outputPath, '');
     await createGitRepo(this.globalJsonPath, `{
       "sdk": {
         "version": "${this.initialSdkVersion}"
@@ -47,12 +52,30 @@ export class ActionFixture {
     this.setupPullRequest();
   }
 
+  async run(): Promise<void> {
+    await run();
+
+    const buffer = await fs.promises.readFile(this.outputPath);
+    const content = buffer.toString();
+
+    const lines = content.split(os.EOL);
+    for (let index = 0; index < lines.length; index += 3) {
+      const key = lines[index].split('<<')[0];
+      const value = lines[index + 1];
+      this.outputs[key] = value;
+    }
+  }
+
   async destroy(): Promise<void> {
     try {
       await io.rmRF(this.tempDir);
     } catch {
       console.log(`Failed to remove fixture directory '${this.path}'.`);
     }
+  }
+
+  getOutput(name: string): string {
+    return this.outputs[name];
   }
 
   async commitMessage(): Promise<string> {
@@ -67,6 +90,7 @@ export class ActionFixture {
   private setupEnvironment(): void {
     const inputs = {
       'GITHUB_API_URL': 'https://github.local/api/v3',
+      'GITHUB_OUTPUT': this.outputPath,
       'GITHUB_REPOSITORY': '',
       'GITHUB_SERVER_URL': 'https://github.local',
       'GITHUB_STEP_SUMMARY': this.githubStepSummary,

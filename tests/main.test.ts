@@ -3,8 +3,6 @@
 
 import * as core from '@actions/core';
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
-import { assertOutputValue } from './TestHelpers';
-import { run } from '../src/main';
 import { ActionFixture } from './ActionFixture';
 
 describe('update-dotnet-sdk', () => {
@@ -29,24 +27,46 @@ describe('update-dotnet-sdk', () => {
       await fixture.destroy();
     }, 5000);
 
-    test('updates the .NET SDK version in global.json when a new version is available', async () => {
-      await run();
+    describe('running the action', () => {
+      beforeAll(async () => {
+        await fixture.run();
+      }, 30000);
 
-      expect(core.error).toHaveBeenCalledTimes(0);
-      expect(core.setFailed).toHaveBeenCalledTimes(0);
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
+      });
 
-      await assertOutputValue('branch-name', `update-dotnet-sdk-${sdkVersion}`);
-      await assertOutputValue('pull-request-html-url', `https://github.local/${fixture.repo}/pull/${fixture.pullNumber}`);
-      await assertOutputValue('pull-request-number', fixture.pullNumber);
-      await assertOutputValue('sdk-updated', 'true');
-      await assertOutputValue('security', 'true');
+      test('updates the SDK version in global.json', async () => {
+        const actualSdkVersion = await fixture.sdkVersion();
+        expect(actualSdkVersion.startsWith(`${expectedChannel}.`)).toBe(true);
+        expect(actualSdkVersion).not.toBe(sdkVersion);
+      });
 
-      const actualSdkVersion = await fixture.sdkVersion();
-      expect(actualSdkVersion.startsWith(`${expectedChannel}.`)).toBe(true);
-      expect(actualSdkVersion).not.toBe(sdkVersion);
+      test('generates the expected Git commit message', async () => {
+        const actualCommitMessage = await fixture.commitMessage();
+        expect(actualCommitMessage.startsWith(expectedCommitMessage)).toBe(true);
+      });
 
-      const actualCommitMessage = await fixture.commitMessage();
-      expect(actualCommitMessage.startsWith(expectedCommitMessage)).toBe(true);
-    }, 30000);
+      test('outputs the branch name', () => {
+        expect(fixture.getOutput('branch-name')).toBe(`update-dotnet-sdk-${sdkVersion}`);
+      });
+
+      test('outputs the pull request URL', () => {
+        expect(fixture.getOutput('pull-request-html-url')).toBe(`https://github.local/${fixture.repo}/pull/${fixture.pullNumber}`);
+      });
+
+      test('outputs the pull request number', () => {
+        expect(fixture.getOutput('pull-request-number')).toBe(fixture.pullNumber);
+      });
+
+      test('outputs that the SDK was updated', () => {
+        expect(fixture.getOutput('sdk-updated')).toBe('true');
+      });
+
+      test('outputs that update includes security fixes', () => {
+        expect(fixture.getOutput('security')).toBe('true');
+      });
+    });
   });
 });
