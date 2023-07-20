@@ -18,6 +18,11 @@ on:
         required: false
         type: string
         default: ''
+      commit-message-prefix:
+        description: 'The optional Git commit message prefix to use if commit-message is not specified.'
+        required: false
+        type: string
+        default: ''
       generate-step-summary:
         description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
         required: false
@@ -152,7 +157,7 @@ jobs:
       id: assign-token
       shell: pwsh
       run: |
-        if (![string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
+        if (-Not [string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
             "access-token=${{ secrets.repo-token }}" >> $env:GITHUB_OUTPUT
         } else {
             "access-token=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_OUTPUT
@@ -177,6 +182,7 @@ jobs:
         branch-name: ${{ inputs.branch-name }}
         channel: ${{ inputs.channel }}
         commit-message: ${{ inputs.commit-message }}
+        commit-message-prefix: ${{ inputs.commit-message-prefix }}
         dry-run: ${{ inputs.dry-run }}
         generate-step-summary: ${{ inputs.generate-step-summary }}
         global-json-file: ${{ inputs.global-json-file }}
@@ -278,6 +284,10 @@ jobs:
             foreach ($dependency in $dependencies) {
               $commitMessageLines += "Bumps $($dependency.Name) from $($dependency.ResolvedVersion) to $($dependency.LatestVersion)."
             }
+          }
+
+          if (-Not [string]::IsNullOrEmpty("${{ inputs.commit-message-prefix }}")) {
+            $commitMessageLines[0] = "${{ inputs.commit-message-prefix }} $($commitMessageLines[0])"
           }
 
           $commitMessageLines += ""

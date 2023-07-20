@@ -3,11 +3,10 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-
 import * as updater from '../src/DotNetSdkUpdater';
 
-import {describe, expect, test} from '@jest/globals';
-import {UpdateOptions} from '../src/UpdateOptions';
+import { describe, expect, test } from '@jest/globals';
+import { UpdateOptions } from '../src/UpdateOptions';
 
 describe('DotNetSdkUpdater tests', () => {
   test('Gets correct info if a newer SDK is available for the same MSBuild version', async () => {
@@ -243,6 +242,7 @@ describe('DotNetSdkUpdater tests', () => {
       branch: '',
       channel: '7.0',
       commitMessage: '',
+      commitMessagePrefix: '',
       dryRun: false,
       generateStepSummary: false,
       globalJsonPath: '',

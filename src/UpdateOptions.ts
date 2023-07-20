@@ -7,6 +7,7 @@ export interface UpdateOptions {
   branch: string;
   channel: string;
   commitMessage: string;
+  commitMessagePrefix: string;
   dryRun: boolean;
   generateStepSummary: boolean;
   globalJsonPath: string;

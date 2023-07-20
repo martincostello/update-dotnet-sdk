@@ -29,6 +29,7 @@ export async function run(): Promise<void> {
       branch: core.getInput('branch-name', { required: false }),
       channel: core.getInput('channel', { required: false }),
       commitMessage: core.getInput('commit-message', { required: false }),
+      commitMessagePrefix: core.getInput('commit-message-prefix', { required: false }),
       dryRun: core.getInput('dry-run', { required: false }) === 'true',
       generateStepSummary: core.getInput('generate-step-summary', { required: false }) === 'true',
       globalJsonPath,

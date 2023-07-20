@@ -20,6 +20,10 @@ inputs:
     description: 'The optional Git commit message to use.'
     required: false
     default: ''
+  commit-message-prefix:
+    description: 'The optional Git commit message prefix to use if commit-message is not specified.'
+    required: false
+    default: ''
   generate-step-summary:
     description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
     required: false
