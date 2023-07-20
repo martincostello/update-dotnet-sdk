@@ -2,61 +2,66 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as core from '@actions/core';
-import * as exec from '@actions/exec';
 import * as io from '@actions/io';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { assertOutputValue, createGitRepo, execGit } from './TestHelpers';
+import { run } from '../src/main';
 
 const github = require('@actions/github');
 
-import {run} from '../src/main';
-
-import {afterEach, beforeEach, describe, expect, jest, test} from '@jest/globals';
-
-const tempDir = path.join(os.tmpdir(), 'update-dotnet-sdk-temp');
-const globalJsonPath = path.join(tempDir, 'global.json');
-const githubStepSummary = path.join(tempDir, 'github-step-summary.md');
-
 describe('update-dotnet-sdk tests', () => {
-  const inputs = {
-    'GITHUB_API_URL': 'https://github.local/api/v3',
-    'GITHUB_REPOSITORY': '',
-    'GITHUB_SERVER_URL': 'https://github.local',
-    'GITHUB_STEP_SUMMARY': githubStepSummary,
-    'INPUT_GLOBAL-JSON-FILE': globalJsonPath,
-    'INPUT_LABELS': 'foo,bar',
-    'INPUT_REPO-TOKEN': 'my-token',
-    'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
-    'INPUT_USER-NAME': 'github-actions[bot]'
-  };
+  let tempDir: string;
+  let globalJsonPath: string;
+  let githubStepSummary: string;
+  let inputs: any;
 
   beforeEach(async () => {
-    for (const key in inputs) {
-      process.env[key] = inputs[key as keyof typeof inputs];
-    }
-
     jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
     jest.spyOn(core, 'error').mockImplementation(() => {});
     jest.spyOn(core, 'setFailed').mockImplementation(() => {});
-    await io.rmRF(tempDir);
+
+    tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'update-dotnet-sdk-'));
+    globalJsonPath = path.join(tempDir, 'global.json');
+    githubStepSummary = path.join(tempDir, 'github-step-summary.md');
+
+    inputs = {
+      'GITHUB_API_URL': 'https://github.local/api/v3',
+      'GITHUB_REPOSITORY': '',
+      'GITHUB_SERVER_URL': 'https://github.local',
+      'GITHUB_STEP_SUMMARY': githubStepSummary,
+      'INPUT_COMMIT-MESSAGE-PREFIX': 'chore: ',
+      'INPUT_GLOBAL-JSON-FILE': globalJsonPath,
+      'INPUT_LABELS': 'foo,bar',
+      'INPUT_REPO-TOKEN': 'my-token',
+      'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
+      'INPUT_USER-NAME': 'github-actions[bot]'
+    };
+
+    for (const key in inputs) {
+      process.env[key] = inputs[key as keyof typeof inputs];
+    }
   });
 
   afterEach(async () => {
     try {
-      await io.rmRF(globalJsonPath);
-      await io.rmRF(githubStepSummary);
       await io.rmRF(tempDir);
     } catch {
-      console.log('Failed to remove test directories');
+      console.log(`Failed to remove test directory '${tempDir}'.`);
     }
   }, 5000);
 
   test('Updates the .NET SDK in global.json if a new version is available', async () => {
     const sdkVersion = '3.1.201';
-    const jsonContents = `{${os.EOL}"sdk": {${os.EOL}"version": "${sdkVersion}"${os.EOL}}${os.EOL}}`;
+    const jsonContents = `{
+      "sdk": {
+        "version": "${sdkVersion}"
+      }
+    }`;
 
-    await createTestGitRepo(globalJsonPath, jsonContents);
+    await createGitRepo(globalJsonPath, jsonContents);
 
     github.getOctokit = jest.fn().mockReturnValue({
       rest: {
@@ -94,43 +99,9 @@ describe('update-dotnet-sdk tests', () => {
     const actualVersion: string = globalJson.sdk.version;
 
     expect(actualVersion).not.toBe(sdkVersion);
+
+    const commitMessage = await execGit(['log', '-1', '--pretty=%B'], tempDir);
+
+    expect(commitMessage.startsWith(`chore: Update .NET SDK`)).toBe(true);
   }, 30000);
 });
-
-async function assertOutputValue(name: string, value: string): Promise<void> {
-  const outputPath = process.env['GITHUB_OUTPUT'];
-  if (outputPath) {
-    const buffer = await fs.promises.readFile(outputPath);
-    const content = buffer.toString();
-    expect(content).toContain(`${name}<<`);
-    expect(content).toContain(`${os.EOL}${value}${os.EOL}`);
-  } else {
-    const expected = `::set-output name=${name}::${value}${os.EOL}`
-    expect(process.stdout.write).toHaveBeenCalledWith(expected);
-  }
-}
-
-async function createTestGitRepo(path: string, data: string): Promise<void> {
-  if (!fs.existsSync(tempDir)) {
-    await io.mkdirP(tempDir);
-  }
-
-  await fs.promises.appendFile(path, data);
-  await fs.promises.writeFile(path, data);
-
-  const options = {
-    cwd: tempDir,
-    ignoreReturnCode: true
-  };
-
-  let execGit = async (...args: string[]) => {
-    await exec.exec('git', args, options);
-  };
-
-  await execGit('init');
-  await execGit('config', 'core.safecrlf', 'false');
-  await execGit('config', 'user.email', 'test@test.local');
-  await execGit('config', 'user.name', 'test');
-  await execGit('add', '.');
-  await execGit('commit', '-m', 'Initial commit');
-}

@@ -424,8 +424,14 @@ export class DotNetSdkUpdater {
       this.options.branch = `update-dotnet-sdk-${versions.latest.sdkVersion}`.toLowerCase();
     }
 
-    if (!this.options.commitMessage) {
-      this.options.commitMessage = DotNetSdkUpdater.generateCommitMessage(versions.current.sdkVersion, versions.latest.sdkVersion);
+    let commitMessage = this.options.commitMessage;
+
+    if (!commitMessage) {
+      commitMessage = DotNetSdkUpdater.generateCommitMessage(versions.current.sdkVersion, versions.latest.sdkVersion);
+
+      if (this.options.commitMessagePrefix) {
+        commitMessage = `${this.options.commitMessagePrefix} ${commitMessage}`;
+      }
     }
 
     if (this.options.userName) {
@@ -444,7 +450,7 @@ export class DotNetSdkUpdater {
     }
 
     core.debug(`Branch: ${this.options.branch}`);
-    core.debug(`Commit message: ${this.options.commitMessage}`);
+    core.debug(`Commit message: ${commitMessage}`);
     core.debug(`User name: ${this.options.userName}`);
     core.debug(`User email: ${this.options.userEmail}`);
 
@@ -461,7 +467,7 @@ export class DotNetSdkUpdater {
     await this.execGit(['add', this.options.globalJsonPath]);
     core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
 
-    await this.execGit(['commit', '-m', this.options.commitMessage, '-s']);
+    await this.execGit(['commit', '-m', commitMessage, '-s']);
 
     const sha1 = await this.execGit(['log', "--format='%H'", '-n', '1']);
     const shortSha1 = sha1.replace(/'/g, '').substring(0, 7);
