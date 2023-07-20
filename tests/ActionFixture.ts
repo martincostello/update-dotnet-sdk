@@ -12,7 +12,6 @@ import { createGitRepo, execGit } from './TestHelpers';
 const github = require('@actions/github');
 
 export class ActionFixture {
-  public commitMessagePrefix: string = '';
   public pullNumber: string = '42';
   public repo: string = 'martincostello/update-dotnet-sdk';
 
@@ -20,7 +19,9 @@ export class ActionFixture {
   private globalJsonPath: string = '';
   private githubStepSummary: string = '';
 
-  constructor(private initialSdkVersion: string) {
+  constructor(
+    private initialSdkVersion: string,
+    private commitMessagePrefix: string) {
   }
 
   get path(): string {
