@@ -24,8 +24,8 @@ export class ActionFixture {
 
   constructor(
     private initialSdkVersion: string,
-    private commitMessagePrefix: string) {
-  }
+    private commitMessagePrefix: string
+  ) {}
 
   get path(): string {
     return this.tempDir;
@@ -42,11 +42,14 @@ export class ActionFixture {
     this.outputPath = path.join(this.tempDir, 'github-outputs');
 
     await fs.promises.writeFile(this.outputPath, '');
-    await createGitRepo(this.globalJsonPath, `{
+    await createGitRepo(
+      this.globalJsonPath,
+      `{
       "sdk": {
         "version": "${this.initialSdkVersion}"
       }
-    }`);
+    }`
+    );
 
     this.setupEnvironment();
     this.setupPullRequest();
@@ -82,8 +85,8 @@ export class ActionFixture {
     return await execGit(['log', '-1', '--pretty=%B'], this.tempDir);
   }
 
-  async sdkVersion():  Promise<string> {
-    const globalJson = JSON.parse(await fs.promises.readFile(this.globalJsonPath, {encoding: 'utf8'}));
+  async sdkVersion(): Promise<string> {
+    const globalJson = JSON.parse(await fs.promises.readFile(this.globalJsonPath, { encoding: 'utf8' }));
     return globalJson.sdk.version;
   }
 
@@ -99,7 +102,7 @@ export class ActionFixture {
       'INPUT_LABELS': 'foo,bar',
       'INPUT_REPO-TOKEN': 'my-token',
       'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
-      'INPUT_USER-NAME': 'github-actions[bot]'
+      'INPUT_USER-NAME': 'github-actions[bot]',
     };
 
     for (const key in inputs) {
@@ -111,7 +114,7 @@ export class ActionFixture {
     github.getOctokit = jest.fn().mockReturnValue({
       rest: {
         issues: {
-          addLabels: () => Promise.resolve({})
+          addLabels: () => Promise.resolve({}),
         },
         pulls: {
           create: () =>
@@ -120,12 +123,12 @@ export class ActionFixture {
                 number: this.pullNumber,
                 html_url: `https://github.local/${this.repo}/pull/${this.pullNumber}`,
                 head: {
-                  ref: `update-dotnet-sdk-${this.initialSdkVersion}`
-                }
-              }
-            })
-        }
-      }
+                  ref: `update-dotnet-sdk-${this.initialSdkVersion}`,
+                },
+              },
+            }),
+        },
+      },
     });
   }
 }

@@ -37,8 +37,8 @@ export async function execGit(args: string[], cwd: string, ignoreReturnCode: boo
       },
       stderr: (data: Buffer) => {
         commandError += data.toString();
-      }
-    }
+      },
+    },
   };
 
   try {
