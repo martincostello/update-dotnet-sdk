@@ -6,8 +6,8 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write src/**/*.ts",
-    "format-check": "prettier --check src/**/*.ts",
+    "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "format-check": "prettier --check src/**/*.ts tests/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --minify --source-map --license licenses.txt",
     "test": "jest --coverage",
