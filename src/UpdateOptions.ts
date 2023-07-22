@@ -12,6 +12,7 @@ export interface UpdateOptions {
   generateStepSummary: boolean;
   globalJsonPath: string;
   labels: string;
+  quality?: string;
   repo?: string;
   runId?: string;
   serverUrl?: string;
