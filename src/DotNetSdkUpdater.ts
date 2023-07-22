@@ -427,7 +427,7 @@ export class DotNetSdkUpdater {
     }
 
     const versionUrl = `https://aka.ms/dotnet/${channel}/${quality}/sdk-productVersion.txt`;
-    core.debug(`Downloading .NET ${channel} daily SDK version from ${versionUrl}...`);
+    core.debug(`Downloading .NET ${channel} daily SDK version from ${versionUrl}`);
 
     const httpClient = DotNetSdkUpdater.createHttpClient();
     const response = await httpClient.get(versionUrl);
@@ -444,14 +444,14 @@ export class DotNetSdkUpdater {
     return {
       installerCommit: versions.installer.commit,
       runtimeVersion: versions.runtime.version,
-      sdkVersion: versions.sdk.version,
+      sdkVersion: versions.installer.version,
     };
   }
 
   private static async getSdkProductCommits(sdkVersion: string): Promise<SdkProductCommits> {
     const platform = 'win-x64';
     const commitsUrl = `https://dotnetbuilds.azureedge.net/public/Sdk/${sdkVersion}/productCommit-${platform}.txt`;
-    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}...`);
+    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}`);
 
     const httpClient = DotNetSdkUpdater.createHttpClient();
     const response = await httpClient.get(commitsUrl);
@@ -493,7 +493,7 @@ export class DotNetSdkUpdater {
   private async getDotNetReleaseChannel(channel: string): Promise<ReleaseChannel> {
     const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${channel}/releases.json`;
 
-    core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}...`);
+    core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}`);
 
     const httpClient = DotNetSdkUpdater.createHttpClient();
     const response = await httpClient.getJson<ReleaseChannel>(releasesUrl);
