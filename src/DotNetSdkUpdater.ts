@@ -26,8 +26,8 @@ export class DotNetSdkUpdater {
   public static async getLatestDaily(
     currentSdkVersion: string,
     channel: string,
-    quality: string,
-    releaseChannel: ReleaseChannel
+    quality: string | undefined,
+    releaseChannel: ReleaseChannel | null
   ): Promise<SdkVersions> {
     const { sdkVersion, runtimeVersion, installerCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
 
@@ -51,12 +51,17 @@ export class DotNetSdkUpdater {
       return `https://github.com/dotnet/installer/commits/${commit}`;
     };
 
-    let current: ReleaseInfo;
+    let current: ReleaseInfo | null = null;
 
-    try {
-      current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseChannel);
-    } catch (err) {
-      // The current SDK version is also a daily build
+    if (releaseChannel) {
+      try {
+        current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseChannel);
+      } catch (err) {
+        // The current SDK version is also a daily build
+      }
+    }
+
+    if (!current) {
       const {
         installer: { commit: currentInstallerCommit },
         runtime: { version: currentRuntimeVersion },
@@ -236,32 +241,17 @@ export class DotNetSdkUpdater {
     }
 
     let majorMinor: string;
-    let versionParts: string[];
 
     if (!this.options.channel) {
-      versionParts = sdkVersion.split('.');
-
-      if (versionParts.length < 2) {
-        throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
-      }
-
-      majorMinor = versionParts.slice(0, 2).join('.');
+      majorMinor = DotNetSdkUpdater.getChannel(sdkVersion, 'version');
       this.options.channel = majorMinor;
     } else {
-      versionParts = this.options.channel.split('.');
-
-      if (versionParts.length < 2) {
-        throw new Error(`.NET SDK channel '${this.options.channel}' is not valid.`);
-      }
-
-      majorMinor = versionParts.slice(0, 2).join('.');
+      majorMinor = DotNetSdkUpdater.getChannel(sdkVersion, 'channel');
     }
 
-    const releaseChannel = await this.getDotNetReleaseChannel(majorMinor);
-
-    const update = this.options.quality
-      ? await DotNetSdkUpdater.getLatestDaily(sdkVersion, this.options.channel, this.options.quality, releaseChannel)
-      : DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
+    const update: SdkVersions = this.options.quality
+      ? await this.getLatestDotNetSdkForQuality(majorMinor, sdkVersion)
+      : await this.getLatestDotNetSdkForOfficial(majorMinor, sdkVersion);
 
     const result: UpdateResult = {
       branchName: '',
@@ -419,7 +409,7 @@ export class DotNetSdkUpdater {
 
   private static async getDotNetDailyVersion(
     channel: string,
-    quality: string
+    quality: string | undefined
   ): Promise<{
     installerCommit: string;
     runtimeVersion: string;
@@ -637,6 +627,32 @@ export class DotNetSdkUpdater {
     }
 
     return base;
+  }
+
+  private async getLatestDotNetSdkForQuality(channel: string, sdkVersion: string): Promise<SdkVersions> {
+    let releaseChannel: ReleaseChannel | null;
+    try {
+      releaseChannel = await this.getDotNetReleaseChannel(channel);
+    } catch (err) {
+      // This major version has not released its first preview yet
+      releaseChannel = null;
+    }
+    return await DotNetSdkUpdater.getLatestDaily(sdkVersion, this.options.channel, this.options.quality, releaseChannel);
+  }
+
+  private async getLatestDotNetSdkForOfficial(channel: string, sdkVersion: string): Promise<SdkVersions> {
+    const releaseChannel = await this.getDotNetReleaseChannel(channel);
+    return DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
+  }
+
+  private static getChannel(version: string, label: string): string {
+    const versionParts = version.split('.');
+
+    if (versionParts.length < 2) {
+      throw new Error(`'${version}' is not a valid ${label}.`);
+    }
+
+    return versionParts.slice(0, 2).join('.');
   }
 }
 
