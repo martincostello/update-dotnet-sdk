@@ -7,17 +7,16 @@ import { ActionFixture } from './ActionFixture';
 
 describe('update-dotnet-sdk', () => {
   describe.each([
-    ['daily', '8.0'],
-    ['daily', '8.0.1xx'],
-    ['daily', '8.0.1xx-preview7'],
-  ])('for %s builds for channel "%s"', (quality: string, channel: string) => {
+    ['daily', '8.0', '8.0.100-'],
+    ['daily', '8.0.1xx', '8.0.100-'],
+    ['daily', '8.0.1xx-preview7', '8.0.100-'],
+  ])('for %s builds for channel "%s"', (quality: string, channel: string, expected: string) => {
     const sdkVersion = '8.0.100-preview.6.23330.14';
-    const commitMessagePrefix = '';
 
     let fixture: ActionFixture;
 
     beforeAll(async () => {
-      fixture = new ActionFixture(sdkVersion, commitMessagePrefix);
+      fixture = new ActionFixture(sdkVersion);
       fixture.channel = channel;
       fixture.quality = quality;
 
@@ -41,7 +40,7 @@ describe('update-dotnet-sdk', () => {
       test('updates the SDK version in global.json', async () => {
         const actualSdkVersion = await fixture.sdkVersion();
         expect(actualSdkVersion).not.toBe(sdkVersion);
-        expect(actualSdkVersion.startsWith('8.0.100-')).toBe(true);
+        expect(actualSdkVersion.startsWith(expected)).toBe(true);
       });
     });
   });

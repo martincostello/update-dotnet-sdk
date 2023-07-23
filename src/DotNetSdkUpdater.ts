@@ -31,7 +31,6 @@ export class DotNetSdkUpdater {
   ): Promise<SdkVersions> {
     const { sdkVersion, runtimeVersion, installerCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
 
-    const releaseNotes = `https://github.com/dotnet/installer/commits/${installerCommit}`;
     const security = false;
     const securityIssues = [];
 
@@ -48,6 +47,10 @@ export class DotNetSdkUpdater {
       return new Date(year, month - 1, day);
     };
 
+    const getReleaseNotes = (commit: string): string => {
+      return `https://github.com/dotnet/installer/commits/${commit}`;
+    };
+
     let current: ReleaseInfo;
 
     try {
@@ -55,11 +58,12 @@ export class DotNetSdkUpdater {
     } catch (err) {
       // The current SDK version is also a daily build
       const {
+        installer: { commit: currentInstallerCommit },
         runtime: { version: currentRuntimeVersion },
       } = await DotNetSdkUpdater.getSdkProductCommits(currentSdkVersion);
       current = {
         releaseDate: getReleaseDate(currentSdkVersion),
-        releaseNotes,
+        releaseNotes: getReleaseNotes(currentInstallerCommit),
         runtimeVersion: currentRuntimeVersion,
         sdkVersion: currentSdkVersion,
         security,
@@ -69,7 +73,7 @@ export class DotNetSdkUpdater {
 
     const latest: ReleaseInfo = {
       releaseDate: getReleaseDate(sdkVersion),
-      releaseNotes,
+      releaseNotes: getReleaseNotes(installerCommit),
       runtimeVersion,
       sdkVersion,
       security,
