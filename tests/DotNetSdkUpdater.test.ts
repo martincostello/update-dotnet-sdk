@@ -56,7 +56,7 @@ describe('DotNetSdkUpdater', () => {
       tempDir = await createTemporaryDirectory();
 
       const globalJsonPath = path.join(tempDir, 'global.json');
-      await createGlobalJson(globalJsonPath, '6.0.100');
+      await createGlobalJson(globalJsonPath, '99.0.100-preview.1.23115.2');
 
       updater = new DotNetSdkUpdater({
         accessToken: '',
