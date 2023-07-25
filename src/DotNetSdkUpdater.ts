@@ -430,6 +430,16 @@ export class DotNetSdkUpdater {
       throw new Error(`Failed to get product version for channel ${channel} - HTTP status ${response.message.statusCode}`);
     }
 
+    if (
+      !(
+        response.message.headers['content-type'] === 'text/plain' || response.message.headers['content-type'] === 'application/octet-stream'
+      )
+    ) {
+      throw new Error(
+        `Failed to get product version for channel ${channel} as plain text. Content-Type: ${response.message.headers['content-type']}`
+      );
+    }
+
     const versionRaw = await response.readBody();
     const sdkVersion = versionRaw.trim();
 

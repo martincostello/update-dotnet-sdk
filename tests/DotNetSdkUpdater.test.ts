@@ -48,6 +48,41 @@ describe('DotNetSdkUpdater', () => {
     });
   });
 
+  describe('tryUpdateSdk', () => {
+    let updater: DotNetSdkUpdater;
+    let tempDir: string;
+
+    beforeAll(async () => {
+      tempDir = await createTemporaryDirectory();
+
+      const globalJsonPath = path.join(tempDir, 'global.json');
+      await createGlobalJson(globalJsonPath, '6.0.100');
+
+      updater = new DotNetSdkUpdater({
+        accessToken: '',
+        branch: '',
+        channel: '99.0',
+        commitMessage: '',
+        commitMessagePrefix: '',
+        dryRun: false,
+        generateStepSummary: false,
+        globalJsonPath: globalJsonPath,
+        labels: '',
+        quality: 'daily',
+        userEmail: '',
+        userName: '',
+      });
+    });
+
+    afterAll(async () => {
+      await io.rmRF(tempDir);
+    });
+
+    test('throws if the channel does not have any previews', async () => {
+      await expect(updater.tryUpdateSdk()).rejects.toThrow(/Failed to get product version for channel 99\.0/);
+    });
+  });
+
   test(
     'Gets correct info if a newer SDK is available for the same MSBuild version',
     async () => {
