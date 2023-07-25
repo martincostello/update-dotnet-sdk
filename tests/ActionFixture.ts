@@ -7,7 +7,7 @@ import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
 import { jest } from '@jest/globals';
-import { createGitRepo, execGit } from './TestHelpers';
+import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
 
 const github = require('@actions/github');
@@ -38,20 +38,14 @@ export class ActionFixture {
     jest.spyOn(core, 'error').mockImplementation(() => {});
     jest.spyOn(core, 'setFailed').mockImplementation(() => {});
 
-    this.tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'update-dotnet-sdk-'));
+    this.tempDir = await createTemporaryDirectory();
     this.globalJsonPath = path.join(this.tempDir, 'global.json');
     this.githubStepSummary = path.join(this.tempDir, 'github-step-summary.md');
     this.outputPath = path.join(this.tempDir, 'github-outputs');
 
-    await fs.promises.writeFile(this.outputPath, '');
-    await createGitRepo(
-      this.globalJsonPath,
-      `{
-      "sdk": {
-        "version": "${this.initialSdkVersion}"
-      }
-    }`
-    );
+    await createEmptyFile(this.githubStepSummary);
+    await createEmptyFile(this.outputPath);
+    await createGitRepo(this.globalJsonPath, this.initialSdkVersion);
 
     this.setupEnvironment();
     this.setupPullRequest();

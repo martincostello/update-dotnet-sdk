@@ -4,9 +4,30 @@
 import * as exec from '@actions/exec';
 import * as fs from 'fs';
 import * as path from 'path';
+import { tmpdir } from 'os';
 
-export async function createGitRepo(globalJsonPath: string, data: string): Promise<void> {
-  await fs.promises.writeFile(globalJsonPath, data);
+export async function createEmptyFile(fileName: string) {
+  await fs.promises.writeFile(fileName, '');
+}
+
+export async function createTemporaryDirectory(): Promise<string> {
+  return await fs.promises.mkdtemp(path.join(tmpdir(), 'update-dotnet-sdk-'));
+}
+
+export async function createGlobalJson(globalJsonPath: string, sdkVersion: string): Promise<void> {
+  await fs.promises.writeFile(
+    globalJsonPath,
+    `{
+    "sdk": {
+      "version": "${sdkVersion}"
+    }
+  }`,
+    { encoding: 'utf8' }
+  );
+}
+
+export async function createGitRepo(globalJsonPath: string, sdkVersion: string): Promise<void> {
+  await createGlobalJson(globalJsonPath, sdkVersion);
 
   const cwd = path.dirname(globalJsonPath);
   const ignoreReturnCode = true;

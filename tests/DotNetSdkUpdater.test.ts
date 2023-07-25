@@ -3,13 +3,50 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as updater from '../src/DotNetSdkUpdater';
+import * as io from '@actions/io';
 
-import { beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+
+import { DotNetSdkUpdater } from '../src/DotNetSdkUpdater';
 import { UpdateOptions } from '../src/UpdateOptions';
+import { createGlobalJson, createTemporaryDirectory } from './TestHelpers';
 
-describe('DotNetSdkUpdater tests', () => {
+describe('DotNetSdkUpdater', () => {
   const timeout = 10000;
+
+  describe('tryUpdateSdk', () => {
+    let updater: DotNetSdkUpdater;
+    let tempDir: string;
+
+    beforeAll(async () => {
+      tempDir = await createTemporaryDirectory();
+
+      const globalJsonPath = path.join(tempDir, 'global.json');
+      await createGlobalJson(globalJsonPath, '99');
+
+      updater = new DotNetSdkUpdater({
+        accessToken: '',
+        branch: '',
+        channel: '',
+        commitMessage: '',
+        commitMessagePrefix: '',
+        dryRun: false,
+        generateStepSummary: false,
+        globalJsonPath: globalJsonPath,
+        labels: '',
+        userEmail: '',
+        userName: '',
+      });
+    });
+
+    afterAll(async () => {
+      await io.rmRF(tempDir);
+    });
+
+    test('throws if the SDK version is invalid', async () => {
+      await expect(updater.tryUpdateSdk()).rejects.toThrow(/\'99\' is not a valid version/);
+    });
+  });
 
   test(
     'Gets correct info if a newer SDK is available for the same MSBuild version',
@@ -18,7 +55,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-3.1.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('3.1.100', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('3.1.100', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -50,7 +87,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-5.0.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('5.0.103', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('5.0.103', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -88,7 +125,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-3.1.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('3.1.404', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('3.1.404', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -118,7 +155,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-6.0.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('6.0.100', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('6.0.100', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -148,7 +185,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -180,7 +217,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -213,7 +250,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.302.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('7.0.203', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('7.0.203', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -243,7 +280,7 @@ describe('DotNetSdkUpdater tests', () => {
         await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-8.0.json'), { encoding: 'utf8' })
       );
 
-      const actual = await updater.DotNetSdkUpdater.getLatestRelease('8.0.100-preview.1.23115.2', releaseInfo);
+      const actual = await DotNetSdkUpdater.getLatestRelease('8.0.100-preview.1.23115.2', releaseInfo);
 
       expect(actual).not.toBeNull();
       expect(actual.current).not.toBeNull();
@@ -282,7 +319,7 @@ describe('DotNetSdkUpdater tests', () => {
     ])(
       'Gets correct info for daily build from official build for channel %s and quality %s',
       async (channel: string, quality: string) => {
-        const actual = await updater.DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, releaseInfo);
+        const actual = await DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, releaseInfo);
 
         expect(actual).not.toBeNull();
         expect(actual.current).not.toBeNull();
@@ -316,7 +353,7 @@ describe('DotNetSdkUpdater tests', () => {
     ])(
       'Gets correct info for daily build from daily build for channel %s and quality %s',
       async (channel: string, quality: string) => {
-        const actual = await updater.DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, releaseInfo);
+        const actual = await DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, releaseInfo);
 
         expect(actual).not.toBeNull();
         expect(actual.current).not.toBeNull();
@@ -347,7 +384,7 @@ describe('DotNetSdkUpdater tests', () => {
     );
 
     test.each([[''], ['foo'], ['GA']])('rejects invalid quality %s', async (quality: string) => {
-      await expect(updater.DotNetSdkUpdater.getLatestDaily(preview1, '8.0', quality, releaseInfo)).rejects.toThrow(/Invalid quality/);
+      await expect(DotNetSdkUpdater.getLatestDaily(preview1, '8.0', quality, releaseInfo)).rejects.toThrow(/Invalid quality/);
     });
   });
 
@@ -359,7 +396,7 @@ describe('DotNetSdkUpdater tests', () => {
     ['3.0.100', '3.1.100', 'minor'],
     ['5.0.100', '6.0.100', 'major'],
   ])('Generates correct release notes from %s to %s as a %s update', (currentSdkVersion, latestSdkVersion, expected) => {
-    const actual = updater.DotNetSdkUpdater.generateCommitMessage(currentSdkVersion, latestSdkVersion);
+    const actual = DotNetSdkUpdater.generateCommitMessage(currentSdkVersion, latestSdkVersion);
     expect(actual).toContain(`Update .NET SDK to version ${latestSdkVersion}.`);
     expect(actual).toContain('dependency-name: Microsoft.NET.Sdk');
     expect(actual).toContain('dependency-type: direct:production');
@@ -374,7 +411,7 @@ describe('DotNetSdkUpdater tests', () => {
     ],
   ])('Sorts the CVEs in the pull request description', async (isGitHubEnterprise, expected) => {
     const channel = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-7.0.json'), { encoding: 'utf8' }));
-    const versions = updater.DotNetSdkUpdater.getLatestRelease('7.0.100', channel);
+    const versions = DotNetSdkUpdater.getLatestRelease('7.0.100', channel);
     const options: UpdateOptions = {
       accessToken: '',
       branch: '',
@@ -388,7 +425,7 @@ describe('DotNetSdkUpdater tests', () => {
       userEmail: '',
       userName: '',
     };
-    const actual = updater.DotNetSdkUpdater.generatePullRequestBody(versions, options, isGitHubEnterprise);
+    const actual = DotNetSdkUpdater.generatePullRequestBody(versions, options, isGitHubEnterprise);
     expect(actual).toContain(expected);
   });
 
@@ -409,8 +446,8 @@ describe('DotNetSdkUpdater tests', () => {
       const channel = JSON.parse(
         await fs.promises.readFile(path.join(process.cwd(), 'tests', `releases-${channelVersion}.json`), { encoding: 'utf8' })
       );
-      const versions = updater.DotNetSdkUpdater.getLatestRelease(sdkVersion, channel);
-      const actual = await updater.DotNetSdkUpdater.generateSummary(versions, today);
+      const versions = DotNetSdkUpdater.getLatestRelease(sdkVersion, channel);
+      const actual = await DotNetSdkUpdater.generateSummary(versions, today);
       expect(actual).toContain(`<h1>.NET SDK ${expectedSdkVersion}</h1>`);
       expect(actual).toContain(`(${expectedDaysAgo} ago)`);
       if (expectedSecurityIssues.length > 0) {
