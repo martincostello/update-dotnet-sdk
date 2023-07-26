@@ -9,7 +9,7 @@ on:
         type: string
         default: ''
       channel:
-        description: 'The optional .NET release channel to download the SDK for (2.1, 3.1, 5.0, etc.).'
+        description: 'The optional .NET release channel to download the SDK for (6.0, 7.0, etc.).'
         required: false
         type: string
         default: ''
