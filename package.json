@@ -1,6 +1,6 @@
 {
   "name": "update-dotnet-sdk",
-  "version": "2.2.5",
+  "version": "2.3.0",
   "private": true,
   "description": "A GitHub Action that updates the .NET SDK.",
   "main": "lib/main.js",
@@ -10,7 +10,7 @@
     "format-check": "prettier --check src/**/*.ts tests/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --minify --source-map --license licenses.txt",
-    "test": "jest --coverage",
+    "test": "jest --coverage --collectCoverageFrom src/**/*.ts",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "repository": {

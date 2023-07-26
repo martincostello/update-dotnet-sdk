@@ -34,6 +34,7 @@ export async function run(): Promise<void> {
       generateStepSummary: core.getInput('generate-step-summary', { required: false }) === 'true',
       globalJsonPath,
       labels: core.getInput('labels', { required: false }) ?? '',
+      quality: core.getInput('quality', { required: false }),
       repo: process.env.GITHUB_REPOSITORY,
       runId: process.env.GITHUB_RUN_ID,
       serverUrl: process.env.GITHUB_SERVER_URL ?? 'https://github.com',

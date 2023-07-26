@@ -7,14 +7,16 @@ import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
 import { jest } from '@jest/globals';
-import { createGitRepo, execGit } from './TestHelpers';
+import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
 
 const github = require('@actions/github');
 
 export class ActionFixture {
+  public channel: string = '';
   public pullNumber: string = '42';
   public repo: string = 'martincostello/update-dotnet-sdk';
+  public quality: string = '';
 
   private tempDir: string = '';
   private globalJsonPath: string = '';
@@ -23,8 +25,8 @@ export class ActionFixture {
   private outputs: Record<string, string> = {};
 
   constructor(
-    private initialSdkVersion: string,
-    private commitMessagePrefix: string
+    private readonly initialSdkVersion: string,
+    private readonly commitMessagePrefix = ''
   ) {}
 
   get path(): string {
@@ -36,20 +38,14 @@ export class ActionFixture {
     jest.spyOn(core, 'error').mockImplementation(() => {});
     jest.spyOn(core, 'setFailed').mockImplementation(() => {});
 
-    this.tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'update-dotnet-sdk-'));
+    this.tempDir = await createTemporaryDirectory();
     this.globalJsonPath = path.join(this.tempDir, 'global.json');
     this.githubStepSummary = path.join(this.tempDir, 'github-step-summary.md');
     this.outputPath = path.join(this.tempDir, 'github-outputs');
 
-    await fs.promises.writeFile(this.outputPath, '');
-    await createGitRepo(
-      this.globalJsonPath,
-      `{
-      "sdk": {
-        "version": "${this.initialSdkVersion}"
-      }
-    }`
-    );
+    await createEmptyFile(this.githubStepSummary);
+    await createEmptyFile(this.outputPath);
+    await createGitRepo(this.globalJsonPath, this.initialSdkVersion);
 
     this.setupEnvironment();
     this.setupPullRequest();
@@ -97,9 +93,11 @@ export class ActionFixture {
       'GITHUB_REPOSITORY': '',
       'GITHUB_SERVER_URL': 'https://github.local',
       'GITHUB_STEP_SUMMARY': this.githubStepSummary,
+      'INPUT_CHANNEL': this.channel,
       'INPUT_COMMIT-MESSAGE-PREFIX': this.commitMessagePrefix,
       'INPUT_GLOBAL-JSON-FILE': this.globalJsonPath,
       'INPUT_LABELS': 'foo,bar',
+      'INPUT_QUALITY': this.quality,
       'INPUT_REPO-TOKEN': 'my-token',
       'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
       'INPUT_USER-NAME': 'github-actions[bot]',

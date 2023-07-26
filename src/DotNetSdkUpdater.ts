@@ -23,6 +23,76 @@ export class DotNetSdkUpdater {
     this.repoPath = path.dirname(this.options.globalJsonPath);
   }
 
+  public static async getLatestDaily(
+    currentSdkVersion: string,
+    channel: string,
+    quality: string | undefined,
+    releaseChannel: ReleaseChannel | null
+  ): Promise<SdkVersions> {
+    const { sdkVersion, runtimeVersion, installerCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
+
+    const security = false;
+    const securityIssues = [];
+
+    const getReleaseDate = (version: string): Date => {
+      const versionParts = version.split('.');
+      const buildNumber = parseInt(versionParts[4], 10);
+
+      // See https://github.com/dotnet/arcade/blob/60ea5b2eca5af06fc63b250f8669d2c70179b18c/src/Microsoft.DotNet.Arcade.Sdk/tools/Version.BeforeCommonTargets.targets#L47-L56
+      const year = Math.floor(2000 + buildNumber / 1000);
+      const monthDay = buildNumber % 1000;
+      const month = Math.floor(monthDay / 50);
+      const day = monthDay - month * 50;
+
+      return new Date(year, month - 1, day);
+    };
+
+    const getReleaseNotes = (commit: string): string => {
+      return `https://github.com/dotnet/installer/commits/${commit}`;
+    };
+
+    let current: ReleaseInfo | null = null;
+
+    if (releaseChannel) {
+      try {
+        current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseChannel);
+      } catch (err) {
+        // The current SDK version is also a daily build
+      }
+    }
+
+    if (!current) {
+      const {
+        installer: { commit: currentInstallerCommit },
+        runtime: { version: currentRuntimeVersion },
+      } = await DotNetSdkUpdater.getSdkProductCommits(currentSdkVersion);
+      current = {
+        releaseDate: getReleaseDate(currentSdkVersion),
+        releaseNotes: getReleaseNotes(currentInstallerCommit),
+        runtimeVersion: currentRuntimeVersion,
+        sdkVersion: currentSdkVersion,
+        security,
+        securityIssues,
+      };
+    }
+
+    const latest: ReleaseInfo = {
+      releaseDate: getReleaseDate(sdkVersion),
+      releaseNotes: getReleaseNotes(installerCommit),
+      runtimeVersion,
+      sdkVersion,
+      security,
+      securityIssues,
+    };
+
+    return {
+      current,
+      latest,
+      security: latest.security,
+      securityIssues: latest.securityIssues,
+    };
+  }
+
   public static getLatestRelease(currentSdkVersion: string, channel: ReleaseChannel): SdkVersions {
     const current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, channel);
     const latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
@@ -170,18 +240,18 @@ export class DotNetSdkUpdater {
       throw new Error(`.NET SDK version cannot be found in '${this.options.globalJsonPath}'.`);
     }
 
+    let majorMinor: string;
+
     if (!this.options.channel) {
-      const versionParts = sdkVersion.split('.');
-
-      if (versionParts.length < 2) {
-        throw new Error(`.NET SDK version '${sdkVersion}' is not valid.`);
-      }
-
-      this.options.channel = `${versionParts[0]}.${versionParts[1]}`;
+      majorMinor = DotNetSdkUpdater.getChannel(sdkVersion, 'version');
+      this.options.channel = majorMinor;
+    } else {
+      majorMinor = DotNetSdkUpdater.getChannel(sdkVersion, 'channel');
     }
 
-    const releaseChannel = await this.getDotNetReleaseChannel(this.options.channel);
-    const update = DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
+    const update: SdkVersions = this.options.quality
+      ? await this.getLatestDotNetSdkForQuality(majorMinor, sdkVersion)
+      : await this.getLatestDotNetSdkForOfficial(majorMinor, sdkVersion);
 
     const result: UpdateResult = {
       branchName: '',
@@ -337,10 +407,126 @@ export class DotNetSdkUpdater {
     });
   }
 
+  private static async getDotNetDailyVersion(
+    channel: string,
+    quality: string | undefined
+  ): Promise<{
+    installerCommit: string;
+    runtimeVersion: string;
+    sdkVersion: string;
+  }> {
+    // See https://github.com/dotnet/install-scripts/blob/2ff8ee5ca8feccd8c54a855b4ccf15dc82f1e20e/src/dotnet-install.ps1#L18-L35
+    if (!Object.values(Quality).includes(quality as Quality)) {
+      throw new Error(`Invalid quality "${quality}" specified. Supported values are: ${Object.values(Quality).join(', ')}.`);
+    }
+
+    const versionUrl = `https://aka.ms/dotnet/${channel}/${quality}/sdk-productVersion.txt`;
+    core.debug(`Downloading .NET ${channel} daily SDK version from ${versionUrl}`);
+
+    const httpClient = DotNetSdkUpdater.createHttpClient();
+    const response = await httpClient.get(versionUrl);
+
+    if (response.message.statusCode && response.message.statusCode >= 400) {
+      throw new Error(`Failed to get product version for channel ${channel} - HTTP status ${response.message.statusCode}`);
+    }
+
+    if (
+      !(
+        response.message.headers['content-type'] === 'text/plain' || response.message.headers['content-type'] === 'application/octet-stream'
+      )
+    ) {
+      throw new Error(
+        `Failed to get product version for channel ${channel} as plain text. Content-Type: ${response.message.headers['content-type']}`
+      );
+    }
+
+    const versionRaw = await response.readBody();
+    const sdkVersion = versionRaw.trim();
+
+    const versions = await DotNetSdkUpdater.getSdkProductCommits(sdkVersion);
+
+    return {
+      installerCommit: versions.installer.commit,
+      runtimeVersion: versions.runtime.version,
+      sdkVersion: versions.installer.version,
+    };
+  }
+
+  private static async getSdkProductCommits(sdkVersion: string): Promise<SdkProductCommits> {
+    // JSON support was only added as of .NET 8 RC1.
+    // See https://github.com/dotnet/installer/pull/17000.
+    let productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromJson(sdkVersion);
+    if (!productCommits) {
+      productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromText(sdkVersion);
+    }
+    return productCommits;
+  }
+
+  private static getSdkProductCommitsUrl(sdkVersion: string, format: 'json' | 'txt'): string {
+    const platform = 'win-x64';
+    return `https://dotnetbuilds.azureedge.net/public/Sdk/${sdkVersion}/productCommit-${platform}.${format}`;
+  }
+
+  private static async getSdkProductCommitsFromJson(sdkVersion: string): Promise<SdkProductCommits | null> {
+    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'json');
+    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}...`);
+
+    const httpClient = DotNetSdkUpdater.createHttpClient();
+    const response = await httpClient.getJson<SdkProductCommits>(commitsUrl);
+
+    if (response.statusCode === 404) {
+      return null;
+    } else if (response.statusCode >= 400) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.statusCode}`);
+    } else if (!response.result) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion}.`);
+    }
+
+    return response.result;
+  }
+
+  private static async getSdkProductCommitsFromText(sdkVersion: string): Promise<SdkProductCommits> {
+    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'txt');
+    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}`);
+
+    const httpClient = DotNetSdkUpdater.createHttpClient();
+    const response = await httpClient.get(commitsUrl);
+
+    if (response.message.statusCode && response.message.statusCode >= 400) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.message.statusCode}`);
+    }
+
+    const commits = await response.readBody();
+
+    const getValue = (component: string, property: string): string => {
+      const regex = new RegExp(`${component}_${property}="([^"]+)"`);
+      const match = commits.match(regex);
+      if (!match) {
+        throw new Error(`Failed to get ${component} ${property} for .NET SDK version ${sdkVersion}.`);
+      }
+      return match[1];
+    };
+
+    const getProduct = (component: string): ProductCommit => {
+      return {
+        commit: getValue(component, 'commit'),
+        version: getValue(component, 'version'),
+      };
+    };
+
+    return {
+      installer: getProduct('installer'),
+      runtime: getProduct('runtime'),
+      aspnetcore: getProduct('aspnetcore'),
+      windowsdesktop: getProduct('windowsdesktop'),
+      sdk: getProduct('sdk'),
+    };
+  }
+
   private async getDotNetReleaseChannel(channel: string): Promise<ReleaseChannel> {
     const releasesUrl = `https://raw.githubusercontent.com/dotnet/core/main/release-notes/${channel}/releases.json`;
 
-    core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}...`);
+    core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}`);
 
     const httpClient = DotNetSdkUpdater.createHttpClient();
     const response = await httpClient.getJson<ReleaseChannel>(releasesUrl);
@@ -481,6 +667,32 @@ export class DotNetSdkUpdater {
 
     return base;
   }
+
+  private async getLatestDotNetSdkForQuality(channel: string, sdkVersion: string): Promise<SdkVersions> {
+    let releaseChannel: ReleaseChannel | null;
+    try {
+      releaseChannel = await this.getDotNetReleaseChannel(channel);
+    } catch (err) {
+      // This major version has not released its first preview yet
+      releaseChannel = null;
+    }
+    return await DotNetSdkUpdater.getLatestDaily(sdkVersion, this.options.channel, this.options.quality, releaseChannel);
+  }
+
+  private async getLatestDotNetSdkForOfficial(channel: string, sdkVersion: string): Promise<SdkVersions> {
+    const releaseChannel = await this.getDotNetReleaseChannel(channel);
+    return DotNetSdkUpdater.getLatestRelease(sdkVersion, releaseChannel);
+  }
+
+  private static getChannel(version: string, label: string): string {
+    const versionParts = version.split('.');
+
+    if (versionParts.length < 2) {
+      throw new Error(`'${version}' is not a valid ${label}.`);
+    }
+
+    return versionParts.slice(0, 2).join('.');
+  }
 }
 
 interface CveInfo {
@@ -555,6 +767,27 @@ interface GlobalJson {
   sdk: {
     version: string;
   };
+}
+
+interface ProductCommit {
+  commit: string;
+  version: string;
+}
+
+interface SdkProductCommits {
+  installer: ProductCommit;
+  runtime: ProductCommit;
+  aspnetcore: ProductCommit;
+  windowsdesktop: ProductCommit;
+  sdk: ProductCommit;
+}
+
+// eslint-disable-next-line no-shadow
+enum Quality {
+  daily = 'daily',
+  signed = 'signed',
+  validated = 'validated',
+  preview = 'preview',
 }
 
 class NullWritable extends Writable {
