@@ -174,6 +174,63 @@ jobs:
       repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+## .NET Daily Builds
+
+From v2.3.0, it is possible to use this action to update to the latest
+daily build of the .NET SDK from the public available .NET engineering
+systems instead of the [officially released versions][dotnet-core-release-notes].
+
+To consume daily builds, set the `quality` input to one of the following values:
+
+- `daily`
+- `signed`
+- `validated`
+- `preview`
+
+By default, the channel to use for daily builds is derived from the current
+SDK version specified in the `global.json` file in your GitHub repository.
+
+```yml
+steps:
+- uses: actions/checkout@v3
+- uses: martincostello/update-dotnet-sdk@v2
+  with:
+    quality: 'daily'
+    repo-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+You can see an example of such a pull request [here][example-pull-request-daily].
+
+### Specific Channels
+
+Ahead of the official release of a new .NET SDK version, the
+[dotnet/installer][dotnet-installer] repository typically branches,
+which causes the default channel to diverge in versioning compared to
+the next official build that is being prepared. For example, ahead of
+the release of .NET 8.0 preview 7, the `main` branch of the installer
+repository was updated to produce builds of .NET 8.0 Release Candidate 1.
+
+In this scenario, to keep receiving daily builds of the .NET 8.0 preview 7
+SDK, the `channel` input can be used to specify a specific branch to use
+to obtain the latest .NET SDK version from.
+
+For example, the following workflow will update to the latest daily
+build of the .NET 8.0 SDK from the `8.0.1xx-preview7` channel which
+corresponds to the `release/8.0.1xx-preview7` branch of the .NET SDK
+installer repository.
+
+```yml
+steps:
+- uses: actions/checkout@v3
+- uses: martincostello/update-dotnet-sdk@v2
+  with:
+    channel: '8.0.1xx-preview7'
+    quality: 'daily'
+    repo-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+For more information about daily builds, see the [.NET SDK Installer repository][dotnet-installer].
+
 ## Inputs
 
 ## Required
@@ -224,8 +281,11 @@ The repository is hosted in [GitHub][update-dotnet-sdk]: <https://github.com/mar
 This project is licensed under the [Apache 2.0][license] license.
 
 [create-github-app]: https://docs.github.com/apps/creating-github-apps/creating-github-apps/creating-a-github-app
+[dotnet-installer]: https://github.com/dotnet/installer
 [dotnet-outdated]: https://github.com/dotnet-outdated/dotnet-outdated
+[dotnet-core-release-notes]: https://github.com/dotnet/core/tree/main/release-notes
 [example-pull-request]: https://github.com/martincostello/update-dotnet-sdk/pull/10
+[example-pull-request-daily]: https://github.com/martincostello/adventofcode/pull/1120
 [github-apps]: https://docs.github.com/apps/creating-github-apps/creating-github-apps/about-apps
 [github-token]: https://docs.github.com/actions/security-guides/automatic-token-authentication
 [issues]: https://github.com/martincostello/update-dotnet-sdk/issues
