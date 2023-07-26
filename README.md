@@ -177,7 +177,7 @@ jobs:
 ## .NET Daily Builds
 
 From v2.3.0, it is possible to use this action to update to the latest
-daily build of the .NET SDK from the public available .NET engineering
+daily build of the .NET SDK from the publicly available .NET engineering
 systems instead of the [officially released versions][dotnet-core-release-notes].
 
 To consume daily builds, set the `quality` input to one of the following values:
@@ -189,6 +189,9 @@ To consume daily builds, set the `quality` input to one of the following values:
 
 By default, the channel to use for daily builds is derived from the current
 SDK version specified in the `global.json` file in your GitHub repository.
+
+Below is an example of using the action to update to the latest daily build
+of the current .NET SDK version on the branch which the workflow is run from.
 
 ```yml
 steps:
@@ -211,11 +214,12 @@ the release of .NET 8.0 preview 7, the `main` branch of the installer
 repository was updated to produce builds of .NET 8.0 Release Candidate 1.
 
 In this scenario, to keep receiving daily builds of the .NET 8.0 preview 7
-SDK, the `channel` input can be used to specify a specific branch to use
-to obtain the latest .NET SDK version from.
+SDK (i.e. the next version to be officially released), the `channel`
+input can be used to target a specific branch to obtain the latest .NET
+SDK version from.
 
-For example, the following workflow will update to the latest daily
-build of the .NET 8.0 SDK from the `8.0.1xx-preview7` channel which
+For example, the following actions YAML will update to the latest daily
+build of the .NET 8.0 SDK from the `8.0.1xx-preview7` channel which,
 corresponds to the `release/8.0.1xx-preview7` branch of the .NET SDK
 installer repository.
 
@@ -244,7 +248,7 @@ For more information about daily builds, see the [.NET SDK Installer repository]
 | **Name** | **Description** | **Default** |
 |:--|:--|:--|
 | `branch-name` | The optional Git branch name to use. | - |
-| `channel` | The optional .NET release channel to download the SDK for (3.1, 6.0, etc.). | The channel derived from the current SDK version. |
+| `channel` | The optional .NET release channel to download the SDK for (6.0, 7.0, etc.). | The channel derived from the current SDK version. |
 | `commit-message` | The optional Git commit message to use. | - |
 | `commit-message-prefix` | The optional Git commit message prefix to use if `commit-message` is not specified. | - |
 | `generate-step-summary` | If true, will output a summary of any .NET SDK update to `$GITHUB_STEP_SUMMARY`. | `true` |
