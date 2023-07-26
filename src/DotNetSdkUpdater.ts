@@ -453,8 +453,40 @@ export class DotNetSdkUpdater {
   }
 
   private static async getSdkProductCommits(sdkVersion: string): Promise<SdkProductCommits> {
+    // JSON support was only added as of .NET 8 RC1.
+    // See https://github.com/dotnet/installer/pull/17000.
+    let productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromJson(sdkVersion);
+    if (!productCommits) {
+      productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromText(sdkVersion);
+    }
+    return productCommits;
+  }
+
+  private static getSdkProductCommitsUrl(sdkVersion: string, format: 'json' | 'txt'): string {
     const platform = 'win-x64';
-    const commitsUrl = `https://dotnetbuilds.azureedge.net/public/Sdk/${sdkVersion}/productCommit-${platform}.txt`;
+    return `https://dotnetbuilds.azureedge.net/public/Sdk/${sdkVersion}/productCommit-${platform}.${format}`;
+  }
+
+  private static async getSdkProductCommitsFromJson(sdkVersion: string): Promise<SdkProductCommits | null> {
+    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'json');
+    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}...`);
+
+    const httpClient = DotNetSdkUpdater.createHttpClient();
+    const response = await httpClient.getJson<SdkProductCommits>(commitsUrl);
+
+    if (response.statusCode === 404) {
+      return null;
+    } else if (response.statusCode >= 400) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.statusCode}`);
+    } else if (!response.result) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion}.`);
+    }
+
+    return response.result;
+  }
+
+  private static async getSdkProductCommitsFromText(sdkVersion: string): Promise<SdkProductCommits> {
+    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'txt');
     core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}`);
 
     const httpClient = DotNetSdkUpdater.createHttpClient();
@@ -466,9 +498,6 @@ export class DotNetSdkUpdater {
 
     const commits = await response.readBody();
 
-    // JSON would be much better.
-    // See https://github.com/dotnet/installer/pull/15036#issuecomment-1343085641
-    // and https://github.com/dotnet/installer/pull/17000.
     const getValue = (component: string, property: string): string => {
       const regex = new RegExp(`${component}_${property}="([^"]+)"`);
       const match = commits.match(regex);
