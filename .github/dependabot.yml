@@ -10,6 +10,10 @@ updates:
     - "martincostello"
 - package-ecosystem: "npm"
   directory: "/"
+  groups:
+    dependencies:
+      patterns:
+        - "@typescript-eslint/*"
   schedule:
     interval: "daily"
     time: "05:30"
