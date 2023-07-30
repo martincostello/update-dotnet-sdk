@@ -7,6 +7,7 @@ import * as path from 'path';
 
 import { DotNetSdkUpdater } from './DotNetSdkUpdater';
 import { UpdateOptions } from './UpdateOptions';
+import { Context } from '@actions/github/lib/context';
 
 export async function run(): Promise<void> {
   try {
@@ -23,9 +24,11 @@ export async function run(): Promise<void> {
       return;
     }
 
+    const context = new Context();
+
     const options: UpdateOptions = {
       accessToken,
-      apiUrl: process.env.GITHUB_API_URL ?? 'https://api.github.com',
+      apiUrl: context.apiUrl,
       branch: core.getInput('branch-name', { required: false }),
       channel: core.getInput('channel', { required: false }),
       commitMessage: core.getInput('commit-message', { required: false }),
@@ -36,8 +39,8 @@ export async function run(): Promise<void> {
       labels: core.getInput('labels', { required: false }) ?? '',
       quality: core.getInput('quality', { required: false }),
       repo: process.env.GITHUB_REPOSITORY,
-      runId: process.env.GITHUB_RUN_ID,
-      serverUrl: process.env.GITHUB_SERVER_URL ?? 'https://github.com',
+      runId: context.runId.toString(10),
+      serverUrl: context.serverUrl,
       userEmail: core.getInput('user-email', { required: false }),
       userName: core.getInput('user-name', { required: false }),
     };
