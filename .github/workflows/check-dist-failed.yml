@@ -1,0 +1,39 @@
+name: check-dist-failed
+
+on:
+  workflow_run:
+    workflows: [ check-dist ]
+    types: [ completed ]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  comment:
+    if: |
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Add comment
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.payload.workflow_run.head_sha,
+            });
+            if (prs.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prs[0].number,
+                body: `Hi @${prs[0].user.login} :wave:\n\nIt looks like this pull request makes changes which require the contents of \`dist\` to be updated, but these files have not been included with your changes.\n\nPlease run \`build.ps1\` and commit the changes made to the \`dist\` directory to your branch and push them to this pull request.`,
+              });
+            }
