@@ -39,11 +39,21 @@ jobs:
       with:
         node-version: '16.x'
 
-    - name: Install packages
+    - name: Get npm cache directory
+      id: npm-cache-dir
       shell: pwsh
-      run: |
-        npm install --global @vercel/ncc
-        npm ci
+      run: echo "dir=$(npm config get cache)" >> ${env:GITHUB_OUTPUT}
+
+    - name: Setup npm cache
+      uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      id: npm-cache
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: ${{ runner.os }}-node-
+
+    - name: Install packages
+      run: npm ci
 
     - name: Build and Test
       shell: pwsh

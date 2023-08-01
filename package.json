@@ -6,6 +6,7 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
+    "check-dist": "npm run build && npm run package",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "format-check": "prettier --check src/**/*.ts tests/**/*.ts",
     "lint": "eslint src/**/*.ts",
