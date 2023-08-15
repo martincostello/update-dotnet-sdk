@@ -58,6 +58,9 @@ export async function run(): Promise<void> {
     core.error('Failed to check for updates to .NET SDK');
     core.error(error);
     if (error instanceof Error) {
+      if (error.stack) {
+        core.error(error.stack);
+      }
       core.setFailed(error.message);
     }
   }
