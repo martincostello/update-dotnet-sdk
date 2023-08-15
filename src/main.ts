@@ -38,7 +38,7 @@ export async function run(): Promise<void> {
       globalJsonPath,
       labels: core.getInput('labels', { required: false }) ?? '',
       quality: core.getInput('quality', { required: false }),
-      repo: process.env.GITHUB_REPOSITORY,
+      repo: core.getInput('repo', { required: false }) ?? process.env.GITHUB_REPOSITORY,
       runId: context.runId.toString(10),
       serverUrl: context.serverUrl,
       userEmail: core.getInput('user-email', { required: false }),
