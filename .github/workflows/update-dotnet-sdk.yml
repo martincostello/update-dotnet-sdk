@@ -38,6 +38,11 @@ on:
         required: false
         type: string
         default: ''
+      repo:
+        description: 'The optional GitHub repository to generate the pull request against.'
+        required: false
+        type: string
+        default: ${{ github.repository }}
       quality:
         description: 'The optional value to specify using the latest build of the specified quality in the channel.'
         required: false
@@ -193,6 +198,7 @@ jobs:
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
         quality: ${{ inputs.quality }}
+        repo: ${{ inputs.repo }}
         repo-token: ${{ steps.assign-token.outputs.access-token }}
         user-email: ${{ inputs.user-email }}
         user-name: ${{ inputs.user-name }}
