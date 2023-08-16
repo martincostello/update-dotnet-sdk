@@ -38,6 +38,10 @@ on:
         required: false
         type: string
         default: ''
+      organization:
+        description: 'The optional GitHub organization to generate a GitHub Access token for when using a GitHub application.'
+        required: false
+        type: string
       ref:
         description: 'The optional branch, tag or SHA to checkout for the repository.'
         required: false
@@ -166,6 +170,7 @@ jobs:
       with:
         application_id: ${{ secrets.application-id }}
         application_private_key: ${{ secrets.application-private-key }}
+        organization: ${{ inputs.organization }}
         permissions: "contents:write, pull_requests:write"
 
     - name: Assign GitHub token
