@@ -40,6 +40,7 @@ export async function run(): Promise<void> {
       quality: core.getInput('quality', { required: false }),
       repo: core.getInput('repo', { required: false }) ?? process.env.GITHUB_REPOSITORY,
       runId: context.runId.toString(10),
+      runRepo: process.env.GITHUB_REPOSITORY,
       serverUrl: context.serverUrl,
       userEmail: core.getInput('user-email', { required: false }),
       userName: core.getInput('user-name', { required: false }),
