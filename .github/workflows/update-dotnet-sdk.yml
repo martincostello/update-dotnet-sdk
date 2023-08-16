@@ -73,12 +73,12 @@ on:
         type: string
         default: ''
       user-email:
-        description: 'The optional email address to use for the Git commit.'
+        description: 'The optional email address to use for the Git commits.'
         required: false
         type: string
         default: 'github-actions[bot]@users.noreply.github.com'
       user-name:
-        description: 'The optional user name to use for the Git commit.'
+        description: 'The optional user name to use for the Git commits.'
         required: false
         type: string
         default: 'github-actions[bot]'
@@ -156,7 +156,7 @@ jobs:
           else {
             if (`${{ secrets.application-id }}`.length === 0 ||
                 `${{ secrets.application-private-key }}`.length === 0) {
-              core.setFailed('Either the repo-token or application-id and application-private-key secrets must be set.');
+              core.setFailed('Either the repo-token or both the application-id and application-private-key secrets must be set.');
             } else {
               core.setOutput('use-github-app', 'true');
             }
