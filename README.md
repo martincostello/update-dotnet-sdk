@@ -184,7 +184,7 @@ instead allows you to manage the update workflow from a single location.
 > **Note**
 > Using `GITHUB_TOKEN` is not supported in this scenario as the token only has access
 > to the repository in which the workflow is run, and not to the other repositories
-> you wish to run the .NET SDK in.
+> you wish to update the .NET SDK in.
 >
 > Centralized workflows need to use either a Personal Access Token (PAT) or a GitHub App
 > which has write access to the repositories you wish to update the .NET SDK within.
@@ -232,9 +232,47 @@ repositories to update, then the `organization` input must be specified so that 
 GitHub App can correctly acquire an access token to be able to push .NET SDK updates
 to the repositories.
 
+```yaml
+name: update-dotnet-sdks
+
+on:
+  schedule:
+    - cron:  '00 19 * * TUE'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  update-sdk:
+    name: 'update-${{ matrix.repo }}'
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+
+    concurrency:
+      group: 'update-sdk-${{ matrix.repo }}'
+      cancel-in-progress: false
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: 'first-org/my-repo'
+            org: 'first-org'
+          - repo: 'second-org/other-repo'
+            org: 'second-org'
+
+    with:
+      organization: ${{ matrix.org }}
+      repo: ${{ matrix.repo }}
+      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
+      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
+    secrets:
+      application-id: ${{ secrets.UPDATER_APPLICATION_ID }}
+      application-private-key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
+```
+
 More advanced centralized workflows are possible, such as [this workflow][advanced-central-workflow]
-which dynamically determines which repositories to update based on determining which
-repositories that the GitHub PAT used has contributor access to.
+which dynamically determines which repositories to update based on querying the GitHub API
+for the repositories that the GitHub App used has contributor access to for its installation.
 
 ## .NET Daily Builds
 
