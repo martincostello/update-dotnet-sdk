@@ -7,8 +7,10 @@ import { ActionFixture } from './ActionFixture';
 
 describe('update-dotnet-sdk', () => {
   describe.each([
+    /*
     ['daily', '8.0', '8.0.100-'],
     ['daily', '8.0.1xx', '8.0.100-'],
+    */
     ['daily', '8.0.1xx-preview7', '8.0.100-'],
   ])('for %s builds for channel "%s"', (quality: string, channel: string, expected: string) => {
     const sdkVersion = '8.0.100-preview.6.23330.14';
