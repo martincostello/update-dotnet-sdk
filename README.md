@@ -174,6 +174,106 @@ jobs:
       repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+### Centralized Workflow
+
+It is also possible from v2.4.0 to run the action or workflow from one repository
+and then update the .NET SDK version in one or more other repositories. This removes
+the need for each repository to have its own workflow to update the .NET SDK and
+instead allows you to manage the update workflow from a single location.
+
+> **Note**
+> Using `GITHUB_TOKEN` is not supported in this scenario as the token only has access
+> to the repository in which the workflow is run, and not to the other repositories
+> you wish to update the .NET SDK in.
+>
+> Centralized workflows need to use either a Personal Access Token (PAT) or a GitHub App
+> which has write access to the repositories you wish to update the .NET SDK within.
+
+#### Centralized Updates With a GitHub App
+
+An example workflow is shown below which uses a GitHub App to update the .NET SDK
+in two different repositories in the same organization.
+
+```yaml
+name: update-dotnet-sdks
+
+on:
+  schedule:
+    - cron:  '00 19 * * TUE'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  update-sdk:
+    name: 'update-${{ matrix.repo }}'
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+
+    concurrency:
+      group: 'update-sdk-${{ matrix.repo }}'
+      cancel-in-progress: false
+
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: [ 'my-org/repo-1', 'my-org/repo-2' ]
+
+    with:
+      repo: ${{ matrix.repo }}
+      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
+      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
+    secrets:
+      application-id: ${{ secrets.UPDATER_APPLICATION_ID }}
+      application-private-key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
+```
+
+If the workflow is run in a repository that is not in the same organization as the
+repositories to update, then the `organization` input must be specified so that the
+GitHub App can correctly acquire an access token to be able to push .NET SDK updates
+to the repositories.
+
+```yaml
+name: update-dotnet-sdks
+
+on:
+  schedule:
+    - cron:  '00 19 * * TUE'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  update-sdk:
+    name: 'update-${{ matrix.repo }}'
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+
+    concurrency:
+      group: 'update-sdk-${{ matrix.repo }}'
+      cancel-in-progress: false
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: 'first-org/my-repo'
+            org: 'first-org'
+          - repo: 'second-org/other-repo'
+            org: 'second-org'
+
+    with:
+      organization: ${{ matrix.org }}
+      repo: ${{ matrix.repo }}
+      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
+      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
+    secrets:
+      application-id: ${{ secrets.UPDATER_APPLICATION_ID }}
+      application-private-key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
+```
+
+More advanced centralized workflows are possible, such as [this workflow][advanced-central-workflow]
+which dynamically determines which repositories to update based on querying the GitHub API
+for the repositories that the GitHub App used has contributor access to for its installation.
+
 ## .NET Daily Builds
 
 From v2.3.0, it is possible to use this action to update to the latest
@@ -285,6 +385,7 @@ The repository is hosted in [GitHub][update-dotnet-sdk]: <https://github.com/mar
 
 This project is licensed under the [Apache 2.0][license] license.
 
+[advanced-central-workflow]: https://github.com/martincostello/github-automation/blob/df69301435a3f4971fa630e65a3966762187c87b/.github/workflows/update-dotnet-sdks.yml
 [create-github-app]: https://docs.github.com/apps/creating-github-apps/creating-github-apps/creating-a-github-app
 [dotnet-installer]: https://github.com/dotnet/installer
 [dotnet-outdated]: https://github.com/dotnet-outdated/dotnet-outdated
