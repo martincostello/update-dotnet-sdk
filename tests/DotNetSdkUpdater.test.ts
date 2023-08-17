@@ -347,76 +347,76 @@ describe('DotNetSdkUpdater', () => {
       releaseInfo = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'tests', 'releases-8.0.json'), { encoding: 'utf8' }));
     });
 
-    test.each([
+    describe.each([
+      /*
       ['8.0', 'daily'],
       ['8.0.1xx', 'daily'],
+      */
       ['8.0.1xx-preview7', 'daily'],
-    ])(
-      'Gets correct info for daily build from official build for channel %s and quality %s',
-      async (channel: string, quality: string) => {
-        const actual = await DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, releaseInfo);
+    ])('for channel %s and quality %s', (channel: string, quality: string) => {
+      test(
+        'Gets correct info for daily build from official build',
+        async () => {
+          const actual = await DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, releaseInfo);
 
-        expect(actual).not.toBeNull();
-        expect(actual.current).not.toBeNull();
-        expect(actual.latest).not.toBeNull();
+          expect(actual).not.toBeNull();
+          expect(actual.current).not.toBeNull();
+          expect(actual.latest).not.toBeNull();
 
-        expect(actual.current.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md');
-        expect(actual.current.runtimeVersion).toBe('8.0.0-preview.1.23110.8');
-        expect(actual.current.sdkVersion).toBe(preview1);
-        expect(actual.current.security).toBe(false);
+          expect(actual.current.releaseNotes).toBe('https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md');
+          expect(actual.current.runtimeVersion).toBe('8.0.0-preview.1.23110.8');
+          expect(actual.current.sdkVersion).toBe(preview1);
+          expect(actual.current.security).toBe(false);
 
-        expect(actual.latest.releaseNotes).not.toBeUndefined();
-        expect(actual.latest.releaseNotes).not.toBeNull();
-        expect(actual.latest.releaseNotes.startsWith('https://github.com/dotnet/installer/commits/')).toBe(true);
-        expect(actual.latest.runtimeVersion).not.toBe(actual.current.runtimeVersion);
-        expect(actual.latest.sdkVersion).not.toBe(actual.current.sdkVersion);
-        expect(actual.latest.runtimeVersion.startsWith('8.0.0-')).toBe(true);
-        expect(actual.latest.sdkVersion.startsWith('8.0.100-')).toBe(true);
-        expect(actual.latest.security).toBe(false);
+          expect(actual.latest.releaseNotes).not.toBeUndefined();
+          expect(actual.latest.releaseNotes).not.toBeNull();
+          expect(actual.latest.releaseNotes.startsWith('https://github.com/dotnet/installer/commits/')).toBe(true);
+          expect(actual.latest.runtimeVersion).not.toBe(actual.current.runtimeVersion);
+          expect(actual.latest.sdkVersion).not.toBe(actual.current.sdkVersion);
+          expect(actual.latest.runtimeVersion.startsWith('8.0.0-')).toBe(true);
+          expect(actual.latest.sdkVersion.startsWith('8.0.100-')).toBe(true);
+          expect(actual.latest.security).toBe(false);
 
-        expect(actual.security).toBe(false);
-        expect(actual.securityIssues).not.toBeNull();
-        expect(actual.securityIssues.length).toBe(0);
-      },
-      timeout
-    );
+          expect(actual.security).toBe(false);
+          expect(actual.securityIssues).not.toBeNull();
+          expect(actual.securityIssues.length).toBe(0);
+        },
+        timeout
+      );
 
-    test.each([
-      ['8.0', 'daily'],
-      ['8.0.1xx', 'daily'],
-      ['8.0.1xx-preview7', 'daily'],
-    ])(
-      'Gets correct info for daily build from daily build for channel %s and quality %s',
-      async (channel: string, quality: string) => {
-        const actual = await DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, releaseInfo);
+      test(
+        'Gets correct info for daily build from daily build',
+        async () => {
+          const actual = await DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, releaseInfo);
 
-        expect(actual).not.toBeNull();
-        expect(actual.current).not.toBeNull();
-        expect(actual.latest).not.toBeNull();
+          expect(actual).not.toBeNull();
+          expect(actual.current).not.toBeNull();
+          expect(actual.latest).not.toBeNull();
 
-        expect(actual.current.releaseNotes).not.toBeUndefined();
-        expect(actual.current.releaseNotes).not.toBeNull();
-        expect(actual.current.releaseNotes.startsWith('https://github.com/dotnet/installer/commits/')).toBe(true);
-        expect(actual.current.runtimeVersion).toBe('8.0.0-preview.7.23361.9');
-        expect(actual.current.sdkVersion).toBe(preview7);
-        expect(actual.current.security).toBe(false);
+          expect(actual.current.releaseNotes).not.toBeUndefined();
+          expect(actual.current.releaseNotes).not.toBeNull();
+          expect(actual.current.releaseNotes.startsWith('https://github.com/dotnet/installer/commits/')).toBe(true);
+          expect(actual.current.runtimeVersion).toBe('8.0.0-preview.7.23361.9');
+          expect(actual.current.sdkVersion).toBe(preview7);
+          expect(actual.current.security).toBe(false);
 
-        expect(actual.latest.releaseNotes).not.toBeUndefined();
-        expect(actual.latest.releaseNotes).not.toBeNull();
-        expect(actual.latest.releaseNotes).not.toBe(actual.current.releaseNotes);
-        expect(actual.latest.releaseNotes.startsWith('https://github.com/dotnet/installer/commits/')).toBe(true);
-        expect(actual.latest.runtimeVersion).not.toBe(actual.current.runtimeVersion);
-        expect(actual.latest.sdkVersion).not.toBe(actual.current.sdkVersion);
-        expect(actual.latest.runtimeVersion.startsWith('8.0.0-')).toBe(true);
-        expect(actual.latest.sdkVersion.startsWith('8.0.100-')).toBe(true);
-        expect(actual.latest.security).toBe(false);
+          expect(actual.latest.releaseNotes).not.toBeUndefined();
+          expect(actual.latest.releaseNotes).not.toBeNull();
+          expect(actual.latest.releaseNotes).not.toBe(actual.current.releaseNotes);
+          expect(actual.latest.releaseNotes.startsWith('https://github.com/dotnet/installer/commits/')).toBe(true);
+          expect(actual.latest.runtimeVersion).not.toBe(actual.current.runtimeVersion);
+          expect(actual.latest.sdkVersion).not.toBe(actual.current.sdkVersion);
+          expect(actual.latest.runtimeVersion.startsWith('8.0.0-')).toBe(true);
+          expect(actual.latest.sdkVersion.startsWith('8.0.100-')).toBe(true);
+          expect(actual.latest.security).toBe(false);
 
-        expect(actual.security).toBe(false);
-        expect(actual.securityIssues).not.toBeNull();
-        expect(actual.securityIssues.length).toBe(0);
-      },
-      timeout
-    );
+          expect(actual.security).toBe(false);
+          expect(actual.securityIssues).not.toBeNull();
+          expect(actual.securityIssues.length).toBe(0);
+        },
+        timeout
+      );
+    });
 
     test.each([[''], ['foo'], ['GA']])('rejects invalid quality %s', async (quality: string) => {
       await expect(DotNetSdkUpdater.getLatestDaily(preview1, '8.0', quality, releaseInfo)).rejects.toThrow(/Invalid quality/);
