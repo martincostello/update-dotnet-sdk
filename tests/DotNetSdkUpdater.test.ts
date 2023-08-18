@@ -348,10 +348,8 @@ describe('DotNetSdkUpdater', () => {
     });
 
     describe.each([
-      /*
       ['8.0', 'daily'],
       ['8.0.1xx', 'daily'],
-      */
       ['8.0.1xx-preview7', 'daily'],
     ])('for channel %s and quality %s', (channel: string, quality: string) => {
       test(
