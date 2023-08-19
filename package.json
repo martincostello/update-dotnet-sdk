@@ -11,7 +11,7 @@
     "format-check": "prettier --check src/**/*.ts tests/**/*.ts",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --minify --source-map --license licenses.txt",
-    "test": "jest --coverage --collectCoverageFrom src/**/*.ts",
+    "test": "jest",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "repository": {
@@ -27,6 +27,24 @@
   "author": {
     "name": "Martin Costello",
     "url": "https://martincostello.com/"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "jest": {
+    "clearMocks": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "reporters": [
+      "default",
+      "github-actions"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "verbose": true
   },
   "license": "Apache-2.0",
   "bugs": {
