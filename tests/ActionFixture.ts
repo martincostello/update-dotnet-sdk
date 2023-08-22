@@ -17,10 +17,10 @@ export class ActionFixture {
   public pullNumber: string = '42';
   public repo: string = 'martincostello/update-dotnet-sdk';
   public quality: string = '';
+  public stepSummary: string = '';
 
   private tempDir: string = '';
   private globalJsonPath: string = '';
-  private githubStepSummary: string = '';
   private outputPath: string = '';
   private outputs: Record<string, string> = {};
 
@@ -36,10 +36,8 @@ export class ActionFixture {
   async initialize(): Promise<void> {
     this.tempDir = await createTemporaryDirectory();
     this.globalJsonPath = path.join(this.tempDir, 'global.json');
-    this.githubStepSummary = path.join(this.tempDir, 'github-step-summary.md');
     this.outputPath = path.join(this.tempDir, 'github-outputs');
 
-    await createEmptyFile(this.githubStepSummary);
     await createEmptyFile(this.outputPath);
     await createGitRepo(this.globalJsonPath, this.initialSdkVersion);
 
@@ -50,8 +48,7 @@ export class ActionFixture {
   async run(): Promise<void> {
     await run();
 
-    const buffer = await fs.promises.readFile(this.outputPath);
-    const content = buffer.toString();
+    const content = await fs.promises.readFile(this.outputPath, 'utf8');
 
     const lines = content.split(os.EOL);
     for (let index = 0; index < lines.length; index += 3) {
@@ -88,7 +85,6 @@ export class ActionFixture {
       'GITHUB_OUTPUT': this.outputPath,
       'GITHUB_REPOSITORY': '',
       'GITHUB_SERVER_URL': 'https://github.local',
-      'GITHUB_STEP_SUMMARY': this.githubStepSummary,
       'INPUT_CHANNEL': this.channel,
       'INPUT_COMMIT-MESSAGE-PREFIX': this.commitMessagePrefix,
       'INPUT_GLOBAL-JSON-FILE': this.globalJsonPath,
@@ -130,6 +126,12 @@ export class ActionFixture {
     jest.spyOn(core, 'error').mockImplementation((arg) => {
       logger('error', arg);
     });
+
+    jest.spyOn(core.summary, 'addRaw').mockImplementation((text: string) => {
+      this.stepSummary += text;
+      return core.summary;
+    });
+    jest.spyOn(core.summary, 'write').mockReturnThis();
   }
 
   private setupPullRequest(): void {
