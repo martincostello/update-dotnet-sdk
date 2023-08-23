@@ -7,6 +7,7 @@ import { ActionFixture } from './ActionFixture';
 
 describe('update-dotnet-sdk', () => {
   describe.each([
+    ['2.1.500', '', '2.1', 'Update .NET SDK'],
     ['3.1.201', '', '3.1', 'Update .NET SDK'],
     ['3.1.201', 'chore:', '3.1', 'chore: Update .NET SDK'],
     ['6.0.100', '', '6.0', 'Update .NET SDK'],

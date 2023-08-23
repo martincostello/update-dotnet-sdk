@@ -120,7 +120,7 @@ export class DotNetSdkUpdater {
       if (patchDelta > 1) {
         for (let patch = currentPatch; patch < latestPatch; patch++) {
           const version = `${versionMajor}.${versionMinor}.${patch}`;
-          const release = channel.releases.find((p) => p.runtime.version === version);
+          const release = channel.releases.find((p) => p.runtime?.version === version);
           if (release) {
             result.security = result.security || release.security;
             if (release['cve-list']) {
