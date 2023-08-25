@@ -2,13 +2,17 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as core from '@actions/core';
-import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals';
 import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
 const inputs = [['branch-name'], ['pull-request-html-url'], ['pull-request-number'], ['sdk-updated'], ['sdk-version'], ['security']];
 
 describe('update-dotnet-sdk', () => {
+  beforeAll(() => {
+    Date.now = jest.fn(() => new Date(Date.UTC(2023, 8 - 1, 25)).valueOf());
+  });
+
   describe.each([
     ['2.1', '2.1.500', ''],
     ['3.1', '3.1.201', ''],
@@ -49,6 +53,10 @@ describe('update-dotnet-sdk', () => {
 
       test('generates the expected Git diff', async () => {
         expect(await fixture.diff()).toMatchSnapshot();
+      });
+
+      test('generates the expected GitHub step summary', async () => {
+        expect(fixture.stepSummary).toMatchSnapshot();
       });
 
       test.each(inputs)('the %s output is correct', (name: string) => {
@@ -174,6 +182,10 @@ describe('update-dotnet-sdk', () => {
 
       test('generates the expected Git commit history', async () => {
         expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      });
+
+      test('generates the expected GitHub step summary', async () => {
+        expect(fixture.stepSummary).toMatchSnapshot();
       });
 
       test.each(inputs)('the %s output is correct', (name: string) => {

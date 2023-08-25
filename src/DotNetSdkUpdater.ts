@@ -282,7 +282,7 @@ export class DotNetSdkUpdater {
         result.version = update.latest.sdkVersion;
 
         if (this.options.generateStepSummary) {
-          await DotNetSdkUpdater.generateSummary(update, new Date());
+          await DotNetSdkUpdater.generateSummary(update, new Date(Date.now()));
         }
       }
     } else {
