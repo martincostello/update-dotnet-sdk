@@ -12,7 +12,10 @@ import { UpdateOptions } from '../src/UpdateOptions';
 import { createGlobalJson, createTemporaryDirectory } from './TestHelpers';
 
 const timeout = 10000;
+
 const repo = 'owner/repository';
+const runId = '123';
+const serverUrl = 'https://github.local';
 
 const getChannel = async (version: string): Promise<any> => {
   return JSON.parse(await fs.promises.readFile(path.join(__dirname, 'fixtures', 'releases', `${version}.json`), { encoding: 'utf8' }));
@@ -40,6 +43,9 @@ describe('DotNetSdkUpdater', () => {
         globalJsonPath: globalJsonPath,
         labels: '',
         repo,
+        runId,
+        runRepo: repo,
+        serverUrl,
         userEmail: '',
         userName: '',
       });
@@ -76,6 +82,9 @@ describe('DotNetSdkUpdater', () => {
         labels: '',
         quality: 'daily',
         repo,
+        runId,
+        runRepo: repo,
+        serverUrl,
         userEmail: '',
         userName: '',
       });
@@ -223,6 +232,9 @@ describe('DotNetSdkUpdater', () => {
       globalJsonPath: '',
       labels: '',
       repo,
+      runId,
+      runRepo: repo,
+      serverUrl,
       userEmail: '',
       userName: '',
     };
