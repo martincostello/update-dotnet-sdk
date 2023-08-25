@@ -83,7 +83,8 @@ export class ActionFixture {
     const inputs = {
       'GITHUB_API_URL': 'https://github.local/api/v3',
       'GITHUB_OUTPUT': this.outputPath,
-      'GITHUB_REPOSITORY': '',
+      'GITHUB_REPOSITORY': this.repo,
+      'GITHUB_RUN_ID': '123',
       'GITHUB_SERVER_URL': 'https://github.local',
       'INPUT_CHANNEL': this.channel,
       'INPUT_COMMIT-MESSAGE-PREFIX': this.commitMessagePrefix,
