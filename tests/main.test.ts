@@ -84,7 +84,7 @@ describe('update-dotnet-sdk', () => {
         expect(core.setFailed).toHaveBeenCalledTimes(0);
       });
 
-      test('updates the SDK version in global.json', async () => {
+      test('does not update the SDK version in global.json', async () => {
         expect(await fixture.sdkVersion()).toMatchSnapshot();
       });
 
