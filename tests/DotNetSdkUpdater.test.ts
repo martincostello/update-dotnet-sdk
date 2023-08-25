@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { DotNetSdkUpdater } from '../src/DotNetSdkUpdater';
 import { UpdateOptions } from '../src/UpdateOptions';
 import { createGlobalJson, createTemporaryDirectory } from './TestHelpers';
+import { setup } from './fixtures';
 
 const timeout = 10000;
 
@@ -178,6 +179,7 @@ describe('DotNetSdkUpdater', () => {
 
     beforeAll(async () => {
       releaseInfo = await getChannel('8.0');
+      await setup('releases/daily-8.0');
     });
 
     describe.each([
