@@ -67,6 +67,11 @@ on:
         required: false
         type: boolean
         default: true
+      dotnet-outdated-version:
+        description: 'The version of the dotnet-outdated .NET global tool to use if update-nuget-packages is true.'
+        required: false
+        type: string
+        default: '4.5.3'
       include-nuget-packages:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to update, if update-nuget-packages is true.'
         required: false
@@ -246,7 +251,8 @@ jobs:
       run: |
         $ErrorActionPreference = "Stop"
 
-        dotnet tool install --global dotnet-outdated-tool
+        Write-Host "Installing dotnet-outdated-tool..."
+        dotnet tool install --global dotnet-outdated-tool --version "${{ inputs.dotnet-outdated-version || '*' }}"
 
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
@@ -269,6 +275,12 @@ jobs:
             $additionalArguments += $package
           }
         }
+
+        # HACK Inspired by https://github.com/dotnet-outdated/dotnet-outdated/issues/55
+        # run dotnet restore to populate the NuGet package cache to try and avoid timeouts
+        # when dotnet-outdated is run
+        Write-Host "Restoring NuGet packages..."
+        dotnet restore
 
         Write-Host "Checking for .NET NuGet package(s) to update..."
 
