@@ -252,7 +252,11 @@ describe('DotNetSdkUpdater', () => {
     ['7.0.302', '7.0.203', '2023-05-02'],
     ['8.0', '8.0.100-preview.2.23157.25', '2023-05-02'],
   ])('Generates correct GitHub step summary for %s from %s on %s', async (channelVersion: string, sdkVersion: string, date: string) => {
-    const today = new Date(date);
+    const [year, month, day] = date
+      .split('-')
+      .slice(0, 3)
+      .map((x) => parseInt(x, 10));
+    const today = new Date(Date.UTC(year, month - 1, day));
     const channel = await getChannel(channelVersion);
     const versions = DotNetSdkUpdater.getLatestRelease(sdkVersion, channel);
     expect(await DotNetSdkUpdater.generateSummary(versions, today)).toMatchSnapshot();
