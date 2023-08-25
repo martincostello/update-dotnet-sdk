@@ -67,6 +67,11 @@ on:
         required: false
         type: boolean
         default: true
+      dotnet-outdated-version:
+        description: 'The version of the dotnet-outdated .NET global tool to use if update-nuget-packages is true.'
+        required: false
+        type: string
+        default: '4.5.3'
       include-nuget-packages:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to update, if update-nuget-packages is true.'
         required: false
@@ -247,7 +252,7 @@ jobs:
         $ErrorActionPreference = "Stop"
 
         Write-Host "Installing dotnet-outdated-tool..."
-        dotnet tool install --global dotnet-outdated-tool
+        dotnet tool install --global dotnet-outdated-tool --version "${{ inputs.dotnet-outdated-version || '*' }}"
 
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
