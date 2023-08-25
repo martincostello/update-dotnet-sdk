@@ -164,7 +164,7 @@ describe('update-dotnet-sdk', () => {
     });
   });
 
-  describe('%s when dry-run is true', () => {
+  describe('when dry-run is true', () => {
     let fixture: ActionFixture;
 
     beforeAll(async () => {
