@@ -13,6 +13,7 @@ import { createGlobalJson, createTemporaryDirectory } from './TestHelpers';
 
 describe('DotNetSdkUpdater', () => {
   const timeout = 10000;
+  const repo = 'owner/repository';
 
   describe('tryUpdateSdk', () => {
     let updater: DotNetSdkUpdater;
@@ -34,6 +35,7 @@ describe('DotNetSdkUpdater', () => {
         generateStepSummary: false,
         globalJsonPath: globalJsonPath,
         labels: '',
+        repo,
         userEmail: '',
         userName: '',
       });
@@ -69,6 +71,7 @@ describe('DotNetSdkUpdater', () => {
         globalJsonPath: globalJsonPath,
         labels: '',
         quality: 'daily',
+        repo,
         userEmail: '',
         userName: '',
       });
@@ -455,6 +458,7 @@ describe('DotNetSdkUpdater', () => {
       generateStepSummary: false,
       globalJsonPath: '',
       labels: '',
+      repo,
       userEmail: '',
       userName: '',
     };
