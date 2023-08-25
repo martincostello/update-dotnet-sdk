@@ -6,6 +6,7 @@ export interface UpdateOptions {
   apiUrl?: string;
   branch: string;
   channel: string;
+  closeSuperseded: boolean;
   commitMessage: string;
   commitMessagePrefix: string;
   dryRun: boolean;

@@ -6,7 +6,15 @@ import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals
 import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
-const inputs = [['branch-name'], ['pull-request-html-url'], ['pull-request-number'], ['sdk-updated'], ['sdk-version'], ['security']];
+const inputs = [
+  ['branch-name'],
+  ['pull-request-html-url'],
+  ['pull-request-number'],
+  ['pull-requests-closed'],
+  ['sdk-updated'],
+  ['sdk-version'],
+  ['security'],
+];
 
 describe('update-dotnet-sdk', () => {
   beforeAll(() => {

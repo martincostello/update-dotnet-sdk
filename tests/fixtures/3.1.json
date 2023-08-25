@@ -41,6 +41,24 @@
       "response": []
     },
     {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/pulls?base=main&direction=desc&state=open",
+      "response": [
+        {
+          "url": "https://github.local/api/v3/repos/martincostello/update-dotnet-sdk/pulls/42",
+          "number": 42,
+          "state": "open",
+          "title": "Update .NET SDK to 3.1.426",
+          "user": {
+            "login": "github-actions[bot]"
+          },
+          "head": {
+            "ref": "update-dotnet-sdk-3.1.426"
+          }
+        }
+      ]
+    },
+    {
       "basePath": "https://raw.githubusercontent.com",
       "path": "/dotnet/core/main/release-notes/3.1/releases.json",
       "response": {
