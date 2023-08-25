@@ -246,6 +246,7 @@ jobs:
       run: |
         $ErrorActionPreference = "Stop"
 
+        Write-Host "Installing dotnet-outdated-tool..."
         dotnet tool install --global dotnet-outdated-tool
 
         $tempPath = [System.IO.Path]::GetTempPath()
@@ -269,6 +270,12 @@ jobs:
             $additionalArguments += $package
           }
         }
+
+        # HACK Inspired by https://github.com/dotnet-outdated/dotnet-outdated/issues/55
+        # run dotnet restore to populate the NuGet package cache to try and avoid timeouts
+        # when dotnet-outdated is run
+        Write-Host "Restoring NuGet packages..."
+        dotnet restore
 
         Write-Host "Checking for .NET NuGet package(s) to update..."
 
