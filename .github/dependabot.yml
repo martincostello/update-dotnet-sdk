@@ -11,7 +11,7 @@ updates:
 - package-ecosystem: "npm"
   directory: "/"
   groups:
-    dependencies:
+    typescript-eslint:
       patterns:
         - "@typescript-eslint/*"
   schedule:
