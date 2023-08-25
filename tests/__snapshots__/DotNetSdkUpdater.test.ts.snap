@@ -1,0 +1,697 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 3.1 from 3.1.403 on 2023-05-02 1`] = `
+"<h1>.NET SDK 3.1.404</h1>
+An update from version 3.1.403 to 3.1.404 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2020-11-10 (903 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 5.0 from 5.0.102 on 2023-05-02 1`] = `
+"<h1>.NET SDK 5.0.200</h1>
+An update from version 5.0.102 to 5.0.200 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2021-03-02 (791 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0.3/5.0.200-sdk.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li>CVE-2021-1721</li><li>CVE-2021-24112</li></ul>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 6.0 from 6.0.407 on 2023-05-02 1`] = `
+"<h1>.NET SDK 6.0.408</h1>
+An update from version 6.0.407 to 6.0.408 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-04-11 (21 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.16/6.0.16.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li>CVE-2023-28260</li></ul>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-14 1`] = `
+"<h1>.NET SDK 7.0.202</h1>
+An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-03-14 (0 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-15 1`] = `
+"<h1>.NET SDK 7.0.202</h1>
+An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-03-14 (1 day ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-16 1`] = `
+"<h1>.NET SDK 7.0.202</h1>
+An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-03-14 (2 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-05-02 1`] = `
+"<h1>.NET SDK 7.0.202</h1>
+An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-03-14 (49 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0.302 from 7.0.203 on 2023-05-02 1`] = `
+"<h1>.NET SDK 7.0.302</h1>
+An update from version 7.0.203 to 7.0.302 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-04-11 (21 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct GitHub step summary for 8.0 from 8.0.100-preview.2.23157.25 on 2023-05-02 1`] = `
+"<h1>.NET SDK 8.0.100-preview.3.23178.7</h1>
+An update from version 8.0.100-preview.2.23157.25 to 8.0.100-preview.3.23178.7 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-04-11 (21 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.3.md">Release notes</a>
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct release notes from 2.1.100 to 3.0.101 as a %s update 1`] = `
+"Update .NET SDK
+
+Update .NET SDK to version 3.0.101.
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.NET.Sdk
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct release notes from 2.1.100 to 3.1.101 as a %s update 1`] = `
+"Update .NET SDK
+
+Update .NET SDK to version 3.1.101.
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.NET.Sdk
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct release notes from 3.0.100 to 3.1.100 as a %s update 1`] = `
+"Update .NET SDK
+
+Update .NET SDK to version 3.1.100.
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.NET.Sdk
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct release notes from 3.1.100 to 3.1.101 as a %s update 1`] = `
+"Update .NET SDK
+
+Update .NET SDK to version 3.1.101.
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.NET.Sdk
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct release notes from 3.1.100 to 3.1.200 as a %s update 1`] = `
+"Update .NET SDK
+
+Update .NET SDK to version 3.1.200.
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.NET.Sdk
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+"
+`;
+
+exports[`DotNetSdkUpdater Generates correct release notes from 5.0.100 to 6.0.100 as a %s update 1`] = `
+"Update .NET SDK
+
+Update .NET SDK to version 6.0.100.
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.NET.Sdk
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+"
+`;
+
+exports[`DotNetSdkUpdater Gets correct info between preview releases 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-02-21T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
+    "runtimeVersion": "8.0.0-preview.1.23110.8",
+    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-04-11T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.3.md",
+    "runtimeVersion": "8.0.0-preview.3.23174.8",
+    "sdkVersion": "8.0.100-preview.3.23178.7",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for a different MSBuild version 1`] = `
+{
+  "current": {
+    "releaseDate": 2021-03-02T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0.3/5.0.200-sdk.md",
+    "runtimeVersion": "5.0.3",
+    "sdkVersion": "5.0.103",
+    "security": true,
+    "securityIssues": [
+      {
+        "id": "CVE-2021-1721",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-1721",
+      },
+      {
+        "id": "CVE-2021-24112",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-24112",
+      },
+    ],
+  },
+  "latest": {
+    "releaseDate": 2021-03-02T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0.3/5.0.200-sdk.md",
+    "runtimeVersion": "5.0.3",
+    "sdkVersion": "5.0.200",
+    "security": true,
+    "securityIssues": [
+      {
+        "id": "CVE-2021-1721",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-1721",
+      },
+      {
+        "id": "CVE-2021-24112",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-24112",
+      },
+    ],
+  },
+  "security": true,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for the same MSBuild version 1`] = `
+{
+  "current": {
+    "releaseDate": 2019-12-03T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.0/3.1.0.md",
+    "runtimeVersion": "3.1.0",
+    "sdkVersion": "3.1.100",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2020-11-10T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md",
+    "runtimeVersion": "3.1.10",
+    "sdkVersion": "3.1.404",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": true,
+  "securityIssues": [
+    {
+      "id": " CVE-2020-0602",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-0602",
+    },
+    {
+      "id": " CVE-2020-0603",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-0603",
+    },
+    {
+      "id": " CVE-2020-0605",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-0605",
+    },
+    {
+      "id": " CVE-2020-0606",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-0606",
+    },
+    {
+      "id": " CVE-2020-1045",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1045",
+    },
+    {
+      "id": "CVE-2020-1108",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1108",
+    },
+    {
+      "id": "CVE-2020-1108",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1108",
+    },
+    {
+      "id": "CVE-2020-1147",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1147",
+    },
+    {
+      "id": "CVE-2020-1161",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1161",
+    },
+    {
+      "id": "CVE-2020-1597",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1597",
+    },
+  ],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for the same runtime version 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-04-11T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md",
+    "runtimeVersion": "7.0.5",
+    "sdkVersion": "7.0.203",
+    "security": true,
+    "securityIssues": [
+      {
+        "id": "CVE-2023-28260",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-28260",
+      },
+    ],
+  },
+  "latest": {
+    "releaseDate": 2023-04-11T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md",
+    "runtimeVersion": "7.0.5",
+    "sdkVersion": "7.0.302",
+    "security": true,
+    "securityIssues": [
+      {
+        "id": "CVE-2023-28260",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-28260",
+      },
+    ],
+  },
+  "security": true,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available that skips releases when latest is a security release 1`] = `
+{
+  "current": {
+    "releaseDate": 2022-11-08T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md",
+    "runtimeVersion": "7.0.0",
+    "sdkVersion": "7.0.100",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-04-11T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.5/7.0.5.md",
+    "runtimeVersion": "7.0.5",
+    "sdkVersion": "7.0.302",
+    "security": true,
+    "securityIssues": [
+      {
+        "id": "CVE-2023-28260",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-28260",
+      },
+    ],
+  },
+  "security": true,
+  "securityIssues": [
+    {
+      "id": "CVE-2022-41089",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089",
+    },
+    {
+      "id": "CVE-2023-21808",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808",
+    },
+    {
+      "id": "CVE-2023-28260",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-28260",
+    },
+  ],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available that skips releases when latest is not a security release 1`] = `
+{
+  "current": {
+    "releaseDate": 2022-11-08T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md",
+    "runtimeVersion": "7.0.0",
+    "sdkVersion": "7.0.100",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-03-14T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md",
+    "runtimeVersion": "7.0.4",
+    "sdkVersion": "7.0.202",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": true,
+  "securityIssues": [
+    {
+      "id": "CVE-2022-41089",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089",
+    },
+    {
+      "id": "CVE-2023-21808",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808",
+    },
+  ],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is not available 1`] = `
+{
+  "current": {
+    "releaseDate": 2020-11-10T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md",
+    "runtimeVersion": "3.1.10",
+    "sdkVersion": "3.1.404",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2020-11-10T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.10/3.1.10.md",
+    "runtimeVersion": "3.1.10",
+    "sdkVersion": "3.1.404",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater Gets correct info if a newer SDK is not available 2`] = `
+{
+  "current": {
+    "releaseDate": 2021-11-08T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.0/6.0.0.md",
+    "runtimeVersion": "6.0.0",
+    "sdkVersion": "6.0.100",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-04-11T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.16/6.0.16.md",
+    "runtimeVersion": "6.0.16",
+    "sdkVersion": "6.0.408",
+    "security": true,
+    "securityIssues": [
+      {
+        "id": "CVE-2023-28260",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-28260",
+      },
+    ],
+  },
+  "security": true,
+  "securityIssues": [
+    {
+      "id": "CVE-2020-8927",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-8927",
+    },
+    {
+      "id": "CVE-2021-43877",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-43877",
+    },
+    {
+      "id": "CVE-2022-21986",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-21986",
+    },
+    {
+      "id": "CVE-2022-23267",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-23267",
+    },
+    {
+      "id": "CVE-2022-24464",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-24464",
+    },
+    {
+      "id": "CVE-2022-24512",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-24512",
+    },
+    {
+      "id": "CVE-2022-29117",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-29117",
+    },
+    {
+      "id": "CVE-2022-29145",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-29145",
+    },
+    {
+      "id": "CVE-2022-30184",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-30184",
+    },
+    {
+      "id": "CVE-2022-34716",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-34716",
+    },
+    {
+      "id": "CVE-2022-38013",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-38013",
+    },
+    {
+      "id": "CVE-2022-41032",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41032",
+    },
+    {
+      "id": "CVE-2022-41089",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089",
+    },
+    {
+      "id": "CVE-2023-21538",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21538",
+    },
+    {
+      "id": "CVE-2023-21808",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808",
+    },
+    {
+      "id": "CVE-2023-28260",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-28260",
+    },
+  ],
+}
+`;
+
+exports[`DotNetSdkUpdater Sorts the CVEs in the pull request description 1`] = `
+"Updates the .NET SDK to version \`7.0.202\`, which also updates the .NET runtime from version [\`\`7.0.0\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md) to version [\`\`7.0.4\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md).
+
+This release includes fixes for the following security issue(s):
+- CVE-2022-41089
+- CVE-2023-21808
+
+This pull request was auto-generated by [GitHub Actions](undefined/undefined/actions/runs/undefined)."
+`;
+
+exports[`DotNetSdkUpdater Sorts the CVEs in the pull request description 2`] = `
+"Updates the .NET SDK to version \`7.0.202\`, which also updates the .NET runtime from version [\`\`7.0.0\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md) to version [\`\`7.0.4\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md).
+
+This release includes fixes for the following security issue(s):
+- [CVE-2022-41089](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-41089)
+- [CVE-2023-21808](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21808)
+
+This pull request was auto-generated by [GitHub Actions](undefined/undefined/actions/runs/undefined)."
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 8.0 and quality daily Gets correct info for daily build from daily build 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-07-12T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
+    "runtimeVersion": "8.0.0-preview.7.23361.9",
+    "sdkVersion": "8.0.100-preview.7.23363.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-08-23T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/e37e1c3e4ea3cd61916be54d132bd60dd729caf5",
+    "runtimeVersion": "8.0.0-rc.2.23423.11",
+    "sdkVersion": "8.0.100-rc.2.23424.12",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 8.0 and quality daily Gets correct info for daily build from official build 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-02-21T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
+    "runtimeVersion": "8.0.0-preview.1.23110.8",
+    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-08-23T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/e37e1c3e4ea3cd61916be54d132bd60dd729caf5",
+    "runtimeVersion": "8.0.0-rc.2.23423.11",
+    "sdkVersion": "8.0.100-rc.2.23424.12",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx and quality daily Gets correct info for daily build from daily build 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-07-12T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
+    "runtimeVersion": "8.0.0-preview.7.23361.9",
+    "sdkVersion": "8.0.100-preview.7.23363.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-08-23T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/e37e1c3e4ea3cd61916be54d132bd60dd729caf5",
+    "runtimeVersion": "8.0.0-rc.2.23423.11",
+    "sdkVersion": "8.0.100-rc.2.23424.12",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx and quality daily Gets correct info for daily build from official build 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-02-21T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
+    "runtimeVersion": "8.0.0-preview.1.23110.8",
+    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-08-23T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/e37e1c3e4ea3cd61916be54d132bd60dd729caf5",
+    "runtimeVersion": "8.0.0-rc.2.23423.11",
+    "sdkVersion": "8.0.100-rc.2.23424.12",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7 and quality daily Gets correct info for daily build from daily build 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-07-12T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
+    "runtimeVersion": "8.0.0-preview.7.23361.9",
+    "sdkVersion": "8.0.100-preview.7.23363.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-07-25T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/daebeea8ea53b3b8c8d6656977f59991fc550885",
+    "runtimeVersion": "8.0.0-preview.7.23375.6",
+    "sdkVersion": "8.0.100-preview.7.23376.3",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7 and quality daily Gets correct info for daily build from official build 1`] = `
+{
+  "current": {
+    "releaseDate": 2023-02-21T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
+    "runtimeVersion": "8.0.0-preview.1.23110.8",
+    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "security": false,
+    "securityIssues": [],
+  },
+  "latest": {
+    "releaseDate": 2023-07-25T23:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/daebeea8ea53b3b8c8d6656977f59991fc550885",
+    "runtimeVersion": "8.0.0-preview.7.23375.6",
+    "sdkVersion": "8.0.100-preview.7.23376.3",
+    "security": false,
+    "securityIssues": [],
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
