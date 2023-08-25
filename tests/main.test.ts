@@ -15,6 +15,7 @@ describe('update-dotnet-sdk', () => {
     ['3.1', '3.1.201', 'chore:'],
     ['6.0', '6.0.100', ''],
     ['7.0', '7.0.100', ''],
+    ['7.0-sdk-only', '7.0.307', ''],
     ['8.0', '8.0.100-preview.6.23330.14', ''],
   ])('%s for the %s SDK with a commit prefix of "%s"', (scenario: string, sdkVersion: string, commitMessagePrefix: string) => {
     let fixture: ActionFixture;

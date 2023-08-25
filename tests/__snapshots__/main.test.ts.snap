@@ -346,6 +346,53 @@ exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the actio
 
 exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the action the security output is correct 1`] = `"false"`;
 
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 7.0.400.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "",
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+"diff --git a/global.json b/global.json
+index 5977f10..06ce1b4 100644
+--- a/global.json
++++ b/global.json
+@@ -1,5 +1,5 @@
+ {
+   "sdk": {
+-    "version": "7.0.307"
++    "version": "7.0.400"
+   }
+ }"
+`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-7.0.400"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"7.0.400"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
+
 exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
