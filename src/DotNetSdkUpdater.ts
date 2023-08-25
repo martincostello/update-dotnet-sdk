@@ -369,6 +369,7 @@ export class DotNetSdkUpdater {
           owner,
           repo,
           ref: base,
+          user: response.data.user?.login,
         });
 
         if (superseded.length > 0) {
@@ -411,6 +412,7 @@ export class DotNetSdkUpdater {
       owner: string;
       repo: string;
       ref: string;
+      user?: string;
     }
   ): Promise<
     {
@@ -430,7 +432,7 @@ export class DotNetSdkUpdater {
 
     const superseded = pulls
       .filter((pull) => pull.number !== created.number)
-      .filter((pull) => pull.user?.login === pull.user?.login)
+      .filter((pull) => pull.user && pull.user.login === created.user)
       .filter((pull) => pull.title.startsWith(titlePrefix))
       .map((pull) => ({
         number: pull.number,
