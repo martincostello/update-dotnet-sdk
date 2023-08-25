@@ -28,6 +28,13 @@
       }
     },
     {
+      "basePath": "https://aka.ms",
+      "path": "/dotnet/99.0/daily/sdk-productVersion.txt",
+      "persist": true,
+      "status": 404,
+      "response": "Not found"
+    },
+    {
       "basePath": "https://dotnetbuilds.azureedge.net",
       "path": "/public/Sdk/8.0.100-preview.7.23363.2/productCommit-win-x64.json",
       "persist": true,

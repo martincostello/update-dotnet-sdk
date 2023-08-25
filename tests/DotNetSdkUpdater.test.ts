@@ -23,6 +23,10 @@ const getChannel = async (version: string): Promise<any> => {
 };
 
 describe('DotNetSdkUpdater', () => {
+  beforeAll(async () => {
+    await setup('releases/daily-8.0');
+  });
+
   describe('tryUpdateSdk', () => {
     let updater: DotNetSdkUpdater;
     let tempDir: string;
@@ -179,7 +183,6 @@ describe('DotNetSdkUpdater', () => {
 
     beforeAll(async () => {
       releaseInfo = await getChannel('8.0');
-      await setup('releases/daily-8.0');
     });
 
     describe.each([
