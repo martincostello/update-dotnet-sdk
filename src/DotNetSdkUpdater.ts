@@ -297,15 +297,11 @@ export class DotNetSdkUpdater {
     const isGitHubEnterprise = this.options.serverUrl !== 'https://github.com';
     const body = DotNetSdkUpdater.generatePullRequestBody(update, this.options, isGitHubEnterprise);
 
-    const options = {
+    const octokit = github.getOctokit(this.options.accessToken, {
       baseUrl: this.options.apiUrl,
-    };
+    });
 
-    const octokit = github.getOctokit(this.options.accessToken, options);
-
-    const split = (this.options.repo ?? '/').split('/');
-    const owner = split[0];
-    const repo = split[1];
+    const [owner, repo] = this.options.repo.split('/');
 
     const request = {
       owner,

@@ -13,7 +13,7 @@ export interface UpdateOptions {
   globalJsonPath: string;
   labels: string;
   quality?: string;
-  repo?: string;
+  repo: string;
   runId?: string;
   runRepo?: string;
   serverUrl?: string;
