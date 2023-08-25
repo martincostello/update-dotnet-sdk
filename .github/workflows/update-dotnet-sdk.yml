@@ -13,6 +13,11 @@ on:
         required: false
         type: string
         default: ''
+      close-superseded:
+        description: 'If true, any existing pull requests superseded by any pull request opened by the action are closed.'
+        required: false
+        type: boolean
+        default: true
       commit-message:
         description: 'The optional Git commit message to use.'
         required: false
@@ -102,6 +107,9 @@ on:
       pull-request-number:
         description: 'The number of the Pull Request created by the workflow if the .NET SDK is updated.'
         value: ${{ jobs.update-dotnet-sdk.outputs.pull-request-number }}
+      pull-requests-closed:
+        description: 'A JSON array of the numbers of any pull requests that were closed as superseded.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.pull-requests-closed }}
       sdk-updated:
         description: 'Whether the .NET SDK was updated by the workflow.'
         value: ${{ jobs.update-dotnet-sdk.outputs.sdk-updated }}
@@ -138,6 +146,7 @@ jobs:
       branch-name: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
       pull-request-html-url: ${{ steps.update-dotnet-sdk.outputs.pull-request-html-url }}
       pull-request-number: ${{ steps.update-dotnet-sdk.outputs.pull-request-number }}
+      pull-requests-closed: ${{ steps.update-dotnet-sdk.outputs.pull-requests-closed }}
       sdk-updated: ${{ steps.update-dotnet-sdk.outputs.sdk-updated }}
       sdk-version: ${{ steps.update-dotnet-sdk.outputs.sdk-version }}
       security: ${{ steps.update-dotnet-sdk.outputs.security }}
@@ -203,6 +212,7 @@ jobs:
       with:
         branch-name: ${{ inputs.branch-name }}
         channel: ${{ inputs.channel }}
+        close-superseded: ${{ inputs.close-superseded }}
         commit-message: ${{ inputs.commit-message }}
         commit-message-prefix: ${{ inputs.commit-message-prefix }}
         dry-run: ${{ inputs.dry-run }}
