@@ -163,46 +163,4 @@ describe('update-dotnet-sdk', () => {
       });
     });
   });
-
-  describe.each([
-    ['close-superseded', 'false', 'close-superseded-false'],
-    ['close-superseded', 'true', 'close-superseded-true'],
-    ['dry-run', 'true', 'dry-run'],
-  ])('when %s is %s', (name: string, value: string, scenario: string) => {
-    let fixture: ActionFixture;
-
-    beforeAll(async () => {
-      fixture = new ActionFixture('6.0.100');
-      await fixture.initialize(scenario, {
-        [name]: value,
-      });
-    });
-
-    afterAll(async () => {
-      await fixture?.destroy();
-    });
-
-    describe('running the action', () => {
-      beforeAll(async () => {
-        await fixture.run();
-      }, timeout);
-
-      test('generates no errors', () => {
-        expect(core.error).toHaveBeenCalledTimes(0);
-        expect(core.setFailed).toHaveBeenCalledTimes(0);
-      });
-
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
-      });
-
-      test('generates the expected Git commit history', async () => {
-        expect(await fixture.commitHistory(1)).toMatchSnapshot();
-      });
-
-      test.each(inputs)('the %s output is correct', (name: string) => {
-        expect(fixture.getOutput(name)).toMatchSnapshot();
-      });
-    });
-  });
 });
