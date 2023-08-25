@@ -31,7 +31,7 @@ export class ActionFixture {
     return this.tempDir;
   }
 
-  async initialize(fixtureName: string | null = null): Promise<void> {
+  async initialize(fixtureName: string | null = null, inputs: Record<string, string> = {}): Promise<void> {
     this.tempDir = await createTemporaryDirectory();
     this.globalJsonPath = path.join(this.tempDir, 'global.json');
     this.outputPath = path.join(this.tempDir, 'github-outputs');
@@ -39,7 +39,7 @@ export class ActionFixture {
     await createEmptyFile(this.outputPath);
     await createGitRepo(this.globalJsonPath, this.initialSdkVersion);
 
-    this.setupEnvironment();
+    this.setupEnvironment(inputs);
     this.setupMocks();
 
     if (fixtureName) {
@@ -86,8 +86,8 @@ export class ActionFixture {
     return globalJson.sdk.version;
   }
 
-  private setupEnvironment(): void {
-    const inputs = {
+  private setupEnvironment(inputs: Record<string, string>): void {
+    const environment = {
       'GITHUB_API_URL': 'https://github.local/api/v3',
       'GITHUB_OUTPUT': this.outputPath,
       'GITHUB_REPOSITORY': this.repo,
@@ -95,6 +95,7 @@ export class ActionFixture {
       'GITHUB_SERVER_URL': 'https://github.local',
       'INPUT_CHANNEL': this.channel,
       'INPUT_COMMIT-MESSAGE-PREFIX': this.commitMessagePrefix,
+      'INPUT_GENERATE-STEP-SUMMARY': 'true',
       'INPUT_GLOBAL-JSON-FILE': this.globalJsonPath,
       'INPUT_LABELS': 'foo,bar',
       'INPUT_QUALITY': this.quality,
@@ -105,7 +106,11 @@ export class ActionFixture {
     };
 
     for (const key in inputs) {
-      process.env[key] = inputs[key as keyof typeof inputs];
+      environment[`INPUT_${key.toUpperCase()}`] = inputs[key];
+    }
+
+    for (const key in environment) {
+      process.env[key] = environment[key as keyof typeof inputs];
     }
   }
 
