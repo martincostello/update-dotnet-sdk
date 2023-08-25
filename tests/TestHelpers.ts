@@ -36,7 +36,7 @@ export async function createGitRepo(globalJsonPath: string, sdkVersion: string):
     await execGit(args, cwd, ignoreReturnCode);
   };
 
-  await git('init');
+  await git('init', '--initial-branch=main');
   await git('config', 'core.safecrlf', 'false');
   await git('config', 'user.email', 'test@test.local');
   await git('config', 'user.name', 'test');
