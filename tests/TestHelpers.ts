@@ -18,10 +18,11 @@ export async function createGlobalJson(globalJsonPath: string, sdkVersion: strin
   await fs.promises.writeFile(
     globalJsonPath,
     `{
-    "sdk": {
-      "version": "${sdkVersion}"
-    }
-  }`,
+  "sdk": {
+    "version": "${sdkVersion}"
+  }
+}
+`,
     { encoding: 'utf8' }
   );
 }
@@ -40,6 +41,7 @@ export async function createGitRepo(globalJsonPath: string, sdkVersion: string):
   await git('config', 'core.safecrlf', 'false');
   await git('config', 'user.email', 'test@test.local');
   await git('config', 'user.name', 'test');
+  await git('remote', 'add', 'origin', 'https://github.local/martincostello/update-dotnet-sdk.git');
   await git('add', '.');
   await git('commit', '-m', 'Initial commit');
 }
