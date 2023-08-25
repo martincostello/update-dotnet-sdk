@@ -1,0 +1,71 @@
+{
+  "scenarios": [
+    {
+      "basePath": "https://aka.ms",
+      "path": "/dotnet/8.0/daily/sdk-productVersion.txt",
+      "persist": true,
+      "response": "8.0.100-rc.2.23424.12\n",
+      "responseHeaders": {
+        "content-type": "text/plain"
+      }
+    },
+    {
+      "basePath": "https://aka.ms",
+      "path": "/dotnet/8.0.1xx/daily/sdk-productVersion.txt",
+      "persist": true,
+      "response": "8.0.100-rc.2.23424.12\n",
+      "responseHeaders": {
+        "content-type": "text/plain"
+      }
+    },
+    {
+      "basePath": "https://aka.ms",
+      "path": "/dotnet/8.0.1xx-preview7/daily/sdk-productVersion.txt",
+      "persist": true,
+      "response": "8.0.100-preview.7.23363.2\n",
+      "responseHeaders": {
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "basePath": "https://dotnetbuilds.azureedge.net",
+      "path": "/public/Sdk/8.0.100-preview.7.23363.2/productCommit-win-x64.json",
+      "persist": true,
+      "status": 404,
+      "response": "<Error>\n<Code>BlobNotFound</Code>\n<Message>The specified blob does not exist. RequestId:abb74f82-901e-0055-5136-d7c81c000000 Time:2023-08-25T09:26:00.8082765Z</Message>\n</Error>\n"
+    },
+    {
+      "basePath": "https://dotnetbuilds.azureedge.net",
+      "path": "/public/Sdk/8.0.100-preview.7.23363.2/productCommit-win-x64.txt",
+      "persist": true,
+      "response": "installer_commit=\"19da2758bbeff00c686c491b18c6318c187c59c4\" installer_version=\"8.0.100-preview.7.23363.2\"\nruntime_commit=\"e70f0dfc1a4e8256f91c8dd20042a0e21a4cd8c8\" runtime_version=\"8.0.0-preview.7.23361.9\"\naspnetcore_commit=\"bad855959a99257bc6f194dd19ecd6c9aeb03acb\" aspnetcore_version=\"8.0.0-preview.7.23362.32\"\nwindowsdesktop_commit=\"b6eb22982ba504a732c565ae8d2ab4ee7e05750f\" windowsdesktop_version=\"8.0.0-preview.7.23362.11\"\nsdk_commit=\"a4b77d4fd5e878fd42aef22d86c0668c90888da6\" sdk_version=\"8.0.100-preview.7.23362.35\"\n"
+    },
+    {
+      "basePath": "https://dotnetbuilds.azureedge.net",
+      "path": "/public/Sdk/8.0.100-rc.2.23424.12/productCommit-win-x64.json",
+      "persist": true,
+      "response": {
+        "installer": {
+          "commit": "e37e1c3e4ea3cd61916be54d132bd60dd729caf5",
+          "version": "8.0.100-rc.2.23424.12"
+        },
+        "runtime": {
+          "commit": "3d1b2543593f0dc3fbbdc2b8cad9b1f8e7554af6",
+          "version": "8.0.0-rc.2.23423.11"
+        },
+        "aspnetcore": {
+          "commit": "8c7a342c6754dabccd6a9540f5db4acd66c84241",
+          "version": "8.0.0-rc.2.23424.8"
+        },
+        "windowsdesktop": {
+          "commit": "9de8c00b662e8144f7415a2c8bd587ba9264fa9f",
+          "version": "8.0.0-rc.2.23421.4"
+        },
+        "sdk": {
+          "commit": "b281701504d2ea20ee76387b7a146ba30ead17eb",
+          "version": "8.0.100-rc.2.23424.23"
+        }
+      }
+    }
+  ]
+}
