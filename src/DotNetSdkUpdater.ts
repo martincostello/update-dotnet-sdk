@@ -44,7 +44,7 @@ export class DotNetSdkUpdater {
       const month = Math.floor(monthDay / 50);
       const day = monthDay - month * 50;
 
-      return new Date(year, month - 1, day);
+      return new Date(Date.UTC(year, month - 1, day));
     };
 
     const getReleaseNotes = (commit: string): string => {
