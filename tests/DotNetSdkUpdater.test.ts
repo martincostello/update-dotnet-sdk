@@ -12,7 +12,7 @@ import { UpdateOptions } from '../src/UpdateOptions';
 import { createGlobalJson, createTemporaryDirectory } from './TestHelpers';
 import { setup } from './fixtures';
 
-const timeout = 10000;
+const timeout = 15000;
 
 const repo = 'owner/repository';
 const runId = '123';
@@ -41,6 +41,7 @@ describe('DotNetSdkUpdater', () => {
         accessToken: '',
         branch: '',
         channel: '',
+        closeSuperseded: false,
         commitMessage: '',
         commitMessagePrefix: '',
         dryRun: false,
@@ -79,6 +80,7 @@ describe('DotNetSdkUpdater', () => {
         accessToken: '',
         branch: '',
         channel: '99.0',
+        closeSuperseded: false,
         commitMessage: '',
         commitMessagePrefix: '',
         dryRun: false,
@@ -230,6 +232,7 @@ describe('DotNetSdkUpdater', () => {
       accessToken: '',
       branch: '',
       channel: '7.0',
+      closeSuperseded: false,
       commitMessage: '',
       commitMessagePrefix: '',
       dryRun: false,

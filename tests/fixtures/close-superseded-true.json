@@ -55,8 +55,92 @@
           "head": {
             "ref": "update-dotnet-sdk-6.0.413"
           }
+        },
+        {
+          "url": "https://github.local/api/v3/repos/martincostello/update-dotnet-sdk/pulls/41",
+          "number": 41,
+          "state": "open",
+          "title": "Update .NET SDK to 6.0.412",
+          "user": {
+            "login": "github-actions[bot]"
+          },
+          "head": {
+            "ref": "update-dotnet-sdk-6.0.412"
+          }
+        },
+        {
+          "url": "https://github.local/api/v3/repos/martincostello/update-dotnet-sdk/pulls/40",
+          "number": 40,
+          "state": "open",
+          "title": "Update .NET SDK to 6.0.411",
+          "user": {
+            "login": "github-actions[bot]"
+          },
+          "head": {
+            "ref": "update-dotnet-sdk-6.0.411"
+          }
+        },
+        {
+          "url": "https://github.local/api/v3/repos/martincostello/update-dotnet-sdk/pulls/39",
+          "number": 39,
+          "state": "open",
+          "title": "Update .NET SDK to latest",
+          "user": {
+            "login": "mona-octocat"
+          },
+          "head": {
+            "ref": "update-sdk"
+          }
         }
       ]
+    },
+    {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/issues/41/comments",
+      "method": "POST",
+      "body": {
+        "body": "Superseded by #42."
+      },
+      "response": {}
+    },
+    {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/pulls/41",
+      "method": "PATCH",
+      "body": {
+        "state": "closed"
+      },
+      "response": {}
+    },
+    {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/git/refs/heads%2Fupdate-dotnet-sdk-6.0.412",
+      "method": "DELETE",
+      "response": {}
+    },
+    {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/issues/40/comments",
+      "method": "POST",
+      "body": {
+        "body": "Superseded by #42."
+      },
+      "response": {}
+    },
+    {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/pulls/40",
+      "method": "PATCH",
+      "body": {
+        "state": "closed"
+      },
+      "response": {}
+    },
+    {
+      "basePath": "https://github.local",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/git/refs/heads%2Fupdate-dotnet-sdk-6.0.411",
+      "method": "DELETE",
+      "response": {}
     },
     {
       "basePath": "https://raw.githubusercontent.com",

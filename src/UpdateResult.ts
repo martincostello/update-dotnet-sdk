@@ -6,6 +6,7 @@ export interface UpdateResult {
   pullRequestNumber: number;
   pullRequestUrl: string;
   security: boolean;
+  supersedes: number[];
   updated: boolean;
   version: string;
 }

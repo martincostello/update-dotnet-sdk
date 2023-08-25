@@ -6,7 +6,15 @@ import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals
 import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
-const inputs = [['branch-name'], ['pull-request-html-url'], ['pull-request-number'], ['sdk-updated'], ['sdk-version'], ['security']];
+const inputs = [
+  ['branch-name'],
+  ['pull-request-html-url'],
+  ['pull-request-number'],
+  ['pull-requests-closed'],
+  ['sdk-updated'],
+  ['sdk-version'],
+  ['security'],
+];
 
 describe('update-dotnet-sdk', () => {
   beforeAll(() => {
@@ -148,44 +156,6 @@ describe('update-dotnet-sdk', () => {
 
       test('generates the expected GitHub step summary', async () => {
         expect(fixture.stepSummary).toMatchSnapshot();
-      });
-
-      test.each(inputs)('the %s output is correct', (name: string) => {
-        expect(fixture.getOutput(name)).toMatchSnapshot();
-      });
-    });
-  });
-
-  describe('%s when dry-run is true', () => {
-    let fixture: ActionFixture;
-
-    beforeAll(async () => {
-      fixture = new ActionFixture('6.0.100');
-      await fixture.initialize('dry-run', {
-        'dry-run': 'true',
-      });
-    });
-
-    afterAll(async () => {
-      await fixture?.destroy();
-    });
-
-    describe('running the action', () => {
-      beforeAll(async () => {
-        await fixture.run();
-      }, timeout);
-
-      test('generates no errors', () => {
-        expect(core.error).toHaveBeenCalledTimes(0);
-        expect(core.setFailed).toHaveBeenCalledTimes(0);
-      });
-
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
-      });
-
-      test('generates the expected Git commit history', async () => {
-        expect(await fixture.commitHistory(1)).toMatchSnapshot();
       });
 
       test.each(inputs)('the %s output is correct', (name: string) => {

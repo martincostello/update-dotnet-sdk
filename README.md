@@ -349,6 +349,7 @@ For more information about daily builds, see the [.NET SDK Installer repository]
 |:--|:--|:--|
 | `branch-name` | The optional Git branch name to use. | - |
 | `channel` | The optional .NET release channel to download the SDK for (6.0, 7.0, etc.). | The channel derived from the current SDK version. |
+| `close-superseded` | If true, any existing pull requests superseded by any pull request opened by the action are closed. | `true` |
 | `commit-message` | The optional Git commit message to use. | - |
 | `commit-message-prefix` | The optional Git commit message prefix to use if `commit-message` is not specified. | - |
 | `generate-step-summary` | If true, will output a summary of any .NET SDK update to `$GITHUB_STEP_SUMMARY`. | `true` |
@@ -367,6 +368,7 @@ For more information about daily builds, see the [.NET SDK Installer repository]
 | `branch-name` | The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-request-number` | The number of the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-request-html-url` | The HTML URL of the Pull Request created by the action if the .NET SDK is updated. |
+| `pull-requests-closed` | A JSON array of the numbers of any pull requests that were closed as superseded. |
 | `sdk-updated` | Whether the .NET SDK was updated by the action. |
 | `sdk-version` | The latest version of the .NET SDK for the specified channel when the action completed. |
 | `security` | Whether any .NET SDK update includes security fixes. |

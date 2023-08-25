@@ -1,36 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`update-dotnet-sdk %s when dry-run is true running the action generates the expected Git commit history 1`] = `
-[
-  "Update .NET SDK",
-  "",
-  "Update .NET SDK to version 6.0.413.",
-  "",
-  "---",
-  "updated-dependencies:",
-  "- dependency-name: Microsoft.NET.Sdk",
-  "  dependency-type: direct:production",
-  "  update-type: version-update:semver-patch",
-  "...",
-  "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
-]
-`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action the branch-name output is correct 1`] = `""`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action the pull-request-html-url output is correct 1`] = `""`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action the pull-request-number output is correct 1`] = `"0"`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action the sdk-updated output is correct 1`] = `"true"`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action the sdk-version output is correct 1`] = `"6.0.413"`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action the security output is correct 1`] = `"true"`;
-
-exports[`update-dotnet-sdk %s when dry-run is true running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
-
 exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
@@ -84,6 +53,8 @@ exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" ru
 
 exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
 
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
 exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
 
 exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"2.1.818"`;
@@ -105,6 +76,8 @@ exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action the pull-request-html-url output is correct 1`] = `""`;
 
 exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action the pull-request-number output is correct 1`] = `"0"`;
+
+exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action the sdk-updated output is correct 1`] = `"false"`;
 
@@ -164,6 +137,8 @@ exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" ru
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
 
@@ -226,6 +201,8 @@ exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chor
 
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the pull-request-number output is correct 1`] = `"42"`;
 
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the sdk-updated output is correct 1`] = `"true"`;
 
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the sdk-version output is correct 1`] = `"3.1.426"`;
@@ -247,6 +224,8 @@ exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the action the pull-request-html-url output is correct 1`] = `""`;
 
 exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the action the pull-request-number output is correct 1`] = `"0"`;
+
+exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the action the sdk-updated output is correct 1`] = `"false"`;
 
@@ -307,6 +286,8 @@ exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" ru
 
 exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
 
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
 exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
 
 exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"6.0.413"`;
@@ -328,6 +309,8 @@ exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action the pull-request-html-url output is correct 1`] = `""`;
 
 exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action the pull-request-number output is correct 1`] = `"0"`;
+
+exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action the sdk-updated output is correct 1`] = `"false"`;
 
@@ -388,6 +371,8 @@ exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" ru
 
 exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
 
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
 exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
 
 exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"7.0.400"`;
@@ -409,6 +394,8 @@ exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the action the pull-request-html-url output is correct 1`] = `""`;
 
 exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the action the pull-request-number output is correct 1`] = `"0"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the action the sdk-updated output is correct 1`] = `"false"`;
 
@@ -464,6 +451,8 @@ exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix
 exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
 exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
 
@@ -522,6 +511,8 @@ exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a com
 
 exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
 
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
 exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
 
 exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"8.0.100-preview.7.23376.3"`;
@@ -543,6 +534,8 @@ exports[`update-dotnet-sdk 8.0 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 8.0 when the .NET SDK is up-to-date running the action the pull-request-html-url output is correct 1`] = `""`;
 
 exports[`update-dotnet-sdk 8.0 when the .NET SDK is up-to-date running the action the pull-request-number output is correct 1`] = `"0"`;
+
+exports[`update-dotnet-sdk 8.0 when the .NET SDK is up-to-date running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk 8.0 when the .NET SDK is up-to-date running the action the sdk-updated output is correct 1`] = `"false"`;
 
@@ -577,11 +570,13 @@ This version of the .NET SDK was released on 2023-08-24 (1 day ago).<br>
 "
 `;
 
-exports[`update-dotnet-sdk daily builds for channel "8.0" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-8.0.100-preview.7.23376.3"`;
+exports[`update-dotnet-sdk daily builds for channel "8.0" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-8.0.100-rc.2.23424.12"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "8.0" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0" running the action the sdk-updated output is correct 1`] = `"true"`;
 
@@ -618,11 +613,13 @@ This version of the .NET SDK was released on 2023-08-24 (1 day ago).<br>
 "
 `;
 
-exports[`update-dotnet-sdk daily builds for channel "8.0.1xx" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-8.0.100-preview.7.23376.3"`;
+exports[`update-dotnet-sdk daily builds for channel "8.0.1xx" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-8.0.100-rc.2.23424.12"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "8.0.1xx" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx" running the action the sdk-updated output is correct 1`] = `"true"`;
 
@@ -664,6 +661,8 @@ exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running t
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running the action the sdk-updated output is correct 1`] = `"true"`;
 

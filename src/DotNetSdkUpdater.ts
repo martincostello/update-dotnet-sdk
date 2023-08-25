@@ -14,6 +14,11 @@ import { UpdateOptions } from './UpdateOptions';
 import { UpdateResult } from './UpdateResult';
 import { Writable } from 'stream';
 
+// eslint-disable-next-line import/no-unresolved
+import { PaginateInterface } from '@octokit/plugin-paginate-rest/dist-types/types';
+// eslint-disable-next-line import/no-unresolved
+import { Api } from '@octokit/plugin-rest-endpoint-methods/dist-types/types';
+
 export class DotNetSdkUpdater {
   private options: UpdateOptions;
   private repoPath: string;
@@ -259,6 +264,7 @@ export class DotNetSdkUpdater {
       pullRequestUrl: '',
       updated: false,
       security: false,
+      supersedes: [],
       version: update.current.sdkVersion,
     };
 
@@ -273,9 +279,11 @@ export class DotNetSdkUpdater {
 
       if (baseBranch) {
         const pullRequest = await this.createPullRequest(baseBranch, update);
+
         result.branchName = pullRequest.branch;
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
+        result.supersedes = pullRequest.supersedes;
 
         result.security = update.security;
         result.updated = true;
@@ -319,6 +327,7 @@ export class DotNetSdkUpdater {
       return {
         branch: '',
         number: 0,
+        supersedes: [],
         url: '',
       };
     }
@@ -330,9 +339,10 @@ export class DotNetSdkUpdater {
     core.info(`Created pull request #${response.data.number}: ${response.data.title}`);
     core.info(`View the pull request at ${response.data.html_url}`);
 
-    const result = {
+    const result: PullRequest = {
       branch: response.data.head.ref,
       number: response.data.number,
+      supersedes: [],
       url: response.data.html_url,
     };
 
@@ -352,9 +362,85 @@ export class DotNetSdkUpdater {
           core.error(error);
         }
       }
+
+      if (this.options.closeSuperseded) {
+        const superseded = await this.getSupersededPulls(octokit, {
+          number: result.number,
+          owner,
+          repo,
+          ref: base,
+          user: response.data.user?.login,
+        });
+
+        if (superseded.length > 0) {
+          const comment = `Superseded by #${result.number}.`;
+
+          for (const pull of superseded) {
+            core.debug(`Closing pull request ${pull.number}.`);
+
+            await octokit.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pull.number,
+              body: comment,
+            });
+            await octokit.rest.pulls.update({
+              owner,
+              repo,
+              pull_number: pull.number,
+              state: 'closed',
+            });
+            await octokit.rest.git.deleteRef({
+              owner,
+              repo,
+              ref: `heads/${pull.ref}`,
+            });
+
+            result.supersedes.push(pull.number);
+          }
+        }
+      }
     }
 
     return result;
+  }
+
+  private async getSupersededPulls(
+    octokit: PaginatedApi,
+    created: {
+      number: number;
+      owner: string;
+      repo: string;
+      ref: string;
+      user?: string;
+    }
+  ): Promise<
+    {
+      number: number;
+      ref: string;
+    }[]
+  > {
+    const pulls = await octokit.paginate(octokit.rest.pulls.list, {
+      owner: created.owner,
+      repo: created.repo,
+      base: created.ref,
+      direction: 'desc',
+      state: 'open',
+    });
+
+    const titlePrefix = 'Update .NET SDK to ';
+
+    const superseded = pulls
+      .filter((pull) => pull.number !== created.number)
+      .filter((pull) => pull.user && pull.user.login === created.user)
+      .filter((pull) => pull.title.startsWith(titlePrefix))
+      .map((pull) => ({
+        number: pull.number,
+        ref: pull.head.ref,
+      }));
+
+    superseded.reverse();
+    return superseded;
   }
 
   private async execGit(args: string[], ignoreErrors: Boolean = false): Promise<string> {
@@ -699,6 +785,7 @@ interface CveInfo {
 interface PullRequest {
   branch: string;
   number: number;
+  supersedes: number[];
   url: string;
 }
 
@@ -785,6 +872,10 @@ enum Quality {
   validated = 'validated',
   preview = 'preview',
 }
+
+type PaginatedApi = Api & {
+  paginate: PaginateInterface;
+};
 
 class NullWritable extends Writable {
   _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
