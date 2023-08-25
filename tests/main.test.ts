@@ -2,7 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as core from '@actions/core';
-import { afterAll, beforeAll, describe, expect, jest, test, xdescribe } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals';
 import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
