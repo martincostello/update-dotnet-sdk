@@ -738,6 +738,23 @@ exports[`update-dotnet-sdk when close-superseded is true running the action the 
 
 exports[`update-dotnet-sdk when close-superseded is true running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
 
+exports[`update-dotnet-sdk when dry-run is true running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 6.0.413.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+]
+`;
+
 exports[`update-dotnet-sdk when dry-run is true running the action the branch-name output is correct 1`] = `""`;
 
 exports[`update-dotnet-sdk when dry-run is true running the action the pull-request-html-url output is correct 1`] = `""`;
