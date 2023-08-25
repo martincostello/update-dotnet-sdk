@@ -35,3 +35,4 @@ jobs:
         echo "Branch name: ${{ needs.update-sdk.outputs.branch-name }}"
         echo "PR number: ${{ needs.update-sdk.outputs.pull-request-number }}"
         echo "PR URL: ${{ needs.update-sdk.outputs.pull-request-html-url }}"
+        echo "PR(s) closed: ${{ needs.update-sdk.outputs.pull-requests-closed }}"
