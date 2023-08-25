@@ -107,44 +107,6 @@ describe('update-dotnet-sdk', () => {
     });
   });
 
-  describe('%s when dry-run is true', () => {
-    let fixture: ActionFixture;
-
-    beforeAll(async () => {
-      fixture = new ActionFixture('6.0.100');
-      await fixture.initialize('dry-run', {
-        'dry-run': 'true',
-      });
-    });
-
-    afterAll(async () => {
-      await fixture?.destroy();
-    });
-
-    describe('running the action', () => {
-      beforeAll(async () => {
-        await fixture.run();
-      }, timeout);
-
-      test('generates no errors', () => {
-        expect(core.error).toHaveBeenCalledTimes(0);
-        expect(core.setFailed).toHaveBeenCalledTimes(0);
-      });
-
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
-      });
-
-      test('generates the expected Git commit history', async () => {
-        expect(await fixture.commitHistory(1)).toMatchSnapshot();
-      });
-
-      test.each(inputs)('the %s output is correct', (name: string) => {
-        expect(fixture.getOutput(name)).toMatchSnapshot();
-      });
-    });
-  });
-
   describe.each([
     ['daily', '8.0'],
     ['daily', '8.0.1xx'],
@@ -186,6 +148,44 @@ describe('update-dotnet-sdk', () => {
 
       test('generates the expected GitHub step summary', async () => {
         expect(fixture.stepSummary).toMatchSnapshot();
+      });
+
+      test.each(inputs)('the %s output is correct', (name: string) => {
+        expect(fixture.getOutput(name)).toMatchSnapshot();
+      });
+    });
+  });
+
+  describe('%s when dry-run is true', () => {
+    let fixture: ActionFixture;
+
+    beforeAll(async () => {
+      fixture = new ActionFixture('6.0.100');
+      await fixture.initialize('dry-run', {
+        'dry-run': 'true',
+      });
+    });
+
+    afterAll(async () => {
+      await fixture?.destroy();
+    });
+
+    describe('running the action', () => {
+      beforeAll(async () => {
+        await fixture.run();
+      }, timeout);
+
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
+      });
+
+      test('updates the SDK version in global.json', async () => {
+        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      });
+
+      test('generates the expected Git commit history', async () => {
+        expect(await fixture.commitHistory(1)).toMatchSnapshot();
       });
 
       test.each(inputs)('the %s output is correct', (name: string) => {
