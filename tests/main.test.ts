@@ -5,68 +5,141 @@ import * as core from '@actions/core';
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { ActionFixture } from './ActionFixture';
 
+const timeout = 30000;
+const inputs = [['branch-name'], ['pull-request-html-url'], ['pull-request-number'], ['sdk-updated'], ['sdk-version'], ['security']];
+
 describe('update-dotnet-sdk', () => {
   describe.each([
-    ['2.1.500', '', '2.1', 'Update .NET SDK'],
-    ['3.1.201', '', '3.1', 'Update .NET SDK'],
-    ['3.1.201', 'chore:', '3.1', 'chore: Update .NET SDK'],
-    ['6.0.100', '', '6.0', 'Update .NET SDK'],
-    ['7.0.100', '', '7.0', 'Update .NET SDK'],
-  ])(
-    'for the %s SDK with a commit prefix of "%s"',
-    (sdkVersion: string, commitMessagePrefix: string, expectedChannel: string, expectedCommitMessage: string) => {
-      let fixture: ActionFixture;
+    ['2.1', '2.1.500', ''],
+    ['3.1', '3.1.201', ''],
+    ['3.1', '3.1.201', 'chore:'],
+    ['6.0', '6.0.100', ''],
+    ['7.0', '7.0.100', ''],
+    ['8.0', '8.0.100-preview.6.23330.14', ''],
+  ])('%s for the %s SDK with a commit prefix of "%s"', (scenario: string, sdkVersion: string, commitMessagePrefix: string) => {
+    let fixture: ActionFixture;
 
+    beforeAll(async () => {
+      fixture = new ActionFixture(sdkVersion, commitMessagePrefix);
+      await fixture.initialize(scenario);
+    });
+
+    afterAll(async () => {
+      await fixture?.destroy();
+    });
+
+    describe('running the action', () => {
       beforeAll(async () => {
-        fixture = new ActionFixture(sdkVersion, commitMessagePrefix);
-        await fixture.initialize();
+        await fixture.run();
+      }, timeout);
+
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
       });
 
-      afterAll(async () => {
-        await fixture.destroy();
-      }, 5000);
-
-      describe('running the action', () => {
-        beforeAll(async () => {
-          await fixture.run();
-        }, 30000);
-
-        test('generates no errors', () => {
-          expect(core.error).toHaveBeenCalledTimes(0);
-          expect(core.setFailed).toHaveBeenCalledTimes(0);
-        });
-
-        test('updates the SDK version in global.json', async () => {
-          const actualSdkVersion = await fixture.sdkVersion();
-          expect(actualSdkVersion.startsWith(`${expectedChannel}.`)).toBe(true);
-          expect(actualSdkVersion).not.toBe(sdkVersion);
-        });
-
-        test('generates the expected Git commit message', async () => {
-          const actualCommitMessage = await fixture.commitMessage();
-          expect(actualCommitMessage.startsWith(expectedCommitMessage)).toBe(true);
-        });
-
-        test('outputs the branch name', () => {
-          expect(fixture.getOutput('branch-name')).toBe(`update-dotnet-sdk-${sdkVersion}`);
-        });
-
-        test('outputs the pull request URL', () => {
-          expect(fixture.getOutput('pull-request-html-url')).toBe(`https://github.local/${fixture.repo}/pull/${fixture.pullNumber}`);
-        });
-
-        test('outputs the pull request number', () => {
-          expect(fixture.getOutput('pull-request-number')).toBe(fixture.pullNumber);
-        });
-
-        test('outputs that the SDK was updated', () => {
-          expect(fixture.getOutput('sdk-updated')).toBe('true');
-        });
-
-        test('outputs that update includes security fixes', () => {
-          expect(fixture.getOutput('security')).toBe('true');
-        });
+      test('updates the SDK version in global.json', async () => {
+        expect(await fixture.sdkVersion()).toMatchSnapshot();
       });
-    }
-  );
+
+      test('generates the expected Git commit history', async () => {
+        expect(await fixture.commitHistory()).toMatchSnapshot();
+      });
+
+      test('generates the expected Git diff', async () => {
+        expect(await fixture.diff()).toMatchSnapshot();
+      });
+
+      test.each(inputs)('the %s output is correct', (name: string) => {
+        expect(fixture.getOutput(name)).toMatchSnapshot();
+      });
+    });
+  });
+
+  describe.each([
+    ['2.1', '2.1.818'],
+    ['3.1', '3.1.426'],
+    ['6.0', '6.0.413'],
+    ['7.0', '7.0.400'],
+    ['8.0', '8.0.100-preview.7.23376.3'],
+  ])('%s when the .NET SDK is up-to-date', (scenario: string, sdkVersion: string) => {
+    let fixture: ActionFixture;
+
+    beforeAll(async () => {
+      fixture = new ActionFixture(sdkVersion);
+      await fixture.initialize(scenario);
+    });
+
+    afterAll(async () => {
+      await fixture?.destroy();
+    });
+
+    describe('running the action', () => {
+      beforeAll(async () => {
+        await fixture.run();
+      }, timeout);
+
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
+      });
+
+      test('updates the SDK version in global.json', async () => {
+        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      });
+
+      test('generates the expected Git commit history', async () => {
+        expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      });
+
+      test.each(inputs)('the %s output is correct', (name: string) => {
+        expect(fixture.getOutput(name)).toMatchSnapshot();
+      });
+    });
+  });
+
+  describe.each([
+    ['daily', '8.0'],
+    ['daily', '8.0.1xx'],
+    ['daily', '8.0.1xx-preview7'],
+  ])('%s builds for channel "%s"', (quality: string, channel: string) => {
+    const sdkVersion = '8.0.100-preview.6.23330.14';
+
+    let fixture: ActionFixture;
+
+    beforeAll(async () => {
+      fixture = new ActionFixture(sdkVersion);
+      fixture.channel = channel;
+      fixture.quality = quality;
+
+      await fixture.initialize(`${quality}-${channel}`);
+    });
+
+    afterAll(async () => {
+      await fixture?.destroy();
+    });
+
+    describe('running the action', () => {
+      beforeAll(async () => {
+        await fixture.run();
+      }, timeout);
+
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
+      });
+
+      test('updates the SDK version in global.json', async () => {
+        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      });
+
+      test('generates the expected Git commit history', async () => {
+        expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      });
+
+      test.each(inputs)('the %s output is correct', (name: string) => {
+        expect(fixture.getOutput(name)).toMatchSnapshot();
+      });
+    });
+  });
 });

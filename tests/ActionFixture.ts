@@ -7,14 +7,12 @@ import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
 import { jest } from '@jest/globals';
+import { setup } from './fixtures';
 import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
 
-const github = require('@actions/github');
-
 export class ActionFixture {
   public channel: string = '';
-  public pullNumber: string = '42';
   public repo: string = 'martincostello/update-dotnet-sdk';
   public quality: string = '';
   public stepSummary: string = '';
@@ -33,7 +31,7 @@ export class ActionFixture {
     return this.tempDir;
   }
 
-  async initialize(): Promise<void> {
+  async initialize(fixtureName: string | null = null): Promise<void> {
     this.tempDir = await createTemporaryDirectory();
     this.globalJsonPath = path.join(this.tempDir, 'global.json');
     this.outputPath = path.join(this.tempDir, 'github-outputs');
@@ -43,6 +41,10 @@ export class ActionFixture {
 
     this.setupEnvironment();
     this.setupMocks();
+
+    if (fixtureName) {
+      await setup(fixtureName);
+    }
   }
 
   async run(): Promise<void> {
@@ -70,8 +72,13 @@ export class ActionFixture {
     return this.outputs[name];
   }
 
-  async commitMessage(): Promise<string> {
-    return await execGit(['log', '-1', '--pretty=%B'], this.tempDir);
+  async commitHistory(count: number = 2): Promise<string[]> {
+    const history = await execGit(['log', (count * -1).toString(10), '--pretty=%B'], this.tempDir);
+    return history.split('\n');
+  }
+
+  async diff(count: number = 1): Promise<string | string[]> {
+    return await execGit(['diff', `HEAD~${count}`, 'HEAD'], this.tempDir);
   }
 
   async sdkVersion(): Promise<string> {
@@ -91,6 +98,7 @@ export class ActionFixture {
       'INPUT_GLOBAL-JSON-FILE': this.globalJsonPath,
       'INPUT_LABELS': 'foo,bar',
       'INPUT_QUALITY': this.quality,
+      'INPUT_REPO': this.repo,
       'INPUT_REPO-TOKEN': 'my-token',
       'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
       'INPUT_USER-NAME': 'github-actions[bot]',
@@ -104,7 +112,6 @@ export class ActionFixture {
   private setupMocks(): void {
     jest.spyOn(core, 'setFailed').mockImplementation(() => {});
     this.setupLogging();
-    this.setupPullRequest();
   }
 
   private setupLogging(): void {
@@ -133,27 +140,5 @@ export class ActionFixture {
       return core.summary;
     });
     jest.spyOn(core.summary, 'write').mockReturnThis();
-  }
-
-  private setupPullRequest(): void {
-    github.getOctokit = jest.fn().mockReturnValue({
-      rest: {
-        issues: {
-          addLabels: () => Promise.resolve({}),
-        },
-        pulls: {
-          create: () =>
-            Promise.resolve({
-              data: {
-                number: this.pullNumber,
-                html_url: `https://github.local/${this.repo}/pull/${this.pullNumber}`,
-                head: {
-                  ref: `update-dotnet-sdk-${this.initialSdkVersion}`,
-                },
-              },
-            }),
-        },
-      },
-    });
   }
 }
