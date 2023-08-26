@@ -243,22 +243,29 @@ jobs:
       if : ${{ inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
       shell: pwsh
       env:
+        COMMIT_MESSAGE_PREFIX: ${{ inputs.commit-message-prefix }}
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_NOLOGO: true
+        DOTNET_OUTDATED_VERSION: ${{ inputs.dotnet-outdated-version || '*' }}
         DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
+        EXCLUDE_NUGET_PACKAGES: ${{ inputs.exclude-nuget-packages }}
+        INCLUDE_NUGET_PACKAGES: ${{ inputs.include-nuget-packages }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.user-email }}
+        GIT_AUTHOR_NAME: ${{ inputs.user-name }}
         NUGET_XMLDOC_MODE: skip
+        UPDATED_SDK_VERSION: ${{ steps.update-dotnet-sdk.outputs.sdk-version }}
       run: |
         $ErrorActionPreference = "Stop"
 
         Write-Host "Installing dotnet-outdated-tool..."
-        dotnet tool install --global dotnet-outdated-tool --version "${{ inputs.dotnet-outdated-version || '*' }}"
+        dotnet tool install --global dotnet-outdated-tool --version $env:DOTNET_OUTDATED_VERSION
 
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
 
-        $eligiblePackages = "${{ inputs.include-nuget-packages }}".Split(',')
-        $ineligiblePackages = "${{ inputs.exclude-nuget-packages }}".Split(',')
+        $eligiblePackages = $env:INCLUDE_NUGET_PACKAGES.Split(',')
+        $ineligiblePackages = $env:EXCLUDE_NUGET_PACKAGES.Split(',')
 
         $additionalArguments = @()
 
@@ -325,15 +332,15 @@ jobs:
           } else {
             $commitMessageLines += "Bump .NET NuGet packages"
             $commitMessageLines += ""
-            $commitMessageLines += "Bumps .NET dependencies to their latest versions for the .NET ${{ steps.update-dotnet-sdk.outputs.sdk-version }} SDK."
+            $commitMessageLines += "Bumps .NET dependencies to their latest versions for the .NET $($env:UPDATED_SDK_VERSION) SDK."
             $commitMessageLines += ""
             foreach ($dependency in $dependencies) {
               $commitMessageLines += "Bumps $($dependency.Name) from $($dependency.ResolvedVersion) to $($dependency.LatestVersion)."
             }
           }
 
-          if (-Not [string]::IsNullOrEmpty("${{ inputs.commit-message-prefix }}")) {
-            $commitMessageLines[0] = "${{ inputs.commit-message-prefix }} $($commitMessageLines[0])"
+          if (-Not [string]::IsNullOrEmpty($env:COMMIT_MESSAGE_PREFIX)) {
+            $commitMessageLines[0] = "$($env:COMMIT_MESSAGE_PREFIX) $($commitMessageLines[0])"
           }
 
           $commitMessageLines += ""
@@ -352,8 +359,8 @@ jobs:
 
           $commitMessage = $commitMessageLines -join "`n"
 
-          git config user.email "${{ inputs.user-email }}"
-          git config user.name "${{ inputs.user-name }}"
+          git config user.email $env:GIT_AUTHOR_EMAIL
+          git config user.name $env:GIT_AUTHOR_NAME
 
           git add .
           git commit -m $commitMessage -s
