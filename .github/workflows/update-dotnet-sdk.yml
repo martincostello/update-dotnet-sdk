@@ -259,7 +259,7 @@ jobs:
         $ErrorActionPreference = "Stop"
 
         Write-Host "Installing dotnet-outdated-tool..."
-        dotnet tool install --global dotnet-outdated-tool --version $env:DOTNET_OUTDATED_VERSION
+        dotnet tool install --global dotnet-outdated-tool --version "$env:DOTNET_OUTDATED_VERSION"
 
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
