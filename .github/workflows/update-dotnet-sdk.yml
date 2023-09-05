@@ -203,7 +203,7 @@ jobs:
     # and that pushes as that user trigger any CI workflows that may trigger
     # on push, such as if any NuGet packages are updated after the PR is opened.
     - name: Checkout code
-      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       with:
         ref: ${{ inputs.ref || '' }}
         repository: ${{ inputs.repo || github.repository }}
