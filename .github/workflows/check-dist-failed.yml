@@ -32,8 +32,8 @@ jobs:
             if (prs.length > 0) {
               const pr = prs[0];
               await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
+                owner,
+                repo,
                 issue_number: pr.number,
                 body: `Hi @${pr.user.login} :wave:\n\nIt looks like this pull request makes changes which require the contents of \`dist\` to be updated, but these files have not been included with your changes.\n\nPlease run \`build.ps1\` and commit the changes made to the \`dist\` directory to your branch and push them to this pull request.`,
               });
