@@ -1,12 +1,6 @@
 name: check-dist
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'src/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -20,7 +14,7 @@ permissions:
 
 jobs:
   check-dist:
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +58,7 @@ jobs:
 
       - name: Upload generated dist
         uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
-        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        if: failure() && steps.diff.conclusion == 'failure'
         with:
           name: dist
           path: dist/

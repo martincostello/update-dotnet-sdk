@@ -145,7 +145,7 @@ jobs:
     name: Update .NET SDK
     runs-on: ${{ inputs.runs-on }}
     # We don't want anyone forking this repository to also run this workflow
-    if: ${{ github.event.repository.fork == false }}
+    if: github.event.repository.fork == false
 
     outputs:
       branch-name: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
@@ -179,7 +179,7 @@ jobs:
     # If credentials for a GitHub application were provided, use them to generate a GitHub access token
     - name: Generate GitHub application token
       id: generate-application-token
-      if: ${{ steps.validate-secrets.outputs.use-github-app == 'true' }}
+      if: steps.validate-secrets.outputs.use-github-app == 'true'
       uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
       with:
         application_id: ${{ secrets.application-id }}
