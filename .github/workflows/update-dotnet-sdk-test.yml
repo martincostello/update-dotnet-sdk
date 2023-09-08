@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   update-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@main
+    uses: ./.github/workflows/update-dotnet-sdk.yml
     permissions:
       contents: write
       pull-requests: write
