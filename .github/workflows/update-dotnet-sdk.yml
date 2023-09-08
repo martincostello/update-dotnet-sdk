@@ -162,24 +162,27 @@ jobs:
     - name: Validate secrets
       id: validate-secrets
       uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+      env:
+        APPLICATION_ID: ${{ secrets.application-id }}
+        APPLICATION_PRIVATE_KEY: ${{ secrets.application-private-key }}
+        REPO_TOKEN: ${{ secrets.repo-token }}
       with:
+        result-encoding: string
         script: |
-          if (`${{ secrets.repo-token }}`.length !== 0) {
-            core.setOutput('use-github-app', 'false');
-          }
-          else {
-            if (`${{ secrets.application-id }}`.length === 0 ||
-                `${{ secrets.application-private-key }}`.length === 0) {
+          const token = process.env.REPO_TOKEN || '';
+          let useGitHubApp = 'false';
+          if (!token) {
+            if (!process.env.APPLICATION_ID || !process.env.APPLICATION_PRIVATE_KEY) {
               core.setFailed('Either the repo-token or both the application-id and application-private-key secrets must be set.');
-            } else {
-              core.setOutput('use-github-app', 'true');
             }
+            useGitHubApp = 'true';
           }
+          return useGitHubApp;
 
     # If credentials for a GitHub application were provided, use them to generate a GitHub access token
     - name: Generate GitHub application token
       id: generate-application-token
-      if: steps.validate-secrets.outputs.use-github-app == 'true'
+      if: steps.validate-secrets.outputs.result == 'true'
       uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
       with:
         application_id: ${{ secrets.application-id }}
@@ -189,13 +192,16 @@ jobs:
 
     - name: Assign GitHub token
       id: assign-token
+      env:
+        APPLICATION_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        REPO_TOKEN: ${{ secrets.repo-token }}
       shell: pwsh
       run: |
-        if (-Not [string]::IsNullOrEmpty("${{ secrets.repo-token }}")) {
-            "access-token=${{ secrets.repo-token }}" >> $env:GITHUB_OUTPUT
-        } else {
-            "access-token=${{ steps.generate-application-token.outputs.token }}" >> $env:GITHUB_OUTPUT
+        $accessToken = $env:REPO_TOKEN
+        if ([string]::IsNullOrEmpty($accessToken)) {
+            $accessToken = $env:APPLICATION_TOKEN
         }
+        "access-token=${accessToken}" >> $env:GITHUB_OUTPUT
 
     # Checkout the repository so the global.json file can be inspected and
     # updated if a new patch version of the SDK is available. The token is
