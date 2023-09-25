@@ -76,5 +76,5 @@ outputs:
   security:
     description: 'Whether any .NET SDK update includes security fixes.'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
