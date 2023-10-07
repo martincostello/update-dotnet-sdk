@@ -138,6 +138,8 @@ on:
 env:
   TERM: xterm
 
+permissions: {}
+
 jobs:
 
   update-dotnet-sdk:
