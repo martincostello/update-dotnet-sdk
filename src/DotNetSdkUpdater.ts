@@ -9,10 +9,10 @@ import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as github from '@actions/github';
 
-import { HttpClient } from '@actions/http-client';
 import { UpdateOptions } from './UpdateOptions';
 import { UpdateResult } from './UpdateResult';
 import { Writable } from 'stream';
+import { fetch, Response } from 'undici';
 
 // eslint-disable-next-line import/no-unresolved
 import { PaginateInterface } from '@octokit/plugin-paginate-rest/dist-types/types';
@@ -482,10 +482,9 @@ export class DotNetSdkUpdater {
     return commandOutput.trimEnd();
   }
 
-  private static createHttpClient(): HttpClient {
-    return new HttpClient('martincostello/update-dotnet-sdk', [], {
-      allowRetries: true,
-      maxRetries: 3,
+  private static async httpGet(url: string): Promise<Response> {
+    return await fetch(url, {
+      headers: new Headers([['User-Agent', 'martincostello/update-dotnet-sdk']]),
     });
   }
 
@@ -505,24 +504,19 @@ export class DotNetSdkUpdater {
     const versionUrl = `https://aka.ms/dotnet/${channel}/${quality}/sdk-productVersion.txt`;
     core.debug(`Downloading .NET ${channel} daily SDK version from ${versionUrl}`);
 
-    const httpClient = DotNetSdkUpdater.createHttpClient();
-    const response = await httpClient.get(versionUrl);
+    const response = await DotNetSdkUpdater.httpGet(versionUrl);
 
-    if (response.message.statusCode && response.message.statusCode >= 400) {
-      throw new Error(`Failed to get product version for channel ${channel} - HTTP status ${response.message.statusCode}`);
+    if (response.status && response.status >= 400) {
+      throw new Error(`Failed to get product version for channel ${channel} - HTTP status ${response.status}`);
     }
 
-    if (
-      !(
-        response.message.headers['content-type'] === 'text/plain' || response.message.headers['content-type'] === 'application/octet-stream'
-      )
-    ) {
-      throw new Error(
-        `Failed to get product version for channel ${channel} as plain text. Content-Type: ${response.message.headers['content-type']}`
-      );
+    const contentType = response.headers.get('content-type');
+
+    if (!(contentType === 'text/plain' || contentType === 'application/octet-stream')) {
+      throw new Error(`Failed to get product version for channel ${channel} as plain text. Content-Type: ${contentType}`);
     }
 
-    const versionRaw = await response.readBody();
+    const versionRaw = await response.text();
     const sdkVersion = versionRaw.trim();
 
     const versions = await DotNetSdkUpdater.getSdkProductCommits(sdkVersion);
@@ -553,32 +547,34 @@ export class DotNetSdkUpdater {
     const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'json');
     core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}...`);
 
-    const httpClient = DotNetSdkUpdater.createHttpClient();
-    const response = await httpClient.getJson<SdkProductCommits>(commitsUrl);
+    const response = await DotNetSdkUpdater.httpGet(commitsUrl);
 
-    if (response.statusCode === 404) {
+    if (response.status === 404) {
       return null;
-    } else if (response.statusCode >= 400) {
-      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.statusCode}`);
-    } else if (!response.result) {
+    } else if (response.status >= 400) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.status}`);
+    }
+
+    const commits = await response.json();
+
+    if (!commits) {
       throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion}.`);
     }
 
-    return response.result;
+    return commits as SdkProductCommits;
   }
 
   private static async getSdkProductCommitsFromText(sdkVersion: string): Promise<SdkProductCommits> {
     const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'txt');
     core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}`);
 
-    const httpClient = DotNetSdkUpdater.createHttpClient();
-    const response = await httpClient.get(commitsUrl);
+    const response = await DotNetSdkUpdater.httpGet(commitsUrl);
 
-    if (response.message.statusCode && response.message.statusCode >= 400) {
-      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.message.statusCode}`);
+    if (response.status && response.status >= 400) {
+      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.status}`);
     }
 
-    const commits = await response.readBody();
+    const commits = await response.text();
 
     const getValue = (component: string, property: string): string => {
       const regex = new RegExp(`${component}_${property}="([^"]+)"`);
@@ -610,16 +606,19 @@ export class DotNetSdkUpdater {
 
     core.debug(`Downloading .NET ${channel} release notes JSON from ${releasesUrl}`);
 
-    const httpClient = DotNetSdkUpdater.createHttpClient();
-    const response = await httpClient.getJson<ReleaseChannel>(releasesUrl);
+    const response = await DotNetSdkUpdater.httpGet(releasesUrl);
 
-    if (response.statusCode >= 400) {
-      throw new Error(`Failed to get releases JSON for channel ${channel} - HTTP status ${response.statusCode}`);
-    } else if (!response.result) {
+    if (response.status >= 400) {
+      throw new Error(`Failed to get releases JSON for channel ${channel} - HTTP status ${response.status}`);
+    }
+
+    const releaseChannel = (await response.json()) as ReleaseChannel;
+
+    if (!releaseChannel) {
       throw new Error(`Failed to get releases JSON for channel ${channel}.`);
     }
 
-    return response.result;
+    return releaseChannel;
   }
 
   private static getReleaseForSdk(sdkVersion: string, channel: ReleaseChannel): ReleaseInfo {
