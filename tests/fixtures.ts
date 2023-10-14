@@ -12,7 +12,7 @@ type Fixture = {
 
 type Scenario = {
   basePath: string;
-  method?: 'DELETE' | 'GET' | 'PATCH' | 'POST';
+  method?: string;
   headers?: Record<string, string>;
   path: string;
   persist?: boolean;
