@@ -1,9 +1,10 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-import nock from 'nock';
-import { join } from 'path';
 import * as fs from 'fs';
+import { join } from 'path';
+import { MockAgent, setGlobalDispatcher } from 'undici';
+import { MockInterceptor } from 'undici/types/mock-interceptor';
 
 type Fixture = {
   scenarios: Scenario[];
@@ -21,7 +22,10 @@ type Scenario = {
   responseHeaders?: Record<string, string>;
 };
 
-nock.disableNetConnect();
+const agent = new MockAgent();
+
+agent.disableNetConnect();
+setGlobalDispatcher(agent);
 
 export async function setup(name: string): Promise<void> {
   const fileName = join(__dirname, 'fixtures', `${name}.json`);
@@ -29,30 +33,39 @@ export async function setup(name: string): Promise<void> {
   const fixture: Fixture = JSON.parse(json);
 
   for (const scenario of fixture.scenarios) {
-    let scope = nock(scenario.basePath);
+    const options: MockInterceptor.Options = {
+      method: scenario.method ?? 'GET',
+      path: scenario.path,
+    };
 
     if (scenario.headers) {
+      options.headers = {};
       for (const [key, value] of Object.entries(scenario.headers)) {
-        scope = scope.matchHeader(key, value);
+        options.headers[key] = value;
       }
     }
 
-    let interceptor: nock.Interceptor;
+    if (scenario.body) {
+      options.body = typeof scenario.body === 'string' ? scenario.body : JSON.stringify(scenario.body);
+    }
+
+    const responseOptions: MockInterceptor.MockResponseOptions = {
+      headers: {
+        'Content-Type': typeof scenario.response === 'string' ? 'text/plain' : 'application/json',
+      },
+    };
+
+    if (scenario.responseHeaders) {
+      responseOptions.headers = scenario.responseHeaders;
+    }
+
+    const scope = agent
+      .get(scenario.basePath)
+      .intercept(options)
+      .reply(scenario.status ?? 200, scenario.response, responseOptions);
 
     if (scenario.persist) {
-      scope = scope.persist();
+      scope.persist();
     }
-
-    if (scenario.method === 'DELETE') {
-      interceptor = scope.delete(scenario.path, scenario.body);
-    } else if (scenario.method === 'PATCH') {
-      interceptor = scope.patch(scenario.path, scenario.body);
-    } else if (scenario.method === 'POST') {
-      interceptor = scope.post(scenario.path, scenario.body);
-    } else {
-      interceptor = scope.get(scenario.path);
-    }
-
-    interceptor.reply(scenario.status ?? 200, scenario.response, scenario.responseHeaders);
   }
 }
