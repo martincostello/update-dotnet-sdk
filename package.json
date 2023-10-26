@@ -59,7 +59,7 @@
     "undici": "^5.26.5"
   },
   "devDependencies": {
-    "@octokit/types": "^12.1.0",
+    "@octokit/types": "^12.1.1",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "@vercel/ncc": "^0.38.1",
