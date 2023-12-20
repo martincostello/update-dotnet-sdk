@@ -12,7 +12,7 @@ An example Pull Request created by the action can be found [here][example-pull-r
 
 ```yml
 steps:
-- uses: actions/checkout@v3
+- uses: actions/checkout@v4
 - uses: martincostello/update-dotnet-sdk@v3
   with:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
     name: Update .NET SDK
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: martincostello/update-dotnet-sdk@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -295,7 +295,7 @@ of the current .NET SDK version on the branch which the workflow is run from.
 
 ```yml
 steps:
-- uses: actions/checkout@v3
+- uses: actions/checkout@v4
 - uses: martincostello/update-dotnet-sdk@v3
   with:
     quality: 'daily'
@@ -325,7 +325,7 @@ installer repository.
 
 ```yml
 steps:
-- uses: actions/checkout@v3
+- uses: actions/checkout@v4
 - uses: martincostello/update-dotnet-sdk@v3
   with:
     channel: '8.0.1xx-preview7'
