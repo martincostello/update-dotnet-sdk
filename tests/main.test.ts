@@ -170,7 +170,7 @@ describe('update-dotnet-sdk', () => {
     ['6.0', '{\r\n  "sdk": {\r\n    "version": "6.0.100"\r\n  }\r\n}\r\n', '\r\n', '}\r\n'],
     ['7.0', '{\r    "sdk": {\r        "version": "7.0.100"\r    }\r}', '\r', '}'],
   ])(
-    '%s for the %s SDK when the global.json has a custom format"',
+    '%s when the global.json file has a custom format"',
     (scenario: string, content: string, lineEndings: string, suffix: string) => {
       let fixture: ActionFixture;
 
