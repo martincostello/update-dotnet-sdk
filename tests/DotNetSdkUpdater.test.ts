@@ -9,7 +9,7 @@ import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 
 import { DotNetSdkUpdater } from '../src/DotNetSdkUpdater';
 import { UpdateOptions } from '../src/UpdateOptions';
-import { createGlobalJson, createTemporaryDirectory } from './TestHelpers';
+import { createGlobalJsonForVersion, createTemporaryDirectory } from './TestHelpers';
 import { setup } from './fixtures';
 
 const timeout = 15000;
@@ -35,7 +35,7 @@ describe('DotNetSdkUpdater', () => {
       tempDir = await createTemporaryDirectory();
 
       const globalJsonPath = path.join(tempDir, 'global.json');
-      await createGlobalJson(globalJsonPath, '99');
+      await createGlobalJsonForVersion(globalJsonPath, '99');
 
       updater = new DotNetSdkUpdater({
         accessToken: '',
@@ -74,7 +74,7 @@ describe('DotNetSdkUpdater', () => {
       tempDir = await createTemporaryDirectory();
 
       const globalJsonPath = path.join(tempDir, 'global.json');
-      await createGlobalJson(globalJsonPath, '99.0.100-preview.1.23115.2');
+      await createGlobalJsonForVersion(globalJsonPath, '99.0.100-preview.1.23115.2');
 
       updater = new DotNetSdkUpdater({
         accessToken: '',

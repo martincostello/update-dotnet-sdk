@@ -23,7 +23,8 @@ export class ActionFixture {
   private outputs: Record<string, string> = {};
 
   constructor(
-    private readonly initialSdkVersion: string,
+    private readonly initialSdkVersion: string | undefined = undefined,
+    private readonly initialGlobalJson: string | undefined = undefined,
     private readonly commitMessagePrefix = ''
   ) {}
 
@@ -37,7 +38,10 @@ export class ActionFixture {
     this.outputPath = path.join(this.tempDir, 'github-outputs');
 
     await createEmptyFile(this.outputPath);
-    await createGitRepo(this.globalJsonPath, this.initialSdkVersion);
+    await createGitRepo(this.globalJsonPath, {
+      sdkVersion: this.initialSdkVersion,
+      content: this.initialGlobalJson,
+    });
 
     this.setupEnvironment(inputs);
     this.setupMocks();
@@ -81,8 +85,12 @@ export class ActionFixture {
     return await execGit(['diff', `HEAD~${count}`, 'HEAD'], this.tempDir);
   }
 
+  async sdkContent(): Promise<string> {
+    return await fs.promises.readFile(this.globalJsonPath, { encoding: 'utf8' });
+  }
+
   async sdkVersion(): Promise<string> {
-    const globalJson = JSON.parse(await fs.promises.readFile(this.globalJsonPath, { encoding: 'utf8' }));
+    const globalJson = JSON.parse(await this.sdkContent());
     return globalJson.sdk.version;
   }
 

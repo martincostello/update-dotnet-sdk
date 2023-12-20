@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`update-dotnet-sdk 2.1 for the {
+    "sdk": {
+        "version": "2.1.500"
+  }
+}
+ SDK when the global.json has a custom format" running the action updates the SDK version in global.json 1`] = `"2.1.818"`;
+
 exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
@@ -84,6 +91,8 @@ exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action the sdk-version output is correct 1`] = `"2.1.818"`;
 
 exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action the security output is correct 1`] = `"false"`;
+
+exports[`update-dotnet-sdk 3.1 for the {"sdk":{"version":"3.1.201"}} SDK when the global.json has a custom format" running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
 
 exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
 [
@@ -233,6 +242,13 @@ exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the actio
 
 exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the action the security output is correct 1`] = `"false"`;
 
+exports[`update-dotnet-sdk 6.0 for the {
+  "sdk": {
+    "version": "6.0.100"
+  }
+}
+ SDK when the global.json has a custom format" running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
+
 exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
@@ -317,6 +333,8 @@ exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the actio
 exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action the sdk-version output is correct 1`] = `"6.0.413"`;
 
 exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action the security output is correct 1`] = `"false"`;
+
+exports[`update-dotnet-sdk 7.0 for the {    "sdk": {        "version": "7.0.100"    }} SDK when the global.json has a custom format" running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
 
 exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
 [
