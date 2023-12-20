@@ -14,21 +14,28 @@ export async function createTemporaryDirectory(): Promise<string> {
   return await fs.promises.mkdtemp(path.join(tmpdir(), 'update-dotnet-sdk-'));
 }
 
-export async function createGlobalJson(globalJsonPath: string, sdkVersion: string): Promise<void> {
-  await fs.promises.writeFile(
+export async function createGlobalJsonForVersion(globalJsonPath: string, sdkVersion: string): Promise<void> {
+  await createGlobalJson(
     globalJsonPath,
     `{
   "sdk": {
     "version": "${sdkVersion}"
   }
 }
-`,
-    { encoding: 'utf8' }
+`
   );
 }
 
-export async function createGitRepo(globalJsonPath: string, sdkVersion: string): Promise<void> {
-  await createGlobalJson(globalJsonPath, sdkVersion);
+export async function createGlobalJson(globalJsonPath: string, content: string): Promise<void> {
+  await fs.promises.writeFile(globalJsonPath, content, { encoding: 'utf8' });
+}
+
+export async function createGitRepo(globalJsonPath: string, globalJson: { sdkVersion?: string; content?: string }): Promise<void> {
+  if (globalJson.sdkVersion) {
+    await createGlobalJsonForVersion(globalJsonPath, globalJson.sdkVersion);
+  } else {
+    await createGlobalJson(globalJsonPath, globalJson.content ?? '');
+  }
 
   const cwd = path.dirname(globalJsonPath);
   const ignoreReturnCode = true;

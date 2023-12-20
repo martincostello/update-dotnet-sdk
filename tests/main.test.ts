@@ -33,7 +33,7 @@ describe('update-dotnet-sdk', () => {
     let fixture: ActionFixture;
 
     beforeAll(async () => {
-      fixture = new ActionFixture(sdkVersion, commitMessagePrefix);
+      fixture = new ActionFixture(sdkVersion, undefined, commitMessagePrefix);
       await fixture.initialize(scenario);
     });
 
@@ -163,4 +163,46 @@ describe('update-dotnet-sdk', () => {
       });
     });
   });
+
+  describe.each([
+    ['2.1', '{\n    "sdk": {\n        "version": "2.1.500"\n  }\n}\n', '\n', '}\n'],
+    ['3.1', '{"sdk":{"version":"3.1.201"}}', '', '}}'],
+    ['6.0', '{\r\n  "sdk": {\r\n    "version": "6.0.100"\r\n  }\r\n}\r\n', '\r\n', '}\r\n'],
+    ['7.0', '{\r    "sdk": {\r        "version": "7.0.100"\r    }\r}', '\r', '}'],
+  ])(
+    '%s when the global.json file has a custom format"',
+    (scenario: string, content: string, lineEndings: string, suffix: string) => {
+      let fixture: ActionFixture;
+
+      beforeAll(async () => {
+        fixture = new ActionFixture(undefined, content);
+        await fixture.initialize(scenario);
+      });
+
+      afterAll(async () => {
+        await fixture?.destroy();
+      });
+
+      describe('running the action', () => {
+        beforeAll(async () => {
+          await fixture.run();
+        }, timeout);
+
+        test('generates no errors', () => {
+          expect(core.error).toHaveBeenCalledTimes(0);
+          expect(core.setFailed).toHaveBeenCalledTimes(0);
+        });
+
+        test('updates the global.json file correctly', async () => {
+          const content = await fixture.sdkContent();
+          expect(content.includes(lineEndings)).toBe(true);
+          expect(content.endsWith(suffix)).toBe(true);
+        });
+
+        test('updates the SDK version in global.json', async () => {
+          expect(await fixture.sdkVersion()).toMatchSnapshot();
+        });
+      });
+    }
+  );
 });
