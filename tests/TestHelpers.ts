@@ -22,19 +22,15 @@ export async function createGlobalJsonForVersion(globalJsonPath: string, sdkVers
     "version": "${sdkVersion}"
   }
 }
-`);
-}
-
-export async function createGlobalJson(globalJsonPath: string, content: string): Promise<void> {
-  await fs.promises.writeFile(
-    globalJsonPath,
-    content,
-    { encoding: 'utf8' }
+`
   );
 }
 
-export async function createGitRepo(globalJsonPath: string, globalJson: { sdkVersion?: string ; content?: string }): Promise<void> {
+export async function createGlobalJson(globalJsonPath: string, content: string): Promise<void> {
+  await fs.promises.writeFile(globalJsonPath, content, { encoding: 'utf8' });
+}
 
+export async function createGitRepo(globalJsonPath: string, globalJson: { sdkVersion?: string; content?: string }): Promise<void> {
   if (globalJson.sdkVersion) {
     await createGlobalJsonForVersion(globalJsonPath, globalJson.sdkVersion);
   } else {
