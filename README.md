@@ -13,7 +13,7 @@ An example Pull Request created by the action can be found [here][example-pull-r
 ```yml
 steps:
 - uses: actions/checkout@v3
-- uses: martincostello/update-dotnet-sdk@v2
+- uses: martincostello/update-dotnet-sdk@v3
   with:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: martincostello/update-dotnet-sdk@v2
+    - uses: martincostello/update-dotnet-sdk@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -87,7 +87,7 @@ permissions:
 # See https://docs.github.com/actions/learn-github-actions/variables.
 jobs:
   update-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
     with:
       labels: "dependencies,.NET"
       user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
@@ -126,7 +126,7 @@ permissions:
 # echo "Git user email: $(gh api "/users/${app_name}[bot]" --jq ".id")+${app_name}[bot]@users.noreply.github.com"
 jobs:
   update-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
     with:
       labels: "dependencies,.NET"
       user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
@@ -164,7 +164,7 @@ permissions:
 
 jobs:
   update-sdk:
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
     permissions:
       contents: write
       pull-requests: write
@@ -207,7 +207,7 @@ permissions: {}
 jobs:
   update-sdk:
     name: 'update-${{ matrix.repo }}'
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
 
     concurrency:
       group: 'update-sdk-${{ matrix.repo }}'
@@ -245,7 +245,7 @@ permissions: {}
 jobs:
   update-sdk:
     name: 'update-${{ matrix.repo }}'
-    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v2
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
 
     concurrency:
       group: 'update-sdk-${{ matrix.repo }}'
@@ -296,7 +296,7 @@ of the current .NET SDK version on the branch which the workflow is run from.
 ```yml
 steps:
 - uses: actions/checkout@v3
-- uses: martincostello/update-dotnet-sdk@v2
+- uses: martincostello/update-dotnet-sdk@v3
   with:
     quality: 'daily'
     repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -326,7 +326,7 @@ installer repository.
 ```yml
 steps:
 - uses: actions/checkout@v3
-- uses: martincostello/update-dotnet-sdk@v2
+- uses: martincostello/update-dotnet-sdk@v3
   with:
     channel: '8.0.1xx-preview7'
     quality: 'daily'
