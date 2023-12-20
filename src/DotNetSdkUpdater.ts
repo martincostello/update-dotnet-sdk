@@ -2,7 +2,6 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 
 import * as core from '@actions/core';
@@ -153,8 +152,8 @@ export class DotNetSdkUpdater {
       parseInt(latestVersion[0], 10) > parseInt(currentVersion[0], 10)
         ? 'major'
         : parseInt(latestVersion[1], 10) > parseInt(currentVersion[1], 10)
-        ? 'minor'
-        : 'patch';
+          ? 'minor'
+          : 'patch';
 
     const messageLines = [
       'Update .NET SDK',
@@ -233,7 +232,8 @@ export class DotNetSdkUpdater {
   }
 
   public async tryUpdateSdk(): Promise<UpdateResult> {
-    const globalJson: GlobalJson = JSON.parse(await fs.promises.readFile(this.options.globalJsonPath, { encoding: 'utf8' }));
+    const globalJsonRaw = await fs.promises.readFile(this.options.globalJsonPath, { encoding: 'utf8' });
+    const globalJson: GlobalJson = JSON.parse(globalJsonRaw);
 
     let sdkVersion = '';
 
@@ -275,7 +275,7 @@ export class DotNetSdkUpdater {
     );
 
     if (update.current.sdkVersion !== update.latest.sdkVersion) {
-      const baseBranch = await this.applySdkUpdate(globalJson, update);
+      const baseBranch = await this.applySdkUpdate(globalJsonRaw, update);
 
       if (baseBranch) {
         const pullRequest = await this.createPullRequest(baseBranch, update);
@@ -673,15 +673,16 @@ export class DotNetSdkUpdater {
     }));
   }
 
-  private async applySdkUpdate(globalJson: GlobalJson, versions: SdkVersions): Promise<string | undefined> {
+  private async applySdkUpdate(globalJson: string, versions: SdkVersions): Promise<string | undefined> {
     core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}...`);
 
     // Get the base branch to use later to create the Pull Request
     const base = await this.execGit(['rev-parse', '--abbrev-ref', 'HEAD']);
 
-    // Apply the update to the file system
-    globalJson.sdk.version = versions.latest.sdkVersion;
-    const json = JSON.stringify(globalJson, null, 2) + os.EOL;
+    // Apply the update to the file system.
+    // A simple string replace is used to avoid accidentally changing line endings
+    // in a way that might conflict with git config or .gitattributes settings.
+    const json = globalJson.replace(`"${versions.current.sdkVersion}"`, `"${versions.latest.sdkVersion}"`);
 
     await fs.promises.writeFile(this.options.globalJsonPath, json, { encoding: 'utf8' });
     core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}`);
