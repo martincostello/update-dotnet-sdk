@@ -13,8 +13,10 @@ import { run } from '../src/main';
 
 export class ActionFixture {
   public channel: string = '';
+  public commitMessagePrefix: string = '';
   public repo: string = 'martincostello/update-dotnet-sdk';
   public quality: string = '';
+  public securityOnly: boolean = false;
   public stepSummary: string = '';
 
   private tempDir: string = '';
@@ -24,8 +26,7 @@ export class ActionFixture {
 
   constructor(
     private readonly initialSdkVersion: string | undefined = undefined,
-    private readonly initialGlobalJson: string | undefined = undefined,
-    private readonly commitMessagePrefix = ''
+    private readonly initialGlobalJson: string | undefined = undefined
   ) {}
 
   get path(): string {
@@ -109,6 +110,7 @@ export class ActionFixture {
       'INPUT_QUALITY': this.quality,
       'INPUT_REPO': this.repo,
       'INPUT_REPO-TOKEN': 'my-token',
+      'INPUT_SECURITY-ONLY': this.securityOnly.toString().toLowerCase(),
       'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
       'INPUT_USER-NAME': 'github-actions[bot]',
     };

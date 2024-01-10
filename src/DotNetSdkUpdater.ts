@@ -274,7 +274,14 @@ export class DotNetSdkUpdater {
       `Latest .NET SDK version for channel '${this.options.channel}' is ${update.latest.sdkVersion} (runtime version ${update.latest.runtimeVersion})`
     );
 
-    if (update.current.sdkVersion !== update.latest.sdkVersion) {
+    let updateAvailable = update.current.sdkVersion !== update.latest.sdkVersion;
+
+    if (updateAvailable && this.options.securityOnly && !update.security) {
+      core.info(`.NET SDK version ${update.latest.sdkVersion} does not contain security fixes, skipping.`);
+      updateAvailable = false;
+    }
+
+    if (updateAvailable) {
       const baseBranch = await this.applySdkUpdate(globalJsonRaw, update);
 
       if (baseBranch) {

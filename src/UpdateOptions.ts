@@ -15,6 +15,7 @@ export interface UpdateOptions {
   labels: string;
   quality?: string;
   repo: string;
+  securityOnly: boolean;
   runId?: string;
   runRepo?: string;
   serverUrl?: string;

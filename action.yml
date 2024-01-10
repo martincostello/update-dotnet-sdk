@@ -44,6 +44,10 @@ inputs:
     description: 'The optional GitHub repository to generate the pull request against.'
     required: false
     default: ${{ github.repository }}
+  security-only:
+    description: 'If true, .NET SDK updates which do not contain security fixes are ignored.'
+    required: false
+    default: false
   quality:
     description: 'The optional value to specify using the latest build of the specified quality in the channel.'
     required: false

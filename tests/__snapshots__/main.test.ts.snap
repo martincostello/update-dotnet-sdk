@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
   "",
@@ -19,7 +19,7 @@ exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" ru
 ]
 `;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index b62f6cc..8c6caf1 100644
 --- a/global.json
@@ -33,7 +33,7 @@ index b62f6cc..8c6caf1 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 2.1.818</h1>
 An update from version 2.1.500 to 2.1.818 of the .NET SDK is available.<br>
 <br>
@@ -47,21 +47,84 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-2.1.818"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-2.1.818"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"2.1.818"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the sdk-version output is correct 1`] = `"2.1.818"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action the security output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"2.1.818"`;
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action updates the SDK version in global.json 1`] = `"2.1.818"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 2.1.818.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "",
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git diff 1`] = `
+"diff --git a/global.json b/global.json
+index b62f6cc..8c6caf1 100644
+--- a/global.json
++++ b/global.json
+@@ -1,5 +1,5 @@
+ {
+   "sdk": {
+-    "version": "2.1.500"
++    "version": "2.1.818"
+   }
+ }"
+`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 2.1.818</h1>
+An update from version 2.1.500 to 2.1.818 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2021-08-19 (736 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/2.1/2.1.30/2.1.30.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li>CVE-2018-8269</li><li>CVE-2018-8416</li><li>CVE-2019-0545</li><li>CVE-2019-0548</li><li>CVE-2019-0564</li><li>CVE-2019-0657</li><li>CVE-2019-0815</li><li>CVE-2019-1301</li><li>CVE-2019-1302</li><li>CVE-2020-0602</li><li>CVE-2020-0603</li><li>CVE-2020-1045 </li><li>CVE-2020-1108</li><li>CVE-2020-1108</li><li>CVE-2020-1147</li><li>CVE-2020-1161</li><li>CVE-2020-1597</li><li>CVE-2021-1721</li><li>CVE-2021-24112</li><li>CVE-2021-26423</li><li>CVE-2021-26701</li><li>CVE-2021-34485</li><li>CVE-2021-34532</li></ul>
+"
+`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-2.1.818"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the sdk-version output is correct 1`] = `"2.1.818"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action the security output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of true running the action updates the SDK version in global.json 1`] = `"2.1.818"`;
 
 exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the action does not update the SDK version in global.json 1`] = `"2.1.818"`;
 
@@ -87,7 +150,7 @@ exports[`update-dotnet-sdk 2.1 when the .NET SDK is up-to-date running the actio
 
 exports[`update-dotnet-sdk 2.1 when the global.json file has a custom format" running the action updates the SDK version in global.json 1`] = `"2.1.818"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
   "",
@@ -106,7 +169,7 @@ exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" ru
 ]
 `;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index 05d0ae3..0bd28be 100644
 --- a/global.json
@@ -120,7 +183,7 @@ index 05d0ae3..0bd28be 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 3.1.426</h1>
 An update from version 3.1.201 to 3.1.426 of the .NET SDK is available.<br>
 <br>
@@ -134,23 +197,86 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-3.1.426"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-3.1.426"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"3.1.426"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the sdk-version output is correct 1`] = `"3.1.426"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action the security output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of false running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 3.1.426.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "",
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git diff 1`] = `
+"diff --git a/global.json b/global.json
+index 05d0ae3..0bd28be 100644
+--- a/global.json
++++ b/global.json
+@@ -1,5 +1,5 @@
+ {
+   "sdk": {
+-    "version": "3.1.201"
++    "version": "3.1.426"
+   }
+ }"
+`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 3.1.426</h1>
+An update from version 3.1.201 to 3.1.426 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2022-12-13 (255 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.32/3.1.32.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li> CVE-2020-1045</li><li>CVE-2020-1108</li><li>CVE-2020-1108</li><li>CVE-2020-1147</li><li>CVE-2020-1161</li><li>CVE-2020-1597</li><li>CVE-2020-8927</li><li>CVE-2021-1721</li><li>CVE-2021-1723</li><li>CVE-2021-24112</li><li>CVE-2021-26423</li><li>CVE-2021-26701</li><li>CVE-2021-31204</li><li>CVE-2021-31957</li><li>CVE-2021-34485</li><li>CVE-2021-34532</li><li>CVE-2021-43877</li><li>CVE-2022-23267</li><li>CVE-2022-24464</li><li>CVE-2022-24512</li><li>CVE-2022-29117</li><li>CVE-2022-29145</li><li>CVE-2022-30184</li><li>CVE-2022-34716</li><li>CVE-2022-38013</li><li>CVE-2022-41032</li><li>CVE-2022-41089</li></ul>
+"
+`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-3.1.426"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the sdk-version output is correct 1`] = `"3.1.426"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action the security output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "" and security-only of true running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "chore: Update .NET SDK",
   "",
@@ -169,7 +295,7 @@ exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chor
 ]
 `;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index 05d0ae3..0bd28be 100644
 --- a/global.json
@@ -183,7 +309,7 @@ index 05d0ae3..0bd28be 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 3.1.426</h1>
 An update from version 3.1.201 to 3.1.426 of the .NET SDK is available.<br>
 <br>
@@ -197,21 +323,84 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-3.1.426"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-3.1.426"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the sdk-version output is correct 1`] = `"3.1.426"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the sdk-version output is correct 1`] = `"3.1.426"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action the security output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action the security output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of false running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action generates the expected Git commit history 1`] = `
+[
+  "chore: Update .NET SDK",
+  "",
+  "Update .NET SDK to version 3.1.426.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "",
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action generates the expected Git diff 1`] = `
+"diff --git a/global.json b/global.json
+index 05d0ae3..0bd28be 100644
+--- a/global.json
++++ b/global.json
+@@ -1,5 +1,5 @@
+ {
+   "sdk": {
+-    "version": "3.1.201"
++    "version": "3.1.426"
+   }
+ }"
+`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 3.1.426</h1>
+An update from version 3.1.201 to 3.1.426 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2022-12-13 (255 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/3.1/3.1.32/3.1.32.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li> CVE-2020-1045</li><li>CVE-2020-1108</li><li>CVE-2020-1108</li><li>CVE-2020-1147</li><li>CVE-2020-1161</li><li>CVE-2020-1597</li><li>CVE-2020-8927</li><li>CVE-2021-1721</li><li>CVE-2021-1723</li><li>CVE-2021-24112</li><li>CVE-2021-26423</li><li>CVE-2021-26701</li><li>CVE-2021-31204</li><li>CVE-2021-31957</li><li>CVE-2021-34485</li><li>CVE-2021-34532</li><li>CVE-2021-43877</li><li>CVE-2022-23267</li><li>CVE-2022-24464</li><li>CVE-2022-24512</li><li>CVE-2022-29117</li><li>CVE-2022-29145</li><li>CVE-2022-30184</li><li>CVE-2022-34716</li><li>CVE-2022-38013</li><li>CVE-2022-41032</li><li>CVE-2022-41089</li></ul>
+"
+`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-3.1.426"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the sdk-version output is correct 1`] = `"3.1.426"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action the security output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 3.1 for the 3.1.201 SDK with a commit prefix of "chore:" and security-only of true running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
 
 exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the action does not update the SDK version in global.json 1`] = `"3.1.426"`;
 
@@ -237,7 +426,7 @@ exports[`update-dotnet-sdk 3.1 when the .NET SDK is up-to-date running the actio
 
 exports[`update-dotnet-sdk 3.1 when the global.json file has a custom format" running the action updates the SDK version in global.json 1`] = `"3.1.426"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
   "",
@@ -256,7 +445,7 @@ exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" ru
 ]
 `;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index 0470208..cb97ae9 100644
 --- a/global.json
@@ -270,7 +459,7 @@ index 0470208..cb97ae9 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 6.0.413</h1>
 An update from version 6.0.100 to 6.0.413 of the .NET SDK is available.<br>
 <br>
@@ -284,21 +473,84 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-6.0.413"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-6.0.413"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"6.0.413"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the sdk-version output is correct 1`] = `"6.0.413"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action the security output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of false running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 6.0.413.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "",
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git diff 1`] = `
+"diff --git a/global.json b/global.json
+index 0470208..cb97ae9 100644
+--- a/global.json
++++ b/global.json
+@@ -1,5 +1,5 @@
+ {
+   "sdk": {
+-    "version": "6.0.100"
++    "version": "6.0.413"
+   }
+ }"
+`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 6.0.413</h1>
+An update from version 6.0.100 to 6.0.413 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-08-08 (17 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/6.0/6.0.21/6.0.21.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li>CVE-2020-8927</li><li>CVE-2021-43877</li><li>CVE-2022-21986</li><li>CVE-2022-23267</li><li>CVE-2022-24464</li><li>CVE-2022-24512</li><li>CVE-2022-29117</li><li>CVE-2022-29145</li><li>CVE-2022-30184</li><li>CVE-2022-34716</li><li>CVE-2022-38013</li><li>CVE-2022-41032</li><li>CVE-2022-41089</li><li>CVE-2023-21538</li><li>CVE-2023-21808</li><li>CVE-2023-24895</li><li>CVE-2023-24897</li><li>CVE-2023-24936</li><li>CVE-2023-28260</li><li>CVE-2023-29331</li><li>CVE-2023-29337</li><li>CVE-2023-33126</li><li>CVE-2023-33127</li><li>CVE-2023-33128</li><li>CVE-2023-33135</li><li>CVE-2023-33170</li><li>CVE-2023-35390</li><li>CVE-2023-35391</li><li>CVE-2023-38180</li></ul>
+"
+`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-6.0.413"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the sdk-version output is correct 1`] = `"6.0.413"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action the security output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 6.0 for the 6.0.100 SDK with a commit prefix of "" and security-only of true running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
 
 exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the action does not update the SDK version in global.json 1`] = `"6.0.413"`;
 
@@ -324,7 +576,7 @@ exports[`update-dotnet-sdk 6.0 when the .NET SDK is up-to-date running the actio
 
 exports[`update-dotnet-sdk 6.0 when the global.json file has a custom format" running the action updates the SDK version in global.json 1`] = `"6.0.413"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
   "",
@@ -343,7 +595,7 @@ exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" ru
 ]
 `;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index 70e3dcc..06ce1b4 100644
 --- a/global.json
@@ -357,7 +609,7 @@ index 70e3dcc..06ce1b4 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 7.0.400</h1>
 An update from version 7.0.100 to 7.0.400 of the .NET SDK is available.<br>
 <br>
@@ -371,21 +623,106 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-7.0.400"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-7.0.400"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"7.0.400"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the sdk-version output is correct 1`] = `"7.0.400"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action the security output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of false running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 7.0.400.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "",
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action generates the expected Git diff 1`] = `
+"diff --git a/global.json b/global.json
+index 70e3dcc..06ce1b4 100644
+--- a/global.json
++++ b/global.json
+@@ -1,5 +1,5 @@
+ {
+   "sdk": {
+-    "version": "7.0.100"
++    "version": "7.0.400"
+   }
+ }"
+`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 7.0.400</h1>
+An update from version 7.0.100 to 7.0.400 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2023-08-08 (17 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.10/7.0.10.md">Release notes</a>
+<h2>Security Issues</h2>
+This update includes fixes for the following security issues:<br>
+<br>
+<ul><li>CVE-2022-41089</li><li>CVE-2023-21808</li><li>CVE-2023-24895</li><li>CVE-2023-24897</li><li>CVE-2023-24936</li><li>CVE-2023-28260</li><li>CVE-2023-29331</li><li>CVE-2023-29337</li><li>CVE-2023-32032</li><li>CVE-2023-33126</li><li>CVE-2023-33127</li><li>CVE-2023-33128</li><li>CVE-2023-33135</li><li>CVE-2023-33170</li><li>CVE-2023-35390</li><li>CVE-2023-35391</li><li>CVE-2023-38178</li><li>CVE-2023-38180</li></ul>
+"
+`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-7.0.400"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the sdk-version output is correct 1`] = `"7.0.400"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action the security output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk 7.0 for the 7.0.100 SDK with a commit prefix of "" and security-only of true running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action does not update the SDK version in global.json 1`] = `"7.0.304"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action generates the expected Git commit history 1`] = `
+[
+  "Initial commit",
+]
+`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the branch-name output is correct 1`] = `""`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the pull-request-html-url output is correct 1`] = `""`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the pull-request-number output is correct 1`] = `"0"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the sdk-updated output is correct 1`] = `"false"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the sdk-version output is correct 1`] = `"7.0.304"`;
+
+exports[`update-dotnet-sdk 7.0 when the .NET SDK does not include security fixes running the action the security output is correct 1`] = `"false"`;
 
 exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the action does not update the SDK version in global.json 1`] = `"7.0.400"`;
 
@@ -411,7 +748,7 @@ exports[`update-dotnet-sdk 7.0 when the .NET SDK is up-to-date running the actio
 
 exports[`update-dotnet-sdk 7.0 when the global.json file has a custom format" running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
   "",
@@ -430,7 +767,7 @@ exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix
 ]
 `;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index 5977f10..06ce1b4 100644
 --- a/global.json
@@ -444,7 +781,7 @@ index 5977f10..06ce1b4 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 7.0.400</h1>
 An update from version 7.0.307 to 7.0.400 of the .NET SDK is available.<br>
 <br>
@@ -454,23 +791,23 @@ This version of the .NET SDK was released on 2023-08-08 (17 days ago).<br>
 "
 `;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-7.0.400"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-7.0.400"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"7.0.400"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the sdk-version output is correct 1`] = `"7.0.400"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action the security output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
+exports[`update-dotnet-sdk 7.0-sdk-only for the 7.0.307 SDK with a commit prefix of "" and security-only of false running the action updates the SDK version in global.json 1`] = `"7.0.400"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action generates the expected Git commit history 1`] = `
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",
   "",
@@ -489,7 +826,7 @@ exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a com
 ]
 `;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action generates the expected Git diff 1`] = `
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git diff 1`] = `
 "diff --git a/global.json b/global.json
 index 358b066..4ba6706 100644
 --- a/global.json
@@ -503,7 +840,7 @@ index 358b066..4ba6706 100644
  }"
 `;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action generates the expected GitHub step summary 1`] = `
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action generates the expected GitHub step summary 1`] = `
 "<h1>.NET SDK 8.0.100-preview.7.23376.3</h1>
 An update from version 8.0.100-preview.6.23330.14 to 8.0.100-preview.7.23376.3 of the .NET SDK is available.<br>
 <br>
@@ -513,21 +850,21 @@ This version of the .NET SDK was released on 2023-08-08 (17 days ago).<br>
 "
 `;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-8.0.100-preview.7.23376.3"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-8.0.100-preview.7.23376.3"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the pull-request-number output is correct 1`] = `"42"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the pull-request-number output is correct 1`] = `"42"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the pull-requests-closed output is correct 1`] = `"[]"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the sdk-updated output is correct 1`] = `"true"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the sdk-updated output is correct 1`] = `"true"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the sdk-version output is correct 1`] = `"8.0.100-preview.7.23376.3"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the sdk-version output is correct 1`] = `"8.0.100-preview.7.23376.3"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action the security output is correct 1`] = `"false"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action the security output is correct 1`] = `"false"`;
 
-exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" running the action updates the SDK version in global.json 1`] = `"8.0.100-preview.7.23376.3"`;
+exports[`update-dotnet-sdk 8.0 for the 8.0.100-preview.6.23330.14 SDK with a commit prefix of "" and security-only of false running the action updates the SDK version in global.json 1`] = `"8.0.100-preview.7.23376.3"`;
 
 exports[`update-dotnet-sdk 8.0 when the .NET SDK is up-to-date running the action does not update the SDK version in global.json 1`] = `"8.0.100-preview.7.23376.3"`;
 
