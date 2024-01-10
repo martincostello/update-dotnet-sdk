@@ -42,6 +42,7 @@ export async function run(): Promise<void> {
       repo: core.getInput('repo', { required: false }) ?? process.env.GITHUB_REPOSITORY,
       runId: context.runId.toString(10),
       runRepo: process.env.GITHUB_REPOSITORY,
+      securityOnly: core.getInput('security-only', { required: false }) === 'true',
       serverUrl: context.serverUrl,
       userEmail: core.getInput('user-email', { required: false }),
       userName: core.getInput('user-name', { required: false }),
