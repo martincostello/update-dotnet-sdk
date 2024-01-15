@@ -10,6 +10,8 @@ An example Pull Request created by the action can be found [here][example-pull-r
 
 You can find out more information about this GitHub action in [this YouTube stream 📺][youtube-stream].
 
+You can also find a sample repository that uses this action to automate .NET patch updates [here][patching-sample].
+
 ## Example Usage
 
 ```yml
@@ -402,6 +404,7 @@ This project is licensed under the [Apache 2.0][license] license.
 [github-token]: https://docs.github.com/actions/security-guides/automatic-token-authentication
 [issues]: https://github.com/martincostello/update-dotnet-sdk/issues
 [license]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[patching-sample]: https://github.com/martincostello/dotnet-patch-automation-sample "martincostello/dotnet-patch-automation-sample - GitHub"
 [personal-access-token]: https://docs.github.com/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [reusable-workflow]: https://github.com/martincostello/update-dotnet-sdk/blob/main/.github/workflows/update-dotnet-sdk.yml
 [reusable-workflow-docs]: https://docs.github.com/actions/using-workflows/reusing-workflows
