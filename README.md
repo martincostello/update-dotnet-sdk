@@ -8,6 +8,8 @@ This action updates the .NET SDK version specified by a `global.json` file store
 
 An example Pull Request created by the action can be found [here][example-pull-request].
 
+You can find out more information about this GitHub action in [this YouTube stream 📺][youtube-stream].
+
 ## Example Usage
 
 ```yml
@@ -405,3 +407,4 @@ This project is licensed under the [Apache 2.0][license] license.
 [reusable-workflow-docs]: https://docs.github.com/actions/using-workflows/reusing-workflows
 [update-dotnet-sdk]: https://github.com/martincostello/update-dotnet-sdk
 [triggering-workflows-from-a-workflow]: https://docs.github.com/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+[youtube-stream]: https://www.youtube.com/live/pOeT1otTi4M?si=ICmCcEHeh94X0vBT&t=172 "On .NET Live - Effortless .NET updates with GitHub Actions - YouTube"
