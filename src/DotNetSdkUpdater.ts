@@ -691,7 +691,8 @@ export class DotNetSdkUpdater {
     // in a way that might conflict with git config or .gitattributes settings.
     // A regular expression is used so that all matches are updated, not just the first;
     // see https://github.com/dotnet/aspnetcore/pull/53424/files#r1454015608.
-    const escapedVersion = versions.current.sdkVersion.replace(/\./g, '\\.');
+    const parts = versions.current.sdkVersion.split('.');
+    const escapedVersion = parts.join('\\.');
     const searchValue = new RegExp(`\\"${escapedVersion}\\"`, 'g');
     const json = globalJson.replace(searchValue, `"${versions.latest.sdkVersion}"`);
 
