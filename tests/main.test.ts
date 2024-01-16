@@ -167,12 +167,11 @@ describe('update-dotnet-sdk', () => {
   });
 
   describe.each([
-    ['daily', '8.0'],
-    ['daily', '8.0.1xx'],
-    ['daily', '8.0.1xx-preview7'],
-  ])('%s builds for channel "%s"', (quality: string, channel: string) => {
-    const sdkVersion = '8.0.100-preview.6.23330.14';
-
+    ['daily', '8.0', '8.0.100-preview.6.23330.14'],
+    ['daily', '8.0.1xx', '8.0.100-preview.6.23330.14'],
+    ['daily', '8.0.1xx-preview7', '8.0.100-preview.6.23330.14'],
+    ['daily', '9.0', '9.0.100-alpha.1.24058.9'],
+  ])('%s builds for channel "%s"', (quality: string, channel: string, sdkVersion: string) => {
     let fixture: ActionFixture;
 
     beforeAll(async () => {
@@ -251,6 +250,91 @@ describe('update-dotnet-sdk', () => {
 
       test('updates the SDK version in global.json', async () => {
         expect(await fixture.sdkVersion()).toMatchSnapshot();
+      });
+    });
+  });
+
+  describe('when global.json contains multiple .NET SDK versions', () => {
+    let fixture: ActionFixture;
+
+    beforeAll(async () => {
+      const content = `{
+        "sdk": {
+          "version": "9.0.100-alpha.1.24058.9"
+        },
+        "tools": {
+          "dotnet": "9.0.100-alpha.1.24058.9",
+          "runtimes": {
+            "dotnet/x86": [
+              "$(MicrosoftNETCoreBrowserDebugHostTransportVersion)"
+            ],
+            "dotnet": [
+              "$(MicrosoftNETCoreBrowserDebugHostTransportVersion)"
+            ]
+          },
+          "Git": "2.22.0",
+          "jdk": "11.0.3",
+          "vs": {
+            "version": "17.2",
+            "components": [
+              "Microsoft.VisualStudio.Component.VC.ATL",
+              "Microsoft.VisualStudio.Component.VC.ATL.ARM64",
+              "Microsoft.VisualStudio.Component.VC.Tools.ARM64",
+              "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+            ]
+          },
+          "xcopy-msbuild": "17.1.0"
+        },
+        "msbuild-sdks": {
+          "Microsoft.DotNet.Arcade.Sdk": "9.0.0-beta.24062.5",
+          "Microsoft.DotNet.Helix.Sdk": "9.0.0-beta.24062.5"
+        }
+      }`;
+
+      fixture = new ActionFixture(undefined, content);
+
+      fixture.channel = '9.0';
+      fixture.quality = 'daily';
+
+      await fixture.initialize('daily-9.0');
+    });
+
+    afterAll(async () => {
+      await fixture?.destroy();
+    });
+
+    describe('running the action', () => {
+      beforeAll(async () => {
+        await fixture.run();
+      }, timeout);
+
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
+      });
+
+      test('updates the global.json file correctly', async () => {
+        const content = await fixture.sdkContent();
+        const globalJson = JSON.parse(content);
+        expect(globalJson.sdk.version).toBe('9.0.100-alpha.1.24066.6');
+        expect(globalJson.tools.dotnet).toBe('9.0.100-alpha.1.24066.6');
+        expect(content).toMatchSnapshot();
+      });
+
+      test('updates the SDK version in global.json', async () => {
+        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      });
+
+      test('generates the expected Git commit history', async () => {
+        expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      });
+
+      test('generates the expected GitHub step summary', async () => {
+        expect(fixture.stepSummary).toMatchSnapshot();
+      });
+
+      test.each(inputs)('the %s output is correct', (name: string) => {
+        expect(fixture.getOutput(name)).toMatchSnapshot();
       });
     });
   });

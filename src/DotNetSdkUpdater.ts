@@ -689,7 +689,12 @@ export class DotNetSdkUpdater {
     // Apply the update to the file system.
     // A simple string replace is used to avoid accidentally changing line endings
     // in a way that might conflict with git config or .gitattributes settings.
-    const json = globalJson.replace(`"${versions.current.sdkVersion}"`, `"${versions.latest.sdkVersion}"`);
+    // A regular expression is used so that all matches are updated, not just the first;
+    // see https://github.com/dotnet/aspnetcore/pull/53424/files#r1454015608.
+    const parts = versions.current.sdkVersion.split('.');
+    const escapedVersion = parts.join('\\.');
+    const searchValue = new RegExp(`\\"${escapedVersion}\\"`, 'g');
+    const json = globalJson.replace(searchValue, `"${versions.latest.sdkVersion}"`);
 
     await fs.promises.writeFile(this.options.globalJsonPath, json, { encoding: 'utf8' });
     core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}`);

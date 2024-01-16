@@ -1016,3 +1016,124 @@ exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running t
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running the action the security output is correct 1`] = `"false"`;
 
 exports[`update-dotnet-sdk daily builds for channel "8.0.1xx-preview7" running the action updates the SDK version in global.json 1`] = `"8.0.100-preview.7.23376.3"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 9.0.100-alpha.1.24066.6.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+]
+`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 9.0.100-alpha.1.24066.6</h1>
+An update from version 9.0.100-alpha.1.24058.9 to 9.0.100-alpha.1.24066.6 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2024-01-16 (-144 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/installer/commits/aa5f136790068f7c993e52801e7bd4477d228691">Release notes</a>
+"
+`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-9.0.100-alpha.1.24066.6"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the sdk-version output is correct 1`] = `"9.0.100-alpha.1.24066.6"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action the security output is correct 1`] = `"false"`;
+
+exports[`update-dotnet-sdk daily builds for channel "9.0" running the action updates the SDK version in global.json 1`] = `"9.0.100-alpha.1.24066.6"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 9.0.100-alpha.1.24066.6.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+]
+`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 9.0.100-alpha.1.24066.6</h1>
+An update from version 9.0.100-alpha.1.24058.9 to 9.0.100-alpha.1.24066.6 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2024-01-16 (-144 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/installer/commits/aa5f136790068f7c993e52801e7bd4477d228691">Release notes</a>
+"
+`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-9.0.100-alpha.1.24066.6"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the sdk-version output is correct 1`] = `"9.0.100-alpha.1.24066.6"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action the security output is correct 1`] = `"false"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action updates the SDK version in global.json 1`] = `"9.0.100-alpha.1.24066.6"`;
+
+exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action updates the global.json file correctly 1`] = `
+"{
+        "sdk": {
+          "version": "9.0.100-alpha.1.24066.6"
+        },
+        "tools": {
+          "dotnet": "9.0.100-alpha.1.24066.6",
+          "runtimes": {
+            "dotnet/x86": [
+              "$(MicrosoftNETCoreBrowserDebugHostTransportVersion)"
+            ],
+            "dotnet": [
+              "$(MicrosoftNETCoreBrowserDebugHostTransportVersion)"
+            ]
+          },
+          "Git": "2.22.0",
+          "jdk": "11.0.3",
+          "vs": {
+            "version": "17.2",
+            "components": [
+              "Microsoft.VisualStudio.Component.VC.ATL",
+              "Microsoft.VisualStudio.Component.VC.ATL.ARM64",
+              "Microsoft.VisualStudio.Component.VC.Tools.ARM64",
+              "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+            ]
+          },
+          "xcopy-msbuild": "17.1.0"
+        },
+        "msbuild-sdks": {
+          "Microsoft.DotNet.Arcade.Sdk": "9.0.0-beta.24062.5",
+          "Microsoft.DotNet.Helix.Sdk": "9.0.0-beta.24062.5"
+        }
+      }"
+`;
