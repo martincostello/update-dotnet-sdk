@@ -254,7 +254,7 @@ describe('update-dotnet-sdk', () => {
     });
   });
 
-  describe('%s when the global.json contains the .NET tools"', () => {
+  describe('when global.json contains multiple .NET SDK versions', () => {
     let fixture: ActionFixture;
 
     beforeAll(async () => {
