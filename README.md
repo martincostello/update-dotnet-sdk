@@ -52,6 +52,37 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+### Targeting a Specific Branch
+
+For scheduled workflows, the default branch is always used. This means that if
+the `ref` input is not specified for the `actions/checkout` action, the workflow
+will checkout the default branch of the repository.
+
+If you wish a scheduled workflow to target another branch, you should explicitly
+specify that branch in the workflow when checking out the code before the step
+that uses this action to check for an update to the .NET SDK.
+
+```yml
+name: update-dotnet-sdk
+
+on:
+  schedule:
+    - cron:  '00 20 * * TUE'
+  workflow_dispatch:
+
+jobs:
+  update-dotnet-sdk:
+    name: Update .NET SDK
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: 'dev' # Checkout the dev branch instead of the default branch
+    - uses: martincostello/update-dotnet-sdk@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ### Advanced Workflow
 
 Below are examples of an advanced GitHub Actions workflow to automate .NET SDK updates that will
