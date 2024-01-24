@@ -109,7 +109,7 @@
     },
     {
       "basePath": "https://github.local",
-      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/pulls?base=main&direction=desc&state=open",
+      "path": "/api/v3/repos/martincostello/update-dotnet-sdk/pulls?base=main&direction=desc&per_page=100&state=open",
       "response": [
         {
           "url": "https://github.local/api/v3/repos/martincostello/update-dotnet-sdk/pulls/42",

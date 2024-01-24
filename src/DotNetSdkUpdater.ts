@@ -427,24 +427,40 @@ export class DotNetSdkUpdater {
       ref: string;
     }[]
   > {
-    const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-      owner: created.owner,
-      repo: created.repo,
-      base: created.ref,
+    const owner = created.owner;
+    const repo = created.repo;
+    const base = created.ref;
+
+    core.debug(`Querying ${owner}/${repo} for open pull requests targeting ${base}.`);
+
+    let pulls = await octokit.paginate(octokit.rest.pulls.list, {
+      owner,
+      repo,
+      base,
       direction: 'desc',
       state: 'open',
+      per_page: 100,
     });
 
+    core.debug(`Found ${pulls.length} open pull request(s) targeting ${base} in ${owner}/${repo}.`);
+
+    pulls = pulls.filter((pull) => pull.user && pull.user.login === created.user);
+
+    core.debug(`Found ${pulls.length} pull request(s) created by ${created.user}.`);
+
     const titlePrefix = 'Update .NET SDK to ';
+    pulls = pulls.filter((pull) => pull.title.startsWith(titlePrefix));
+
+    core.debug(`Found ${pulls.length} pull request(s) with the prefix '${titlePrefix}'.`);
 
     const superseded = pulls
       .filter((pull) => pull.number !== created.number)
-      .filter((pull) => pull.user && pull.user.login === created.user)
-      .filter((pull) => pull.title.startsWith(titlePrefix))
       .map((pull) => ({
         number: pull.number,
         ref: pull.head.ref,
       }));
+
+    core.debug(`Found ${superseded.length} pull request(s) after filtering.`);
 
     superseded.reverse();
     return superseded;
