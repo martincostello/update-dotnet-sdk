@@ -369,42 +369,42 @@ export class DotNetSdkUpdater {
           core.error(error);
         }
       }
+    }
 
-      if (this.options.closeSuperseded) {
-        const superseded = await this.getSupersededPulls(octokit, {
-          number: result.number,
-          owner,
-          repo,
-          ref: base,
-          user: response.data.user?.login,
-        });
+    if (this.options.closeSuperseded) {
+      const superseded = await this.getSupersededPulls(octokit, {
+        number: result.number,
+        owner,
+        repo,
+        ref: base,
+        user: response.data.user?.login,
+      });
 
-        if (superseded.length > 0) {
-          const comment = `Superseded by #${result.number}.`;
+      if (superseded.length > 0) {
+        const comment = `Superseded by #${result.number}.`;
 
-          for (const pull of superseded) {
-            core.debug(`Closing pull request ${pull.number}.`);
+        for (const pull of superseded) {
+          core.debug(`Closing pull request ${pull.number}.`);
 
-            await octokit.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: pull.number,
-              body: comment,
-            });
-            await octokit.rest.pulls.update({
-              owner,
-              repo,
-              pull_number: pull.number,
-              state: 'closed',
-            });
-            await octokit.rest.git.deleteRef({
-              owner,
-              repo,
-              ref: `heads/${pull.ref}`,
-            });
+          await octokit.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: pull.number,
+            body: comment,
+          });
+          await octokit.rest.pulls.update({
+            owner,
+            repo,
+            pull_number: pull.number,
+            state: 'closed',
+          });
+          await octokit.rest.git.deleteRef({
+            owner,
+            repo,
+            ref: `heads/${pull.ref}`,
+          });
 
-            result.supersedes.push(pull.number);
-          }
+          result.supersedes.push(pull.number);
         }
       }
     }
