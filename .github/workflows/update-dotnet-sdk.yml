@@ -188,7 +188,7 @@ jobs:
     - name: Generate GitHub application token
       id: generate-application-token
       if: steps.validate-secrets.outputs.result == 'true'
-      uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+      uses: martincostello/workflow-application-token-action@7e29837c83f71f29106364b932caafce00b6b558 # https://github.com/peter-murray/workflow-application-token-action/pull/37
       with:
         application_id: ${{ secrets.application-id }}
         application_private_key: ${{ secrets.application-private-key }}
