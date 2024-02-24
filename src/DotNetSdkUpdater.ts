@@ -8,15 +8,12 @@ import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as github from '@actions/github';
 
-import { UpdateOptions } from './UpdateOptions';
-import { UpdateResult } from './UpdateResult';
+import { Octokit } from '@octokit/core';
 import { Writable } from 'stream';
 import { fetch, Response } from 'undici';
 
-// eslint-disable-next-line import/no-unresolved
-import { PaginateInterface } from '@octokit/plugin-paginate-rest/dist-types/types';
-// eslint-disable-next-line import/no-unresolved
-import { Api } from '@octokit/plugin-rest-endpoint-methods/dist-types/types';
+import { UpdateOptions } from './UpdateOptions';
+import { UpdateResult } from './UpdateResult';
 
 export class DotNetSdkUpdater {
   private options: UpdateOptions;
@@ -413,7 +410,7 @@ export class DotNetSdkUpdater {
   }
 
   private async getSupersededPulls(
-    octokit: PaginatedApi,
+    octokit: InstanceType<typeof GitHub>,
     created: {
       number: number;
       owner: string;
@@ -901,10 +898,6 @@ enum Quality {
   preview = 'preview',
 }
 
-type PaginatedApi = Api & {
-  paginate: PaginateInterface;
-};
-
 class NullWritable extends Writable {
   _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
     callback();
@@ -913,3 +906,10 @@ class NullWritable extends Writable {
     callback();
   }
 }
+
+declare const GitHub: typeof Octokit &
+  import('@octokit/core/dist-types/types').Constructor<
+    import('@octokit/plugin-rest-endpoint-methods/dist-types/types').Api & {
+      paginate: import('@octokit/plugin-paginate-rest').PaginateInterface;
+    }
+  >;

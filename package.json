@@ -59,7 +59,8 @@
     "undici": "^6.6.2"
   },
   "devDependencies": {
-    "@octokit/types": "^12.5.0",
+    "@octokit/plugin-rest-endpoint-methods": "^10.4.0",
+    "@octokit/types": "^12.6.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vercel/ncc": "^0.38.1",
