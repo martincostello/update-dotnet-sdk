@@ -8,7 +8,6 @@ import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as github from '@actions/github';
 
-import { Octokit } from '@octokit/core';
 import { Writable } from 'stream';
 import { fetch, Response } from 'undici';
 
@@ -410,7 +409,7 @@ export class DotNetSdkUpdater {
   }
 
   private async getSupersededPulls(
-    octokit: InstanceType<typeof GitHub>,
+    octokit: PaginatedApi,
     created: {
       number: number;
       owner: string;
@@ -907,9 +906,6 @@ class NullWritable extends Writable {
   }
 }
 
-declare const GitHub: typeof Octokit &
-  import('@octokit/core/dist-types/types').Constructor<
-    import('@octokit/plugin-rest-endpoint-methods/dist-types/types').Api & {
-      paginate: import('@octokit/plugin-paginate-rest').PaginateInterface;
-    }
-  >;
+type PaginatedApi = import('@octokit/plugin-rest-endpoint-methods/dist-types/types').Api & {
+  paginate: import('@octokit/plugin-paginate-rest').PaginateInterface;
+};
