@@ -61,8 +61,8 @@
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^11.0.1",
     "@octokit/types": "^12.6.0",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
     "@vercel/ncc": "^0.38.1",
     "eslint": "^8.57.0",
     "eslint-plugin-github": "^4.10.2",
