@@ -76,7 +76,7 @@ on:
         description: 'The version of the dotnet-outdated .NET global tool to use if update-nuget-packages is true.'
         required: false
         type: string
-        default: '4.6.0'
+        default: '4.6.1'
       include-nuget-packages:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to update, if update-nuget-packages is true.'
         required: false
@@ -84,6 +84,11 @@ on:
         default: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore,Microsoft.Extensions.,System.Text.Json'
       exclude-nuget-packages:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to not update if update-nuget-packages is true.'
+        required: false
+        type: string
+        default: ''
+      nuget-packages-prerelease-label:
+        description: 'An optional pre-release label to restrict NuGet package updates to if update-nuget-packages is true.'
         required: false
         type: string
         default: ''
@@ -266,6 +271,7 @@ jobs:
         GIT_AUTHOR_EMAIL: ${{ inputs.user-email }}
         GIT_AUTHOR_NAME: ${{ inputs.user-name }}
         NUGET_XMLDOC_MODE: skip
+        PRERELEASE_LABEL: ${{ inputs.nuget-packages-prerelease-label || '' }}
         UPDATED_SDK_VERSION: ${{ steps.update-dotnet-sdk.outputs.sdk-version }}
       run: |
         $ErrorActionPreference = "Stop"
@@ -278,6 +284,7 @@ jobs:
 
         $eligiblePackages = $env:INCLUDE_NUGET_PACKAGES.Split(',')
         $ineligiblePackages = $env:EXCLUDE_NUGET_PACKAGES.Split(',')
+        $prereleaseLabel = $env:PRERELEASE_LABEL
 
         $additionalArguments = @()
 
@@ -293,6 +300,11 @@ jobs:
             $additionalArguments += "--exclude"
             $additionalArguments += $package
           }
+        }
+
+        if (-Not [string]::IsNullOrEmpty($prereleaseLabel)) {
+          $additionalArguments += "--pre-release-label"
+          $additionalArguments += $prereleaseLabel
         }
 
         # See https://github.com/martincostello/update-dotnet-sdk/issues/785
