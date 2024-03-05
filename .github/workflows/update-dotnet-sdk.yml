@@ -81,7 +81,7 @@ on:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to update, if update-nuget-packages is true.'
         required: false
         type: string
-        default: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json'
+        default: 'Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore,Microsoft.Extensions.,System.Text.Json'
       exclude-nuget-packages:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to not update if update-nuget-packages is true.'
         required: false
