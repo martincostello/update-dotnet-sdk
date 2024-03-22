@@ -295,6 +295,14 @@ jobs:
           }
         }
 
+        # See https://github.com/martincostello/update-dotnet-sdk/issues/785
+        $toolsManifest = (Join-Path "." ".config" "dotnet-tools.json")
+
+        if (Test-Path $toolsManifest) {
+          Write-Host "Restoring .NET tools..."
+          dotnet tool restore
+        }
+
         # HACK Inspired by https://github.com/dotnet-outdated/dotnet-outdated/issues/55
         # run dotnet restore to populate the NuGet package cache to try and avoid timeouts
         # when dotnet-outdated is run
