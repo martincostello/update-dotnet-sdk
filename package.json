@@ -59,7 +59,7 @@
     "undici": "^6.11.1"
   },
   "devDependencies": {
-    "@octokit/plugin-rest-endpoint-methods": "^11.0.1",
+    "@octokit/plugin-rest-endpoint-methods": "^12.1.0",
     "@octokit/types": "^13.0.0",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
