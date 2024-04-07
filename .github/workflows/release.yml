@@ -63,6 +63,8 @@ jobs:
             const body = release.body
               .split('\n')
               .filter((line) => !line.includes(' @costellobot '))
+              .filter((line) => !line.includes(' @dependabot '))
+              .filter((line) => !line.includes(' @github-actions '))
               .join('\n');
 
             const { data: updated } = await github.rest.repos.updateRelease({
