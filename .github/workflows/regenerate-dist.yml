@@ -44,9 +44,6 @@ jobs:
             throw "No changes to commit."
           }
 
-          git config color.diff always
-          git --no-pager diff
-
           $branchName = "regenerate-dist"
 
           git config user.email ${env:GIT_COMMIT_USER_EMAIL} | Out-Null
