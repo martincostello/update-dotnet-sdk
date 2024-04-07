@@ -82,7 +82,6 @@ jobs:
               repo,
               head: process.env.HEAD_BRANCH,
               base: process.env.BASE_BRANCH,
-              draft: true,
               body: [
                 'Regenerate the contents of `dist`.',
                 '',
