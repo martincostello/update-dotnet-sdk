@@ -41,7 +41,8 @@ jobs:
           $gitStatus = (git status --porcelain)
 
           if ([string]::IsNullOrEmpty($gitStatus)) {
-            throw "No changes to commit."
+            Write-Host "No changes to commit."
+            return 0
           }
 
           $branchName = "regenerate-dist"
@@ -59,6 +60,12 @@ jobs:
           git checkout -b $branchName
           git add .
           git commit -m "Regenerate dist`n`nRegenerate the contents of dist."
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "No changes to commit."
+            return 0
+          }
+          
           git push -u origin $branchName
 
           "branch-name=${branchName}" >> $env:GITHUB_OUTPUT
