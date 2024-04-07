@@ -81,4 +81,4 @@ outputs:
     description: 'Whether any .NET SDK update includes security fixes.'
 runs:
   using: 'node20'
-  main: 'dist/index.js'
+  main: 'dist/main.js'
