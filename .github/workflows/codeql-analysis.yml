@@ -47,6 +47,7 @@ jobs:
       uses: github/codeql-action/init@c7f9125735019aa87cfc361530512d50ea439c71 # v3.25.1
       with:
         languages: 'javascript'
+        queries: security-and-quality
         config: |
           name: 'update-dotnet-sdk CodeQL configuration'
           paths-ignore:
