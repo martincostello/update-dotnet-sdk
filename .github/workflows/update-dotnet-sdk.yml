@@ -327,7 +327,7 @@ jobs:
 
           foreach ($project in $projectFiles) {
             # See https://github.com/dotnet/sdk/blob/051c52977e668544b58f60ff4d4ff84fe67d33f2/src/Cli/dotnet/commands/dotnet-workload/restore/WorkloadRestoreCommand.cs#L46-L81
-            $targetsResult = dotnet msbuild $project.FullName "-getTargetResult:${targetName}"
+            $targetsResult = dotnet msbuild $project.FullName "-getTargetResult:${targetName}" "-property:SkipResolvePackageAssets=true"
             if (-Not [string]::IsNullOrEmpty($targetsResult)) {
               $json = $targetsResult | ConvertFrom-Json
               if ($json.TargetResults -And ($json.TargetResults.$targetName.Items.Count -gt 0)) {
