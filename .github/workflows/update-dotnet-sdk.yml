@@ -315,6 +315,34 @@ jobs:
           dotnet tool restore
         }
 
+        # .NET workloads need to be restored before running dotnet outdated.
+        # This is only supported for .NET 8+ as earlier SDK versions do not support -getTargetResult.
+        if ([Version]::new($env:UPDATED_SDK_VERSION).Major -ge 8) {
+          $projectFiles = Get-ChildItem -Path "." -Filter "*.csproj" -Recurse
+          $projectFiles += Get-ChildItem -Path "." -Filter "*.fsproj" -Recurse
+          $projectFiles += Get-ChildItem -Path "." -Filter "*.vbproj" -Recurse
+
+          $restoreWorkloads = $false
+          $targetName = "_GetRequiredWorkloads"
+
+          foreach ($project in $projectFiles) {
+            # See https://github.com/dotnet/sdk/blob/051c52977e668544b58f60ff4d4ff84fe67d33f2/src/Cli/dotnet/commands/dotnet-workload/restore/WorkloadRestoreCommand.cs#L46-L81
+            $targetsResult = dotnet msbuild $project.FullName "-getTargetResult:${targetName}"
+            if (-Not [string]::IsNullOrEmpty($targetsResult)) {
+              $json = $targetsResult | ConvertFrom-Json
+              if ($json.TargetResults -And ($json.TargetResults.$targetName.Items.Count -gt 0)) {
+                $restoreWorkloads = $true
+                break
+              }
+            }
+          }
+
+          if ($restoreWorkloads) {
+            Write-Host "Restoring .NET workloads..."
+            dotnet workload restore
+          }
+        }
+
         # HACK Inspired by https://github.com/dotnet-outdated/dotnet-outdated/issues/55
         # run dotnet restore to populate the NuGet package cache to try and avoid timeouts
         # when dotnet-outdated is run
