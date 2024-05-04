@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../lib/UpdateResult.js"],
-  "sourcesContent": ["\"use strict\";\n// Copyright (c) Martin Costello, 2020. All rights reserved.\n// Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.\nObject.defineProperty(exports, \"__esModule\", { value: true });\n"],
-  "mappings": "aAGA,OAAO,eAAe,QAAS,aAAc,CAAE,MAAO,EAAK,CAAC",
-  "names": []
-}
