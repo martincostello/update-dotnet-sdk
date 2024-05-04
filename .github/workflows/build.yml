@@ -18,6 +18,11 @@ jobs:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
+
     strategy:
       fail-fast: false
       matrix:
@@ -66,6 +71,20 @@ jobs:
         flags: ${{ matrix.codecov_os }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
+    - name: Generate SBOM
+      uses: anchore/sbom-action@7ccf588e3cf3cc2611714c2eeae48550fbc17552 # v0.15.11
+      if: runner.os == 'Linux'
+      with:
+        path: .
+        output-file: sbom.spdx.json
+
+    - name: Attest dist
+      uses: actions/attest-sbom@c168f2354d9bf9a30b63bd0c532cdf3f3bbd6dc3 # v1.0.0
+      if: runner.os == 'Linux'
+      with:
+        sbom-path: sbom.spdx.json
+        subject-path: ./dist/**/*.js
+
   lint:
     runs-on: ubuntu-latest
 
@@ -80,4 +99,5 @@ jobs:
     - name: Lint workflows
       uses: docker://rhysd/actionlint@sha256:5acca218639222e4afbc82fc6e9ef56cbe646ade3b07f3f5ec364b638258a244 # v1.7.0
       with:
-        args: -color
+        # Remove -ignore once v1.6.28 released - see https://github.com/rhysd/actionlint/pull/418#issuecomment-2089713941
+        args: -color -ignore "attestations"
