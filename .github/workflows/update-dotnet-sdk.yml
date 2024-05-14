@@ -318,7 +318,8 @@ jobs:
         # .NET workloads need to be restored before running dotnet outdated.
         # This is only supported for .NET 8+ as earlier SDK versions do not support -getTargetResult.
         if ([Version]::new(${env:UPDATED_SDK_VERSION}.Split("-")[0]).Major -ge 8) {
-          $projectFiles = Get-ChildItem -Path "." -Filter "*.csproj" -Recurse
+          $projectFiles = @()
+          $projectFiles += Get-ChildItem -Path "." -Filter "*.csproj" -Recurse
           $projectFiles += Get-ChildItem -Path "." -Filter "*.fsproj" -Recurse
           $projectFiles += Get-ChildItem -Path "." -Filter "*.vbproj" -Recurse
 
