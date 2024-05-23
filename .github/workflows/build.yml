@@ -28,11 +28,11 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            codecov_os: macos
+            os-name: macos
           - os: ubuntu-latest
-            codecov_os: linux
+            os-name: linux
           - os: windows-latest
-            codecov_os: windows
+            os-name: windows
 
     steps:
 
@@ -68,8 +68,16 @@ jobs:
       name: Upload coverage to Codecov
       with:
         file: ./coverage/lcov.info
-        flags: ${{ matrix.codecov_os }}
+        flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Generate SBOM
+      uses: anchore/sbom-action@e8d2a6937ecead383dfe75190d104edd1f9c5751 # v0.16.0
+      if: runner.os == 'Linux'
+      with:
+        artifact-name: update-dotnet-sdk.spdx.json
+        output-file: update-dotnet-sdk.spdx.json
+        path: .
 
     - name: Attest dist
       uses: actions/attest-build-provenance@173725a1209d09b31f9d30a3890cf2757ebbff0d # v1.1.2
