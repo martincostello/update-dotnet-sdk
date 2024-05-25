@@ -368,7 +368,7 @@ steps:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-For more information about daily builds, see the [.NET SDK Installer repository][dotnet-installer].
+For more information about daily builds, see the [.NET SDK Installer repository][dotnet-sdk-installer].
 
 ## Inputs
 
@@ -425,7 +425,7 @@ This project is licensed under the [Apache 2.0][license] license.
 
 [advanced-central-workflow]: https://github.com/martincostello/github-automation/blob/df69301435a3f4971fa630e65a3966762187c87b/.github/workflows/update-dotnet-sdks.yml
 [create-github-app]: https://docs.github.com/apps/creating-github-apps/creating-github-apps/creating-a-github-app
-[dotnet-installer]: https://github.com/dotnet/installer
+[dotnet-sdk-installer]: https://github.com/dotnet/sdk#installing-the-sdk
 [dotnet-outdated]: https://github.com/dotnet-outdated/dotnet-outdated
 [dotnet-core-release-notes]: https://github.com/dotnet/core/tree/main/release-notes
 [example-pull-request]: https://github.com/martincostello/update-dotnet-sdk/pull/10
