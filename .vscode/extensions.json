@@ -1,6 +1,9 @@
 {
   "recommendations": [
+    "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
-    "EditorConfig.EditorConfig"
+    "editorconfig.editorconfig",
+    "firsttris.vscode-jest-runner",
+    "github.vscode-github-actions"
   ]
 }
