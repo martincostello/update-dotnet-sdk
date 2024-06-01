@@ -342,7 +342,7 @@ You can see an example of such a pull request [here][example-pull-request-daily]
 ### Specific Channels
 
 Ahead of the official release of a new .NET SDK version, the
-[dotnet/installer][dotnet-installer] repository typically branches,
+[dotnet/installer][dotnet-sdk-installer] repository typically branches,
 which causes the default channel to diverge in versioning compared to
 the next official build that is being prepared. For example, ahead of
 the release of .NET 8.0 preview 7, the `main` branch of the installer
