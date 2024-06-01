@@ -29,7 +29,7 @@ export class DotNetSdkUpdater {
     quality: string | undefined,
     releaseChannel: ReleaseChannel | null
   ): Promise<SdkVersions> {
-    const { sdkVersion, runtimeVersion, installerCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
+    const { sdkVersion, runtimeVersion, installerCommit, sdkCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
 
     const security = false;
     const securityIssues = [];
@@ -47,8 +47,17 @@ export class DotNetSdkUpdater {
       return new Date(Date.UTC(year, month - 1, day));
     };
 
-    const getReleaseNotes = (commit: string): string => {
-      return `https://github.com/dotnet/installer/commits/${commit}`;
+    const getReleaseNotes = (installerCommitSha: string | null, sdkCommitSha: string): string => {
+      let repo: string;
+      let commit: string;
+      if (installerCommitSha) {
+        repo = 'installer';
+        commit = installerCommitSha;
+      } else {
+        repo = 'sdk';
+        commit = sdkCommitSha;
+      }
+      return `https://github.com/dotnet/${repo}/commits/${commit}`;
     };
 
     let current: ReleaseInfo | null = null;
@@ -62,14 +71,11 @@ export class DotNetSdkUpdater {
     }
 
     if (!current) {
-      const {
-        installer: { commit: currentInstallerCommit },
-        runtime: { version: currentRuntimeVersion },
-      } = await DotNetSdkUpdater.getSdkProductCommits(currentSdkVersion);
+      const currentVersions = await DotNetSdkUpdater.getSdkProductCommits(currentSdkVersion);
       current = {
         releaseDate: getReleaseDate(currentSdkVersion),
-        releaseNotes: getReleaseNotes(currentInstallerCommit),
-        runtimeVersion: currentRuntimeVersion,
+        releaseNotes: getReleaseNotes(currentVersions.installer?.commit || null, currentVersions.sdk.commit),
+        runtimeVersion: currentVersions.runtime.version,
         sdkVersion: currentSdkVersion,
         security,
         securityIssues,
@@ -78,7 +84,7 @@ export class DotNetSdkUpdater {
 
     const latest: ReleaseInfo = {
       releaseDate: getReleaseDate(sdkVersion),
-      releaseNotes: getReleaseNotes(installerCommit),
+      releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
       runtimeVersion,
       sdkVersion,
       security,
@@ -511,7 +517,8 @@ export class DotNetSdkUpdater {
     channel: string,
     quality: string | undefined
   ): Promise<{
-    installerCommit: string;
+    installerCommit: string | null;
+    sdkCommit: string;
     runtimeVersion: string;
     sdkVersion: string;
   }> {
@@ -541,9 +548,10 @@ export class DotNetSdkUpdater {
     const versions = await DotNetSdkUpdater.getSdkProductCommits(sdkVersion);
 
     return {
-      installerCommit: versions.installer.commit,
+      installerCommit: versions.installer?.commit || null,
+      sdkCommit: versions.sdk.commit,
       runtimeVersion: versions.runtime.version,
-      sdkVersion: versions.installer.version,
+      sdkVersion: versions.installer?.version || versions.sdk.version,
     };
   }
 
@@ -595,28 +603,38 @@ export class DotNetSdkUpdater {
 
     const commits = await response.text();
 
-    const getValue = (component: string, property: string): string => {
+    const getValue = (component: string, property: string): string | null => {
       const regex = new RegExp(`${component}_${property}="([^"]+)"`);
       const match = commits.match(regex);
       if (!match) {
-        throw new Error(`Failed to get ${component} ${property} for .NET SDK version ${sdkVersion}.`);
+        return null;
       }
       return match[1];
     };
 
-    const getProduct = (component: string): ProductCommit => {
+    const getProduct = (component: string, optional = false): ProductCommit | null => {
+      const commit = getValue(component, 'commit');
+      const version = getValue(component, 'version');
+      if (!commit || !version) {
+        if (optional) {
+          return null;
+        }
+        throw new Error(`Failed to get product information for ${component} for .NET SDK version ${sdkVersion}.`);
+      }
       return {
-        commit: getValue(component, 'commit'),
-        version: getValue(component, 'version'),
+        commit,
+        version,
       };
     };
 
     return {
-      installer: getProduct('installer'),
-      runtime: getProduct('runtime'),
-      aspnetcore: getProduct('aspnetcore'),
-      windowsdesktop: getProduct('windowsdesktop'),
-      sdk: getProduct('sdk'),
+      installer: getProduct('installer', true),
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
+      runtime: getProduct('runtime')!,
+      aspnetcore: getProduct('aspnetcore')!,
+      windowsdesktop: getProduct('windowsdesktop')!,
+      sdk: getProduct('sdk')!,
+      /* eslint-enable @typescript-eslint/no-non-null-assertion */
     };
   }
 
@@ -882,7 +900,7 @@ interface ProductCommit {
 }
 
 interface SdkProductCommits {
-  installer: ProductCommit;
+  installer: ProductCommit | null; // See https://github.com/dotnet/sdk/pull/41316
   runtime: ProductCommit;
   aspnetcore: ProductCommit;
   windowsdesktop: ProductCommit;
