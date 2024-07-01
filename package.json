@@ -10,7 +10,7 @@
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "format-check": "prettier --check src/**/*.ts tests/**/*.ts",
     "lint": "eslint src/**/*.ts",
-    "package": "esbuild lib/main.js --bundle --minify --outdir=dist --platform=node --sourcemap --target=node20.0.0",
+    "package": "esbuild lib/main.js --bundle --minify --outdir=dist --packages=bundle --platform=node --sourcemap --target=node20.0.0",
     "test": "jest",
     "publish": "npm run build && npm run format && npm run lint && npm run package",
     "all": "npm run publish && npm test"
@@ -64,7 +64,7 @@
     "@octokit/types": "^13.5.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
-    "esbuild": "^0.21.5",
+    "esbuild": "^0.22.0",
     "eslint": "^8.57.0",
     "eslint-plugin-github": "^5.0.1",
     "eslint-plugin-jest": "^28.6.0",
