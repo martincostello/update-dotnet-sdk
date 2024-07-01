@@ -10,7 +10,7 @@
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "format-check": "prettier --check src/**/*.ts tests/**/*.ts",
     "lint": "eslint src/**/*.ts",
-    "package": "esbuild lib/main.js --bundle --minify --outdir=dist --platform=node --sourcemap --target=node20.0.0",
+    "package": "esbuild lib/main.js --bundle --minify --outdir=dist --packages=bundle --platform=node --sourcemap --target=node20.0.0",
     "test": "jest",
     "publish": "npm run build && npm run format && npm run lint && npm run package",
     "all": "npm run publish && npm test"
