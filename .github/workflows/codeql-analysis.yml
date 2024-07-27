@@ -25,24 +25,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-    - name: Setup Node
-      uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
-      with:
-        node-version: '20.x'
-
-    - name: Get npm cache directory
-      id: npm-cache-dir
-      shell: pwsh
-      run: echo "dir=$(npm config get cache)" >> ${env:GITHUB_OUTPUT}
-
-    - name: Setup npm cache
-      uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-      id: npm-cache
-      with:
-        path: ${{ steps.npm-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: ${{ runner.os }}-node-
-
     - name: Initialize CodeQL
       uses: github/codeql-action/init@afb54ba388a7dca6ecae48f608c4ff05ff4cc77a # v3.25.15
       with:
@@ -52,9 +34,6 @@ jobs:
           name: 'update-dotnet-sdk CodeQL configuration'
           paths-ignore:
             - 'dist'
-
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@afb54ba388a7dca6ecae48f608c4ff05ff4cc77a # v3.25.15
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@afb54ba388a7dca6ecae48f608c4ff05ff4cc77a # v3.25.15
