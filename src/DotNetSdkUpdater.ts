@@ -907,7 +907,6 @@ interface SdkProductCommits {
   sdk: ProductCommit;
 }
 
-// eslint-disable-next-line no-shadow
 enum Quality {
   daily = 'daily',
   signed = 'signed',
