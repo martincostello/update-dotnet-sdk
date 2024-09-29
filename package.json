@@ -58,7 +58,7 @@
     "@actions/github": "^6.0.0",
     "@actions/io": "^1.1.3",
     "@octokit/plugin-paginate-rest": "^11.3.4",
-    "@octokit/plugin-rest-endpoint-methods": "^11.0.1",
+    "@octokit/plugin-rest-endpoint-methods": "^13.2.5",
     "undici": "^6.19.8"
   },
   "devDependencies": {
