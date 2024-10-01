@@ -191,8 +191,15 @@ describe('DotNetSdkUpdater', () => {
 
     describe.each([
       ['8.0', 'daily', ''],
+      ['8.0', 'daily', 'rc.1'],
+      ['8.0', 'daily', 'rc.2'],
       ['8.0.1xx', 'daily', ''],
+      ['8.0.1xx', 'daily', 'rc.1'],
+      ['8.0.1xx', 'daily', 'rc.2'],
       ['8.0.1xx-preview7', 'daily', ''],
+      ['8.0.1xx-preview7', 'daily', 'preview.7'],
+      ['8.0.1xx-preview7', 'daily', 'rc.1'],
+      ['8.0.1xx-preview7', 'daily', 'rc.2'],
     ])('for channel %s, quality %s and prerelease label "%s"', (channel: string, quality: string, prereleaseLabel: string) => {
       test(
         'Gets correct info for daily build from official build',

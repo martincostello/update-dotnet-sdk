@@ -13,6 +13,7 @@ import { fetch, Response } from 'undici';
 
 import { UpdateOptions } from './UpdateOptions';
 import { UpdateResult } from './UpdateResult';
+import { SdkVersion } from './SdkVersion';
 
 export class DotNetSdkUpdater {
   private options: UpdateOptions;
@@ -83,14 +84,29 @@ export class DotNetSdkUpdater {
       };
     }
 
-    const latest: ReleaseInfo = {
-      releaseDate: getReleaseDate(sdkVersion),
-      releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
-      runtimeVersion,
-      sdkVersion,
-      security,
-      securityIssues,
-    };
+    let latest: ReleaseInfo | null = null;
+
+    if (prereleaseLabel && prereleaseLabel.length > 0) {
+      const parsedVersion = SdkVersion.tryParse(sdkVersion);
+      if (parsedVersion === null) {
+        throw new Error(`Failed to parse .NET SDK version '${sdkVersion}'.`);
+      }
+      if (!parsedVersion.prerelease.startsWith(prereleaseLabel)) {
+        core.debug(`Ignoring .NET SDK version '${sdkVersion}' as it does not have the required prerelease label '${prereleaseLabel}'.`);
+        latest = current;
+      }
+    }
+
+    if (!latest) {
+      latest = {
+        releaseDate: getReleaseDate(sdkVersion),
+        releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
+        runtimeVersion,
+        sdkVersion,
+        security,
+        securityIssues,
+      };
+    }
 
     return {
       current,
