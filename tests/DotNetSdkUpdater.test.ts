@@ -193,7 +193,7 @@ describe('DotNetSdkUpdater', () => {
       ['8.0', 'daily', ''],
       ['8.0.1xx', 'daily', ''],
       ['8.0.1xx-preview7', 'daily', ''],
-    ])('for channel %s and quality %s', (channel: string, quality: string, prereleaseLabel: string) => {
+    ])('for channel %s, quality %s and prerelease label "%s"', (channel: string, quality: string, prereleaseLabel: string) => {
       test(
         'Gets correct info for daily build from official build',
         async () => {
