@@ -57,6 +57,11 @@ on:
         required: false
         type: string
         default: ${{ github.repository }}
+      sdk-prerelease-label:
+        description: 'An optional pre-release label to restrict SDK updates to if a quality value is specified.'
+        required: false
+        type: string
+        default: ''
       security-only:
         description: 'If true, .NET SDK updates which do not contain security fixes are ignored.'
         required: false
@@ -229,7 +234,7 @@ jobs:
     # for the same release channel as the SDK specified in global.json.
     - name: Update .NET SDK
       id: update-dotnet-sdk
-      uses: martincostello/update-dotnet-sdk@67d6e2b14939c06978a7f80444157296c3defe14 # v3.2.3
+      uses: martincostello/update-dotnet-sdk@96de6e63715752825603da36ddd5a000ad268444 # v3.3.0
       with:
         branch-name: ${{ inputs.branch-name }}
         channel: ${{ inputs.channel }}
@@ -240,6 +245,7 @@ jobs:
         generate-step-summary: ${{ inputs.generate-step-summary }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
+        prerelease-label: ${{ inputs.sdk-prerelease-label }}
         quality: ${{ inputs.quality }}
         repo: ${{ inputs.repo }}
         repo-token: ${{ steps.assign-token.outputs.access-token }}

@@ -13,6 +13,7 @@ import { fetch, Response } from 'undici';
 
 import { UpdateOptions } from './UpdateOptions';
 import { UpdateResult } from './UpdateResult';
+import { SdkVersion } from './SdkVersion';
 
 export class DotNetSdkUpdater {
   private options: UpdateOptions;
@@ -27,6 +28,7 @@ export class DotNetSdkUpdater {
     currentSdkVersion: string,
     channel: string,
     quality: string | undefined,
+    prereleaseLabel: string | undefined,
     releaseChannel: ReleaseChannel | null
   ): Promise<SdkVersions> {
     const { sdkVersion, runtimeVersion, installerCommit, sdkCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
@@ -82,14 +84,29 @@ export class DotNetSdkUpdater {
       };
     }
 
-    const latest: ReleaseInfo = {
-      releaseDate: getReleaseDate(sdkVersion),
-      releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
-      runtimeVersion,
-      sdkVersion,
-      security,
-      securityIssues,
-    };
+    let latest: ReleaseInfo | null = null;
+
+    if (prereleaseLabel && prereleaseLabel.length > 0) {
+      const parsedVersion = SdkVersion.tryParse(sdkVersion);
+      if (parsedVersion === null) {
+        throw new Error(`Failed to parse .NET SDK version '${sdkVersion}'.`);
+      }
+      if (!parsedVersion.prerelease.startsWith(prereleaseLabel)) {
+        core.debug(`Ignoring .NET SDK version '${sdkVersion}' as it does not have the required prerelease label '${prereleaseLabel}'.`);
+        latest = current;
+      }
+    }
+
+    if (!latest) {
+      latest = {
+        releaseDate: getReleaseDate(sdkVersion),
+        releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
+        runtimeVersion,
+        sdkVersion,
+        security,
+        securityIssues,
+      };
+    }
 
     return {
       current,
@@ -800,7 +817,13 @@ export class DotNetSdkUpdater {
       // This major version has not released its first preview yet
       releaseChannel = null;
     }
-    return await DotNetSdkUpdater.getLatestDaily(sdkVersion, this.options.channel, this.options.quality, releaseChannel);
+    return await DotNetSdkUpdater.getLatestDaily(
+      sdkVersion,
+      this.options.channel,
+      this.options.quality,
+      this.options.prereleaseLabel,
+      releaseChannel
+    );
   }
 
   private async getLatestDotNetSdkForOfficial(channel: string, sdkVersion: string): Promise<SdkVersions> {
