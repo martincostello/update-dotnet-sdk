@@ -27,6 +27,7 @@ export class DotNetSdkUpdater {
     currentSdkVersion: string,
     channel: string,
     quality: string | undefined,
+    prereleaseLabel: string | undefined,
     releaseChannel: ReleaseChannel | null
   ): Promise<SdkVersions> {
     const { sdkVersion, runtimeVersion, installerCommit, sdkCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
@@ -800,7 +801,13 @@ export class DotNetSdkUpdater {
       // This major version has not released its first preview yet
       releaseChannel = null;
     }
-    return await DotNetSdkUpdater.getLatestDaily(sdkVersion, this.options.channel, this.options.quality, releaseChannel);
+    return await DotNetSdkUpdater.getLatestDaily(
+      sdkVersion,
+      this.options.channel,
+      this.options.quality,
+      this.options.prereleaseLabel,
+      releaseChannel
+    );
   }
 
   private async getLatestDotNetSdkForOfficial(channel: string, sdkVersion: string): Promise<SdkVersions> {

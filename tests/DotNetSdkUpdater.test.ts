@@ -190,14 +190,14 @@ describe('DotNetSdkUpdater', () => {
     });
 
     describe.each([
-      ['8.0', 'daily'],
-      ['8.0.1xx', 'daily'],
-      ['8.0.1xx-preview7', 'daily'],
-    ])('for channel %s and quality %s', (channel: string, quality: string) => {
+      ['8.0', 'daily', ''],
+      ['8.0.1xx', 'daily', ''],
+      ['8.0.1xx-preview7', 'daily', ''],
+    ])('for channel %s and quality %s', (channel: string, quality: string, prereleaseLabel: string) => {
       test(
         'Gets correct info for daily build from official build',
         async () => {
-          expect(await DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, releaseInfo)).toMatchSnapshot();
+          expect(await DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, prereleaseLabel, releaseInfo)).toMatchSnapshot();
         },
         timeout
       );
@@ -205,14 +205,14 @@ describe('DotNetSdkUpdater', () => {
       test(
         'Gets correct info for daily build from daily build',
         async () => {
-          expect(await DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, releaseInfo)).toMatchSnapshot();
+          expect(await DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, prereleaseLabel, releaseInfo)).toMatchSnapshot();
         },
         timeout
       );
     });
 
     test.each([[''], ['foo'], ['GA']])('rejects invalid quality %s', async (quality: string) => {
-      await expect(DotNetSdkUpdater.getLatestDaily(preview1, '8.0', quality, releaseInfo)).rejects.toThrow(/Invalid quality/);
+      await expect(DotNetSdkUpdater.getLatestDaily(preview1, '8.0', quality, '', releaseInfo)).rejects.toThrow(/Invalid quality/);
     });
   });
 
