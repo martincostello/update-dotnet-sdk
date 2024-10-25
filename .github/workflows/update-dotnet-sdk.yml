@@ -257,7 +257,7 @@ jobs:
     # run the dotnet-outdated global tool to update any Microsoft-published
     # NuGet packages for that patch release of .NET to their latest versions too.
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@6bd8b7f7774af54e05809fcc5431931b3eb1ddee # v4.0.1
+      uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25 # v4.1.0
       if : ${{ inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
       with:
         global-json-file: ${{ inputs.global-json-file }}
