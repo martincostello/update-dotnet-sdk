@@ -64,8 +64,8 @@
   "devDependencies": {
     "@octokit/types": "^13.6.1",
     "@stylistic/eslint-plugin": "^2.10.1",
-    "@typescript-eslint/eslint-plugin": "^8.13.0",
-    "@typescript-eslint/parser": "^8.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
     "esbuild": "^0.24.0",
     "eslint": "^8.57.1",
     "eslint-plugin-github": "^5.0.2",
