@@ -285,6 +285,11 @@ jobs:
         Write-Host "Installing dotnet-outdated-tool..."
         dotnet tool install --global dotnet-outdated-tool --version "$env:DOTNET_OUTDATED_VERSION"
 
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "dotnet tool install failed with code ${LASTEXITCODE}"
+          return 1
+        }
+
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
 
@@ -319,6 +324,10 @@ jobs:
         if (Test-Path $toolsManifest) {
           Write-Host "Restoring .NET tools..."
           dotnet tool restore
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "dotnet tool restore failed with code ${LASTEXITCODE}"
+            return 1
+          }
         }
 
         # .NET workloads need to be restored before running dotnet outdated.
@@ -347,6 +356,10 @@ jobs:
           if ($restoreWorkloads) {
             Write-Host "Restoring .NET workloads..."
             dotnet workload restore
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "dotnet workfload restore failed with code ${LASTEXITCODE}"
+              return 1
+            }
           }
         }
 
@@ -355,6 +368,11 @@ jobs:
         # when dotnet-outdated is run
         Write-Host "Restoring NuGet packages..."
         dotnet restore
+
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "dotnet restore failed with code ${LASTEXITCODE}"
+          return 1
+        }
 
         Write-Host "Checking for .NET NuGet package(s) to update..."
 
@@ -368,6 +386,11 @@ jobs:
           --version-lock Major `
           --output $updatesPath `
           $additionalArguments
+
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "dotnet outdated failed with code ${LASTEXITCODE}"
+          return 1
+        }
 
         $dependencies = @()
 
