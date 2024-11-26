@@ -97,6 +97,7 @@
       "i18n-text/no-en": "off",
       "eslint-comments/no-use": "off",
       "filenames/match-regex": "off",
+      "github/filenames-match-regex": "off",
       "import/no-namespace": "off",
       "no-unused-vars": "off",
       "semi": "off",
