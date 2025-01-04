@@ -9,7 +9,7 @@
       }
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/8.0.100-rc.2.23424.12/productCommit-win-x64.json",
       "response": {
         "installer": {
