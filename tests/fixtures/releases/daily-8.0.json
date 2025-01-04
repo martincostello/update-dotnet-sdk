@@ -35,20 +35,20 @@
       "response": "Not found"
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/8.0.100-preview.7.23363.2/productCommit-win-x64.json",
       "persist": true,
       "status": 404,
       "response": "<Error>\n<Code>BlobNotFound</Code>\n<Message>The specified blob does not exist. RequestId:abb74f82-901e-0055-5136-d7c81c000000 Time:2023-08-25T09:26:00.8082765Z</Message>\n</Error>\n"
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/8.0.100-preview.7.23363.2/productCommit-win-x64.txt",
       "persist": true,
       "response": "installer_commit=\"19da2758bbeff00c686c491b18c6318c187c59c4\" installer_version=\"8.0.100-preview.7.23363.2\"\nruntime_commit=\"e70f0dfc1a4e8256f91c8dd20042a0e21a4cd8c8\" runtime_version=\"8.0.0-preview.7.23361.9\"\naspnetcore_commit=\"bad855959a99257bc6f194dd19ecd6c9aeb03acb\" aspnetcore_version=\"8.0.0-preview.7.23362.32\"\nwindowsdesktop_commit=\"b6eb22982ba504a732c565ae8d2ab4ee7e05750f\" windowsdesktop_version=\"8.0.0-preview.7.23362.11\"\nsdk_commit=\"a4b77d4fd5e878fd42aef22d86c0668c90888da6\" sdk_version=\"8.0.100-preview.7.23362.35\"\n"
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/8.0.100-rc.2.23424.12/productCommit-win-x64.json",
       "persist": true,
       "response": {

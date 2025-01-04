@@ -9,13 +9,13 @@
       }
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/8.0.100-preview.7.23376.3/productCommit-win-x64.json",
       "status": 404,
       "response": "<Error>\n<Code>BlobNotFound</Code>\n<Message>The specified blob does not exist. RequestId:abb74f82-901e-0055-5136-d7c81c000000 Time:2023-08-25T09:26:00.8082765Z</Message>\n</Error>\n"
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/8.0.100-preview.7.23376.3/productCommit-win-x64.txt",
       "response": "installer_commit=\"daebeea8ea53b3b8c8d6656977f59991fc550885\" installer_version=\"8.0.100-preview.7.23376.3\"\nruntime_commit=\"65b696cf5e7599ad68107138a1acb643d1cedd9d\" runtime_version=\"8.0.0-preview.7.23375.6\"\naspnetcore_commit=\"8df730db29a670c853e3cff67fe70eb1cf6e8af7\" aspnetcore_version=\"8.0.0-preview.7.23375.9\"\nwindowsdesktop_commit=\"a5b073b500e3f7cdc8a46b261fa12b6c6672bec6\" windowsdesktop_version=\"8.0.0-preview.7.23376.1\"\nsdk_commit=\"b9a275259a7a2e993ba6a21676a2679a7e128814\" sdk_version=\"8.0.100-preview.7.23376.5\"\n"
     },

@@ -584,7 +584,7 @@ export class DotNetSdkUpdater {
 
   private static getSdkProductCommitsUrl(sdkVersion: string, format: 'json' | 'txt'): string {
     const platform = 'win-x64';
-    return `https://dotnetbuilds.azureedge.net/public/Sdk/${sdkVersion}/productCommit-${platform}.${format}`;
+    return `https://ci.dot.net/public/Sdk/${sdkVersion}/productCommit-${platform}.${format}`;
   }
 
   private static async getSdkProductCommitsFromJson(sdkVersion: string): Promise<SdkProductCommits | null> {

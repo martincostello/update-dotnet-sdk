@@ -9,7 +9,7 @@
       }
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/9.0.100-preview.6.24281.7/productCommit-win-x64.json",
       "response": {
         "runtime": {
@@ -31,7 +31,7 @@
       }
     },
     {
-      "basePath": "https://dotnetbuilds.azureedge.net",
+      "basePath": "https://ci.dot.net",
       "path": "/public/Sdk/9.0.100-preview.5.24281.15/productCommit-win-x64.json",
       "response": {
         "installer": {
