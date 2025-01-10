@@ -62,7 +62,7 @@
     "undici": "^7.2.0"
   },
   "devDependencies": {
-    "@octokit/types": "^13.6.2",
+    "@octokit/types": "^13.7.0",
     "@stylistic/eslint-plugin": "^2.12.1",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",
