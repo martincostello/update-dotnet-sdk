@@ -287,7 +287,7 @@ jobs:
 
         if ($LASTEXITCODE -ne 0) {
           Write-Host "dotnet tool install failed with code ${LASTEXITCODE}"
-          return 1
+          exit 1
         }
 
         $tempPath = [System.IO.Path]::GetTempPath()
@@ -326,7 +326,7 @@ jobs:
           dotnet tool restore
           if ($LASTEXITCODE -ne 0) {
             Write-Host "dotnet tool restore failed with code ${LASTEXITCODE}"
-            return 1
+            exit 1
           }
         }
 
@@ -358,7 +358,7 @@ jobs:
             dotnet workload restore
             if ($LASTEXITCODE -ne 0) {
               Write-Host "dotnet workfload restore failed with code ${LASTEXITCODE}"
-              return 1
+              exit 1
             }
           }
         }
@@ -371,7 +371,7 @@ jobs:
 
         if ($LASTEXITCODE -ne 0) {
           Write-Host "dotnet restore failed with code ${LASTEXITCODE}"
-          return 1
+          exit 1
         }
 
         Write-Host "Checking for .NET NuGet package(s) to update..."
@@ -389,7 +389,7 @@ jobs:
 
         if ($LASTEXITCODE -ne 0) {
           Write-Host "dotnet outdated failed with code ${LASTEXITCODE}"
-          return 1
+          exit 1
         }
 
         $dependencies = @()
