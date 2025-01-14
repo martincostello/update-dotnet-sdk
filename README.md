@@ -1,6 +1,6 @@
 # Update .NET SDK
 
-[![Build status](https://github.com/martincostello/update-dotnet-sdk/workflows/build/badge.svg?branch=main&event=push)](https://github.com/martincostello/update-dotnet-sdk/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
+[![Build status](https://github.com/martincostello/update-dotnet-sdk/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/martincostello/update-dotnet-sdk/actions/workflows/build.yml?query=branch%3Amain+event%3Apush)
 [![codecov](https://codecov.io/gh/martincostello/update-dotnet-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/martincostello/update-dotnet-sdk)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/martincostello/update-dotnet-sdk/badge)](https://securityscorecards.dev/viewer/?uri=github.com/martincostello/update-dotnet-sdk)
 
