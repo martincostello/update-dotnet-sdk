@@ -203,7 +203,7 @@ jobs:
         application_id: ${{ secrets.application-id }}
         application_private_key: ${{ secrets.application-private-key }}
         organization: ${{ inputs.organization }}
-        permissions: "contents:write, pull_requests:write"
+        permissions: 'contents:write, pull_requests:write'
 
     - name: Assign GitHub token
       id: assign-token
@@ -212,11 +212,11 @@ jobs:
         REPO_TOKEN: ${{ secrets.repo-token }}
       shell: pwsh
       run: |
-        $accessToken = $env:REPO_TOKEN
+        $accessToken = ${env:REPO_TOKEN}
         if ([string]::IsNullOrEmpty($accessToken)) {
-            $accessToken = $env:APPLICATION_TOKEN
+            $accessToken = ${env:APPLICATION_TOKEN}
         }
-        "access-token=${accessToken}" >> $env:GITHUB_OUTPUT
+        "access-token=${accessToken}" >> ${env:GITHUB_OUTPUT}
 
     # Checkout the repository so the global.json file can be inspected and
     # updated if a new patch version of the SDK is available. The token is
@@ -228,6 +228,7 @@ jobs:
       with:
         ref: ${{ inputs.ref || '' }}
         repository: ${{ inputs.repo || github.repository }}
+        show-progress: false
         token: ${{ steps.assign-token.outputs.access-token }}
 
     # Run the action to check if a new version of the .NET SDK is available
@@ -263,7 +264,7 @@ jobs:
         global-json-file: ${{ inputs.global-json-file }}
 
     - name: Update NuGet packages
-      if : ${{ inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
+      if : inputs.update-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
       shell: pwsh
       env:
         COMMIT_MESSAGE_PREFIX: ${{ inputs.commit-message-prefix }}
@@ -283,7 +284,7 @@ jobs:
         $ErrorActionPreference = "Stop"
 
         Write-Host "Installing dotnet-outdated-tool..."
-        dotnet tool install --global dotnet-outdated-tool --version "$env:DOTNET_OUTDATED_VERSION"
+        dotnet tool install --global dotnet-outdated-tool --version ${env:DOTNET_OUTDATED_VERSION}
 
         if ($LASTEXITCODE -ne 0) {
           Write-Output "::error::dotnet tool install failed with code ${LASTEXITCODE}"
@@ -293,9 +294,9 @@ jobs:
         $tempPath = [System.IO.Path]::GetTempPath()
         $updatesPath = (Join-Path $tempPath "dotnet-outdated.json")
 
-        $eligiblePackages = $env:INCLUDE_NUGET_PACKAGES.Split(',')
-        $ineligiblePackages = $env:EXCLUDE_NUGET_PACKAGES.Split(',')
-        $prereleaseLabel = $env:PRERELEASE_LABEL
+        $eligiblePackages = ${env:INCLUDE_NUGET_PACKAGES}.Split(',')
+        $ineligiblePackages = ${env:EXCLUDE_NUGET_PACKAGES}.Split(',')
+        $prereleaseLabel = ${env:PRERELEASE_LABEL}
 
         $additionalArguments = @()
 
@@ -422,15 +423,15 @@ jobs:
           } else {
             $commitMessageLines += "Bump .NET NuGet packages"
             $commitMessageLines += ""
-            $commitMessageLines += "Bumps .NET dependencies to their latest versions for the .NET $($env:UPDATED_SDK_VERSION) SDK."
+            $commitMessageLines += "Bumps .NET dependencies to their latest versions for the .NET ${env:UPDATED_SDK_VERSION} SDK."
             $commitMessageLines += ""
             foreach ($dependency in $dependencies) {
               $commitMessageLines += "Bumps $($dependency.Name) from $($dependency.ResolvedVersion) to $($dependency.LatestVersion)."
             }
           }
 
-          if (-Not [string]::IsNullOrEmpty($env:COMMIT_MESSAGE_PREFIX)) {
-            $commitMessageLines[0] = "$($env:COMMIT_MESSAGE_PREFIX) $($commitMessageLines[0])"
+          if (-Not [string]::IsNullOrEmpty(${env:COMMIT_MESSAGE_PREFIX})) {
+            $commitMessageLines[0] = "${env:COMMIT_MESSAGE_PREFIX} $($commitMessageLines[0])"
           }
 
           $commitMessageLines += ""
@@ -449,8 +450,8 @@ jobs:
 
           $commitMessage = $commitMessageLines -join "`n"
 
-          git config user.email $env:GIT_AUTHOR_EMAIL
-          git config user.name $env:GIT_AUTHOR_NAME
+          git config user.email ${env:GIT_AUTHOR_EMAIL}
+          git config user.name ${env:GIT_AUTHOR_NAME}
 
           git add .
           git commit -m $commitMessage -s
