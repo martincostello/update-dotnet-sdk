@@ -259,12 +259,12 @@ jobs:
     # NuGet packages for that patch release of .NET to their latest versions too.
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4.3.0
-      if : ${{ inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
+      if: inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
       with:
         global-json-file: ${{ inputs.global-json-file }}
 
     - name: Update NuGet packages
-      if : inputs.update-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
+      if: inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
       shell: pwsh
       env:
         COMMIT_MESSAGE_PREFIX: ${{ inputs.commit-message-prefix }}
