@@ -18,6 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          filter: 'tree:0'
+          show-progress: false
           token: ${{ secrets.COSTELLOBOT_TOKEN }}
 
       - name: Setup Node
@@ -65,7 +67,7 @@ jobs:
             Write-Host "No changes to commit."
             return 0
           }
-          
+
           git push -u origin $branchName
 
           "branch-name=${branchName}" >> $env:GITHUB_OUTPUT
