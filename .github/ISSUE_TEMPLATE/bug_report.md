@@ -1,10 +1,9 @@
 ---
 name: Bug report
 about: Create a bug report to help us improve the action
-title: ''
+title: 'Bug report'
 labels: bug
 assignees: ''
-
 ---
 
 <!--
