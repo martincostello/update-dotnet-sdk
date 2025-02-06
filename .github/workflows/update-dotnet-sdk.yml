@@ -283,7 +283,7 @@ jobs:
       run: |
         $ErrorActionPreference = "Stop"
 
-        Write-Host "Installing dotnet-outdated-tool..."
+        Write-Output "Installing dotnet-outdated-tool..."
         dotnet tool install --global dotnet-outdated-tool --version ${env:DOTNET_OUTDATED_VERSION}
 
         if ($LASTEXITCODE -ne 0) {
@@ -323,7 +323,7 @@ jobs:
         $toolsManifest = (Join-Path "." ".config" "dotnet-tools.json")
 
         if (Test-Path $toolsManifest) {
-          Write-Host "Restoring .NET tools..."
+          Write-Output "Restoring .NET tools..."
           dotnet tool restore
           if ($LASTEXITCODE -ne 0) {
             Write-Output "::error::dotnet tool restore failed with code ${LASTEXITCODE}"
@@ -355,7 +355,7 @@ jobs:
           }
 
           if ($restoreWorkloads) {
-            Write-Host "Restoring .NET workloads..."
+            Write-Output "Restoring .NET workloads..."
             dotnet workload restore
             if ($LASTEXITCODE -ne 0) {
               Write-Output "::error::dotnet workfload restore failed with code ${LASTEXITCODE}"
@@ -367,7 +367,7 @@ jobs:
         # HACK Inspired by https://github.com/dotnet-outdated/dotnet-outdated/issues/55
         # run dotnet restore to populate the NuGet package cache to try and avoid timeouts
         # when dotnet-outdated is run
-        Write-Host "Restoring NuGet packages..."
+        Write-Output "Restoring NuGet packages..."
         dotnet restore
 
         if ($LASTEXITCODE -ne 0) {
@@ -375,7 +375,7 @@ jobs:
           exit 1
         }
 
-        Write-Host "Checking for .NET NuGet package(s) to update..."
+        Write-Output "Checking for .NET NuGet package(s) to update..."
 
         # The --version-lock Major option is used to only update packages
         # to the latest patch version of the current major version.
@@ -407,7 +407,7 @@ jobs:
         }
 
         if ($dependencies.Count -gt 0) {
-          Write-Host "Found $($dependencies.Count) .NET NuGet package(s) to update." -ForegroundColor Green
+          Write-Output "Found $($dependencies.Count) .NET NuGet package(s) to update."
 
           $commitMessageLines = @()
 
@@ -457,8 +457,8 @@ jobs:
           git commit -m $commitMessage -s
           git push
 
-          Write-Host "Pushed update to $($dependencies.Count) NuGet package(s)." -ForegroundColor Green
+          Write-Output "Pushed update to $($dependencies.Count) NuGet package(s)."
         }
         else {
-          Write-Host "There are no .NET NuGet packages to update." -ForegroundColor Green
+          Write-Output "There are no .NET NuGet packages to update."
         }
