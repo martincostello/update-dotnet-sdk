@@ -1,3 +1,5 @@
+# Contributing
+
 To contribute changes (source code, scripts, configuration) to this repository please follow the steps below.
 These steps are a guideline for contributing and do not necessarily need to be followed for all changes.
 
@@ -9,4 +11,3 @@ These steps are a guideline for contributing and do not necessarily need to be f
  1. Once your changes build cleanly locally submit a Pull Request back to the `main` branch from your fork's branch. Ideally commits to your branch should be squashed before creating the Pull Request. If the Pull Request fixes an issue please reference it in the title and/or description. Please keep changes focused around a specific topic rather than include multiple types of changes in a single Pull Request.
  1. After your Pull Request is created it will build against the repository's continuous integrations.
  1. Once the Pull Request has been reviewed by the project's [contributors](https://github.com/martincostello/update-dotnet-sdk/graphs/contributors) and the status checks pass your Pull Request will be merged back to the `main` branch, assuming that the changes are deemed appropriate.
- 
