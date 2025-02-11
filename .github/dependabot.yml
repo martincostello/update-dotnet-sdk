@@ -11,6 +11,10 @@ updates:
 - package-ecosystem: "npm"
   directory: "/"
   groups:
+    eslint:
+      patterns:
+        - "@eslint/*"
+        - "eslint"
     typescript-eslint:
       patterns:
         - "@typescript-eslint/*"
