@@ -452,7 +452,7 @@ export class DotNetSdkUpdater {
 
     core.debug(`Querying ${owner}/${repo} for open pull requests targeting ${base}.`);
 
-    let pulls = await octokit.paginate(octokit.rest.pulls.list, {
+    const result = await octokit.paginate(octokit.rest.pulls.list, {
       owner,
       repo,
       base,
@@ -461,7 +461,31 @@ export class DotNetSdkUpdater {
       per_page: 100,
     });
 
-    core.debug(`Found ${pulls.length} open pull request(s) targeting ${base} in ${owner}/${repo}.`);
+    core.debug(`Found ${result.length} open pull request(s) targeting ${base} in ${owner}/${repo}.`);
+
+    type PullRequest = {
+      number: number;
+      title: string;
+      head: {
+        ref: string;
+      };
+      user: {
+        login: string;
+      };
+    };
+
+    let pulls: PullRequest[] = result.map((pull) => {
+      return {
+        number: pull.number,
+        title: pull.title,
+        head: {
+          ref: pull.head.ref,
+        },
+        user: {
+          login: pull.user?.login || '',
+        },
+      };
+    });
 
     pulls = pulls.filter((pull) => pull.user && pull.user.login === created.user);
 
