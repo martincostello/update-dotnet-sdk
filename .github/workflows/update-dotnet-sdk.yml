@@ -358,7 +358,7 @@ jobs:
             Write-Output "Restoring .NET workloads..."
             dotnet workload restore
             if ($LASTEXITCODE -ne 0) {
-              Write-Output "::error::dotnet workfload restore failed with code ${LASTEXITCODE}"
+              Write-Output "::error::dotnet workload restore failed with code ${LASTEXITCODE}"
               exit 1
             }
           }
