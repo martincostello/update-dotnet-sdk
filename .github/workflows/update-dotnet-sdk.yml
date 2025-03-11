@@ -389,8 +389,7 @@ jobs:
           $additionalArguments
 
         if ($LASTEXITCODE -ne 0) {
-          Write-Output "::error::dotnet outdated failed with code ${LASTEXITCODE}"
-          exit 1
+          Write-Output "::warning::dotnet outdated failed with code ${LASTEXITCODE}"
         }
 
         $dependencies = @()
