@@ -2,6 +2,12 @@ name: regenerate-dist
 
 on:
   workflow_dispatch:
+    inputs:
+      npm-audit-fix:
+        description: 'Whether to run npm audit fix'
+        type: boolean
+        required: false
+        default: false
 
 permissions: {}
 
@@ -29,6 +35,10 @@ jobs:
 
       - name: Install packages
         run: npm ci
+
+      - name: Apply audit fixes
+        if: inputs.npm-audit-fix
+        run: npm audit fix
 
       - name: Regenerate dist
         run: npm run publish
