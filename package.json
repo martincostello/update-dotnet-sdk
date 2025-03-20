@@ -9,7 +9,7 @@
     "check-dist": "npm run build && npm run package",
     "format": "prettier --write eslint.config.mjs src/**/*.ts tests/**/*.ts",
     "format-check": "prettier --check eslint.config.mjs src/**/*.ts tests/**/*.ts",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src/**/*.ts --fix",
     "package": "esbuild lib/main.js --bundle --minify --outdir=dist --packages=bundle --platform=node --sourcemap --target=node20.0.0",
     "test": "jest",
     "publish": "npm run build && npm run format && npm run lint && npm run package",
