@@ -67,7 +67,7 @@ export class DotNetSdkUpdater {
     if (releaseChannel) {
       try {
         current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, releaseChannel);
-      } catch (err) {
+      } catch {
         // The current SDK version is also a daily build
       }
     }
@@ -383,6 +383,7 @@ export class DotNetSdkUpdater {
             issue_number: result.number,
             labels: labelsToApply,
           });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           core.error(`Failed to apply label(s) to Pull Request #${result.number}`);
           core.error(error);
@@ -441,10 +442,10 @@ export class DotNetSdkUpdater {
       user?: string;
     }
   ): Promise<
-    {
+    Array<{
       number: number;
       ref: string;
-    }[]
+    }>
   > {
     const owner = created.owner;
     const repo = created.repo;
@@ -509,7 +510,7 @@ export class DotNetSdkUpdater {
     return superseded;
   }
 
-  private async execGit(args: string[], ignoreErrors: Boolean = false): Promise<string> {
+  private async execGit(args: string[], ignoreErrors = false): Promise<string> {
     let commandOutput = '';
     let commandError = '';
 
@@ -531,7 +532,7 @@ export class DotNetSdkUpdater {
 
     try {
       await exec.exec('git', args, options);
-    } catch (error: any) {
+    } catch (error) {
       throw new Error(`The command 'git ${args.join(' ')}' failed: ${error}`);
     }
 
@@ -837,7 +838,7 @@ export class DotNetSdkUpdater {
     let releaseChannel: ReleaseChannel | null;
     try {
       releaseChannel = await this.getDotNetReleaseChannel(channel);
-    } catch (err) {
+    } catch {
       // This major version has not released its first preview yet
       releaseChannel = null;
     }
@@ -962,10 +963,10 @@ enum Quality {
 }
 
 class NullWritable extends Writable {
-  _write(_chunk: any, _encoding: string, callback: (error?: Error | null) => void): void {
+  _write(_chunk: unknown, _encoding: string, callback: (error?: Error | null) => void): void {
     callback();
   }
-  _writev(_chunks: { chunk: any; encoding: string }[], callback: (error?: Error | null) => void): void {
+  _writev(_chunks: Array<{ chunk: unknown; encoding: string }>, callback: (error?: Error | null) => void): void {
     callback();
   }
 }

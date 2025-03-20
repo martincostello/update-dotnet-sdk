@@ -66,6 +66,7 @@ export async function run(): Promise<void> {
     core.setOutput('sdk-updated', result.updated);
     core.setOutput('sdk-version', result.version);
     core.setOutput('security', result.security);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     core.error('Failed to check for updates to .NET SDK');
     core.error(error);
