@@ -10,7 +10,7 @@ on:
 env:
   FORCE_COLOR: 1
   POWERSHELL_YAML_VERSION: '0.4.12'
-  PSSCRIPTANALYZER_VERSION: '1.23.0'
+  PSSCRIPTANALYZER_VERSION: '1.24.0'
 
 permissions:
   contents: read
