@@ -236,7 +236,7 @@ jobs:
     # for the same release channel as the SDK specified in global.json.
     - name: Update .NET SDK
       id: update-dotnet-sdk
-      uses: martincostello/update-dotnet-sdk@85d667fd1555930e26433702522ad27d93e2b71a # v3.4.2
+      uses: martincostello/update-dotnet-sdk@f35595433ffcdc83b964e299924962b4b9179b7c # v3.5.0
       with:
         branch-name: ${{ inputs.branch-name }}
         channel: ${{ inputs.channel }}
