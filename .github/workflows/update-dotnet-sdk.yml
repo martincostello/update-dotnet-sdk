@@ -198,12 +198,13 @@ jobs:
     - name: Generate GitHub application token
       id: generate-application-token
       if: steps.validate-secrets.outputs.result == 'true'
-      uses: peter-murray/workflow-application-token-action@d17e3a9a36850ea89f35db16c1067dd2b68ee343 # v4.0.1
+      uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.12.0
       with:
-        application_id: ${{ secrets.application-id }}
-        application_private_key: ${{ secrets.application-private-key }}
-        organization: ${{ inputs.organization }}
-        permissions: 'contents:write, pull_requests:write'
+        app-id: ${{ secrets.application-id }}
+        owner: ${{ inputs.organization }}
+        permission-contents: write
+        permission-pull-requests: write
+        private-key: ${{ secrets.application-private-key }}
 
     - name: Assign GitHub token
       id: assign-token
