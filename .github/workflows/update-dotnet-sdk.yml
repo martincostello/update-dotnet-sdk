@@ -440,6 +440,7 @@ jobs:
 
           foreach ($dependency in $dependencies) {
             $commitMessageLines += "- dependency-name: $($dependency.Name)"
+            $commitMessageLines += "  dependency-version: $($dependency.LatestVersion)"
             $commitMessageLines += "  dependency-type: direct:production"
             $commitMessageLines += "  update-type: version-update:semver-$($dependency.UpgradeSeverity.ToLowerInvariant())"
           }

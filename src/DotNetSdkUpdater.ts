@@ -182,6 +182,7 @@ export class DotNetSdkUpdater {
       '---',
       'updated-dependencies:',
       '- dependency-name: Microsoft.NET.Sdk',
+      `  dependency-version: ${latestSdkVersion}`,
       '  dependency-type: direct:production',
       `  update-type: version-update:semver-${updateKind}`,
       '...',

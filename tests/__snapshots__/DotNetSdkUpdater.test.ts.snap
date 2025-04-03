@@ -106,6 +106,7 @@ Update .NET SDK to version 3.0.101.
 ---
 updated-dependencies:
 - dependency-name: Microsoft.NET.Sdk
+  dependency-version: 3.0.101
   dependency-type: direct:production
   update-type: version-update:semver-major
 ...
@@ -121,6 +122,7 @@ Update .NET SDK to version 3.1.101.
 ---
 updated-dependencies:
 - dependency-name: Microsoft.NET.Sdk
+  dependency-version: 3.0.101
   dependency-type: direct:production
   update-type: version-update:semver-major
 ...
@@ -136,6 +138,7 @@ Update .NET SDK to version 3.1.100.
 ---
 updated-dependencies:
 - dependency-name: Microsoft.NET.Sdk
+  dependency-version: 3.1.100
   dependency-type: direct:production
   update-type: version-update:semver-minor
 ...
@@ -151,6 +154,7 @@ Update .NET SDK to version 3.1.101.
 ---
 updated-dependencies:
 - dependency-name: Microsoft.NET.Sdk
+  dependency-version: 3.1.101
   dependency-type: direct:production
   update-type: version-update:semver-patch
 ...
@@ -166,6 +170,7 @@ Update .NET SDK to version 3.1.200.
 ---
 updated-dependencies:
 - dependency-name: Microsoft.NET.Sdk
+  dependency-version: 3.1.200
   dependency-type: direct:production
   update-type: version-update:semver-patch
 ...
@@ -181,6 +186,7 @@ Update .NET SDK to version 6.0.100.
 ---
 updated-dependencies:
 - dependency-name: Microsoft.NET.Sdk
+  dependency-version: 6.0.100
   dependency-type: direct:production
   update-type: version-update:semver-major
 ...
