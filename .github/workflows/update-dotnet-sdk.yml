@@ -28,6 +28,11 @@ on:
         required: false
         type: string
         default: ''
+      dotnet-roll-forward:
+        description: 'An optional value that controls how roll forward is applied to any .NET tools run by the workflow.'
+        required: false
+        type: string
+        default: 'Minor'
       generate-step-summary:
         description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
         required: false
@@ -272,6 +277,7 @@ jobs:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_NOLOGO: true
         DOTNET_OUTDATED_VERSION: ${{ inputs.dotnet-outdated-version || '*' }}
+        DOTNET_ROLL_FORWARD: ${{ inputs.dotnet-roll-forward }}
         DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
         EXCLUDE_NUGET_PACKAGES: ${{ inputs.exclude-nuget-packages }}
