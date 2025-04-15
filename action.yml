@@ -69,6 +69,8 @@ inputs:
     required: false
     default: 'false'
 outputs:
+  aspnetcore-version:
+    description: 'The version of the ASP.NET Core runtime associated with the updated .NET SDK.'
   branch-name:
     description: 'The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated.'
   pull-request-number:
@@ -81,8 +83,12 @@ outputs:
     description: 'Whether the .NET SDK was updated by the action.'
   sdk-version:
     description: 'The latest version of the .NET SDK for the specified channel when the action completed.'
+  runtime-version:
+    description: 'The version of the .NET runtime associated with the updated .NET SDK.'
   security:
     description: 'Whether any .NET SDK update includes security fixes.'
+  windows-desktop-version:
+    description: 'The version of the Windows Desktop runtime associated with the updated .NET SDK.'
 runs:
   using: 'node20'
   main: 'dist/main.js'

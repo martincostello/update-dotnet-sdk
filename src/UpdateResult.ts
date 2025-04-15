@@ -9,4 +9,9 @@ export interface UpdateResult {
   supersedes: number[];
   updated: boolean;
   version: string;
+  runtimeVersions: {
+    aspNetCore: string;
+    runtime: string;
+    windowsDesktop?: string;
+  } | null;
 }

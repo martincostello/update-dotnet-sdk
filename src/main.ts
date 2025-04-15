@@ -59,13 +59,17 @@ export async function run(): Promise<void> {
     const updater = new DotNetSdkUpdater(options);
     const result = await updater.tryUpdateSdk();
 
+    core.setOutput('aspnetcore-version', result.runtimeVersions?.aspNetCore ?? '');
     core.setOutput('branch-name', result.branchName);
     core.setOutput('pull-request-number', result.pullRequestNumber);
     core.setOutput('pull-request-html-url', result.pullRequestUrl);
     core.setOutput('pull-requests-closed', JSON.stringify(result.supersedes));
+    core.setOutput('runtime-version', result.runtimeVersions?.runtime ?? '');
     core.setOutput('sdk-updated', result.updated);
     core.setOutput('sdk-version', result.version);
     core.setOutput('security', result.security);
+    core.setOutput('windows-desktop-version', result.runtimeVersions?.windowsDesktop ?? '');
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     core.error('Failed to check for updates to .NET SDK');

@@ -31,7 +31,8 @@ export class DotNetSdkUpdater {
     prereleaseLabel: string | undefined,
     releaseChannel: ReleaseChannel | null
   ): Promise<SdkVersions> {
-    const { sdkVersion, runtimeVersion, installerCommit, sdkCommit } = await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
+    const { sdkVersion, runtimeVersion, aspnetcoreVersion, windowsDesktopVersion, installerCommit, sdkCommit } =
+      await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
 
     const security = false;
     const securityIssues = [];
@@ -75,12 +76,14 @@ export class DotNetSdkUpdater {
     if (!current) {
       const currentVersions = await DotNetSdkUpdater.getSdkProductCommits(currentSdkVersion);
       current = {
+        aspnetcoreVersion: currentVersions.aspnetcore.version,
         releaseDate: getReleaseDate(currentSdkVersion),
         releaseNotes: getReleaseNotes(currentVersions.installer?.commit || null, currentVersions.sdk.commit),
         runtimeVersion: currentVersions.runtime.version,
         sdkVersion: currentSdkVersion,
         security,
         securityIssues,
+        windowsDesktopVersion: currentVersions.windowsdesktop.version,
       };
     }
 
@@ -99,12 +102,14 @@ export class DotNetSdkUpdater {
 
     if (!latest) {
       latest = {
+        aspnetcoreVersion,
         releaseDate: getReleaseDate(sdkVersion),
         releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
         runtimeVersion,
         sdkVersion,
         security,
         securityIssues,
+        windowsDesktopVersion,
       };
     }
 
@@ -283,6 +288,7 @@ export class DotNetSdkUpdater {
       pullRequestNumber: 0,
       pullRequestUrl: '',
       updated: false,
+      runtimeVersions: null,
       security: false,
       supersedes: [],
       version: update.current.sdkVersion,
@@ -315,6 +321,12 @@ export class DotNetSdkUpdater {
         result.security = update.security;
         result.updated = true;
         result.version = update.latest.sdkVersion;
+
+        result.runtimeVersions = {
+          aspNetCore: update.latest.aspnetcoreVersion,
+          runtime: update.latest.runtimeVersion,
+          windowsDesktop: update.latest.windowsDesktopVersion,
+        };
 
         if (this.options.generateStepSummary) {
           await DotNetSdkUpdater.generateSummary(update, new Date(Date.now()));
@@ -560,10 +572,12 @@ export class DotNetSdkUpdater {
     channel: string,
     quality: string | undefined
   ): Promise<{
+    aspnetcoreVersion: string;
     installerCommit: string | null;
     sdkCommit: string;
     runtimeVersion: string;
     sdkVersion: string;
+    windowsDesktopVersion: string;
   }> {
     // See https://github.com/dotnet/install-scripts/blob/2ff8ee5ca8feccd8c54a855b4ccf15dc82f1e20e/src/dotnet-install.ps1#L18-L35
     if (!Object.values(Quality).includes(quality as Quality)) {
@@ -591,10 +605,12 @@ export class DotNetSdkUpdater {
     const versions = await DotNetSdkUpdater.getSdkProductCommits(sdkVersion);
 
     return {
+      aspnetcoreVersion: versions.aspnetcore.version,
       installerCommit: versions.installer?.commit || null,
       sdkCommit: versions.sdk.commit,
       runtimeVersion: versions.runtime.version,
       sdkVersion: versions.installer?.version || versions.sdk.version,
+      windowsDesktopVersion: versions.windowsdesktop.version,
     };
   }
 
@@ -728,12 +744,14 @@ export class DotNetSdkUpdater {
     const release = releasesForSdk[0];
 
     const result = {
+      aspnetcoreVersion: release['aspnetcore-runtime'].version,
       releaseDate: new Date(release['release-date']),
       releaseNotes: release['release-notes'],
       runtimeVersion: release.runtime.version,
       sdkVersion: foundSdk.version,
       security: release.security,
       securityIssues: [] as CveInfo[],
+      windowsDesktopVersion: release.windowsdesktop?.version,
     };
 
     if (result.security) {
@@ -881,12 +899,14 @@ interface PullRequest {
 }
 
 interface ReleaseInfo {
+  aspnetcoreVersion: string;
   releaseDate: Date;
   releaseNotes: string;
   runtimeVersion: string;
   sdkVersion: string;
   security: boolean;
   securityIssues: CveInfo[];
+  windowsDesktopVersion?: string;
 }
 
 interface SdkVersions {
@@ -919,6 +939,7 @@ interface Release {
   'sdk': Sdk;
   'sdks': Sdk[];
   'aspnetcore-runtime': Runtime;
+  'windowsdesktop'?: Runtime;
 }
 
 interface Runtime {

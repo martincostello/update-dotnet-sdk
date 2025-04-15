@@ -6,14 +6,17 @@ import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals
 import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
-const inputs = [
+const outputs = [
+  ['aspnetcore-version'],
   ['branch-name'],
   ['pull-request-html-url'],
   ['pull-request-number'],
   ['pull-requests-closed'],
+  ['runtime-version'],
   ['sdk-updated'],
   ['sdk-version'],
   ['security'],
+  ['windows-desktop-version'],
 ];
 
 describe('update-dotnet-sdk', () => {
@@ -78,7 +81,7 @@ describe('update-dotnet-sdk', () => {
           expect(fixture.stepSummary).toMatchSnapshot();
         });
 
-        test.each(inputs)('the %s output is correct', (name: string) => {
+        test.each(outputs)('the %s output is correct', (name: string) => {
           expect(fixture.getOutput(name)).toMatchSnapshot();
         });
       });
@@ -121,7 +124,7 @@ describe('update-dotnet-sdk', () => {
         expect(await fixture.commitHistory(1)).toMatchSnapshot();
       });
 
-      test.each(inputs)('the %s output is correct', (name: string) => {
+      test.each(outputs)('the %s output is correct', (name: string) => {
         expect(fixture.getOutput(name)).toMatchSnapshot();
       });
     });
@@ -160,7 +163,7 @@ describe('update-dotnet-sdk', () => {
         expect(await fixture.commitHistory(1)).toMatchSnapshot();
       });
 
-      test.each(inputs)('the %s output is correct', (name: string) => {
+      test.each(outputs)('the %s output is correct', (name: string) => {
         expect(fixture.getOutput(name)).toMatchSnapshot();
       });
     });
@@ -210,7 +213,7 @@ describe('update-dotnet-sdk', () => {
         expect(fixture.stepSummary).toMatchSnapshot();
       });
 
-      test.each(inputs)('the %s output is correct', (name: string) => {
+      test.each(outputs)('the %s output is correct', (name: string) => {
         expect(fixture.getOutput(name)).toMatchSnapshot();
       });
     });
@@ -334,7 +337,7 @@ describe('update-dotnet-sdk', () => {
         expect(fixture.stepSummary).toMatchSnapshot();
       });
 
-      test.each(inputs)('the %s output is correct', (name: string) => {
+      test.each(outputs)('the %s output is correct', (name: string) => {
         expect(fixture.getOutput(name)).toMatchSnapshot();
       });
     });
