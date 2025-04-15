@@ -19,7 +19,7 @@ inputs:
   close-superseded:
     description: 'If true, any existing pull requests superseded by any pull request opened by the action are closed.'
     required: false
-    default: true
+    default: 'true'
   commit-message:
     description: 'The optional Git commit message to use.'
     required: false
@@ -31,7 +31,7 @@ inputs:
   generate-step-summary:
     description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
     required: false
-    default: true
+    default: 'true'
   global-json-file:
     description: 'The optional path to the global.json file to update.'
     required: false
@@ -51,7 +51,7 @@ inputs:
   security-only:
     description: 'If true, .NET SDK updates which do not contain security fixes are ignored.'
     required: false
-    default: false
+    default: 'false'
   quality:
     description: 'The optional value to specify using the latest build of the specified quality in the channel.'
     required: false
@@ -67,7 +67,7 @@ inputs:
   dry-run:
     description: 'If true, the action will not push changes to GitHub.'
     required: false
-    default: false
+    default: 'false'
 outputs:
   branch-name:
     description: 'The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated.'
