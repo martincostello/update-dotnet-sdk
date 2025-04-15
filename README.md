@@ -402,13 +402,16 @@ For more information about daily builds, see the [.NET SDK Installer repository]
 
 | **Name** | **Description** |
 |:--|:--|
+| `aspnetcore-version` | The version of the ASP.NET Core runtime associated with the updated .NET SDK. |
 | `branch-name` | The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-request-number` | The number of the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-request-html-url` | The HTML URL of the Pull Request created by the action if the .NET SDK is updated. |
 | `pull-requests-closed` | A JSON array of the numbers of any pull requests that were closed as superseded. |
+| `runtime-version` | The version of the .NET runtime associated with the updated .NET SDK. |
 | `sdk-updated` | Whether the .NET SDK was updated by the action. |
 | `sdk-version` | The latest version of the .NET SDK for the specified channel when the action completed. |
 | `security` | Whether any .NET SDK update includes security fixes. |
+| `windows-desktop-version` | The version of the Windows Desktop runtime associated with the updated .NET SDK. |
 
 All of the above inputs and outputs are also available with the [reusable workflow][reusable-workflow].
 
