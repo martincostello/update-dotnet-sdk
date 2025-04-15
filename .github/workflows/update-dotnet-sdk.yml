@@ -309,21 +309,18 @@ jobs:
 
         if (-Not [string]::IsNullOrEmpty($eligiblePackages)) {
           foreach ($package in $eligiblePackages) {
-            $additionalArguments += "--include"
-            $additionalArguments += $package
+            $additionalArguments += "--include:${package}"
           }
         }
 
         if (-Not [string]::IsNullOrEmpty($ineligiblePackages)) {
           foreach ($package in $ineligiblePackages) {
-            $additionalArguments += "--exclude"
-            $additionalArguments += $package
+            $additionalArguments += "--exclude:${package}"
           }
         }
 
         if (-Not [string]::IsNullOrEmpty($prereleaseLabel)) {
-          $additionalArguments += "--pre-release-label"
-          $additionalArguments += $prereleaseLabel
+          $additionalArguments += "--pre-release-label:${prereleaseLabel}"
         }
 
         # See https://github.com/martincostello/update-dotnet-sdk/issues/785
