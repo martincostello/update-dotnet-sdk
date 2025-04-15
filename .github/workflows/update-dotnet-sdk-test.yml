@@ -31,6 +31,9 @@ jobs:
       run: |
         echo "SDK updated: ${{ needs.update-sdk.outputs.sdk-updated }}"
         echo "SDK version: ${{ needs.update-sdk.outputs.sdk-version }}"
+        echo "Runtime version: ${{ needs.update-sdk.outputs.runtime-version }}"
+        echo "ASP.NET Core version: ${{ needs.update-sdk.outputs.aspnetcore-version }}"
+        echo "Windows Desktop version: ${{ needs.update-sdk.outputs.windows-desktop-version }}"
         echo "Security: ${{ needs.update-sdk.outputs.security }}"
         echo "Branch name: ${{ needs.update-sdk.outputs.branch-name }}"
         echo "PR number: ${{ needs.update-sdk.outputs.pull-request-number }}"
