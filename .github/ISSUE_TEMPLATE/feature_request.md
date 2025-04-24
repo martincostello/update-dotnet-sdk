@@ -1,6 +1,6 @@
 ---
 name: Feature request
-title: Feature request
+title: '[Feature request] '
 about: Suggest an idea for a feature of this action
 labels: feature-request
 ---
