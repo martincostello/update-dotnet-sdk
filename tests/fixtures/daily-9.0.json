@@ -2,10 +2,28 @@
   "scenarios": [
     {
       "basePath": "https://aka.ms",
-      "path": "/dotnet/9.0/daily/sdk-productVersion.txt",
-      "response": "9.0.100-alpha.1.24066.6\n",
-      "responseHeaders": {
-        "content-type": "text/plain"
+      "path": "/dotnet/9.0/daily/productCommit-win-x64.json",
+      "response": {
+        "installer": {
+          "commit": "de96ee60b3aaa290c817df7e21ee7cb38c1cf2dd",
+          "version": "9.0.100-alpha.1.24058.9"
+        },
+        "runtime": {
+          "commit": "21b4a8585362c1bc12d545b63e62a0d9dd4e8673",
+          "version": "9.0.0-alpha.1.24057.2"
+        },
+        "aspnetcore": {
+          "commit": "e1758535a7f9922a61a919ebbc26be06f70fa5a1",
+          "version": "9.0.0-alpha.1.24058.4"
+        },
+        "windowsdesktop": {
+          "commit": "cd813382efc14c011d79679a654d77f5743d7769",
+          "version": "9.0.0-alpha.1.24056.2"
+        },
+        "sdk": {
+          "commit": "4b6d1c2371ee0296df15c72dff4c7ea64315bfe6",
+          "version": "9.0.100-alpha.1.24058.9"
+        }
       }
     },
     {
