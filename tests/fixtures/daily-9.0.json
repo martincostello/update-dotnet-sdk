@@ -5,24 +5,24 @@
       "path": "/dotnet/9.0/daily/productCommit-win-x64.json",
       "response": {
         "installer": {
-          "commit": "de96ee60b3aaa290c817df7e21ee7cb38c1cf2dd",
-          "version": "9.0.100-alpha.1.24058.9"
+          "commit": "aa5f136790068f7c993e52801e7bd4477d228691",
+          "version": "9.0.100-alpha.1.24066.6"
         },
         "runtime": {
-          "commit": "21b4a8585362c1bc12d545b63e62a0d9dd4e8673",
-          "version": "9.0.0-alpha.1.24057.2"
+          "commit": "22ba7d607bb1d9caa0db9afcdc47eb5cef641fcb",
+          "version": "9.0.0-alpha.1.24061.26"
         },
         "aspnetcore": {
-          "commit": "e1758535a7f9922a61a919ebbc26be06f70fa5a1",
-          "version": "9.0.0-alpha.1.24058.4"
+          "commit": "a19c70eba3f89c7cbe9447f029b4c63322f47846",
+          "version": "9.0.0-alpha.1.24061.8"
         },
         "windowsdesktop": {
-          "commit": "cd813382efc14c011d79679a654d77f5743d7769",
-          "version": "9.0.0-alpha.1.24056.2"
+          "commit": "35043947917c50e301196493f952d08600e3fd4d",
+          "version": "9.0.0-alpha.1.24061.5"
         },
         "sdk": {
-          "commit": "4b6d1c2371ee0296df15c72dff4c7ea64315bfe6",
-          "version": "9.0.100-alpha.1.24058.9"
+          "commit": "231e921dd53cb4f57acfae42b5984e4103d6b557",
+          "version": "9.0.100-alpha.1.24062.7"
         }
       }
     },

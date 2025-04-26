@@ -104,7 +104,9 @@ describe('DotNetSdkUpdater', () => {
     });
 
     test('throws if the channel does not have any previews', async () => {
-      await expect(updater.tryUpdateSdk()).rejects.toThrow(/Failed to get product commits for \.NET SDK channel 99\.0 and quality daily \- HTTP status 404/);
+      await expect(updater.tryUpdateSdk()).rejects.toThrow(
+        /Failed to get product commits for \.NET SDK channel 99\.0 and quality daily \- HTTP status 404/
+      );
     });
   });
 
