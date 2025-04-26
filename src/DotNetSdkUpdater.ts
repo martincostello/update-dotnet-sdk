@@ -584,25 +584,12 @@ export class DotNetSdkUpdater {
       throw new Error(`Invalid quality "${quality}" specified. Supported values are: ${Object.values(Quality).join(', ')}.`);
     }
 
-    const versionUrl = `https://aka.ms/dotnet/${channel}/${quality}/sdk-productVersion.txt`;
-    core.debug(`Downloading .NET ${channel} daily SDK version from ${versionUrl}`);
+    const version = {
+      channel,
+      quality: quality ?? 'daily',
+    };
 
-    const response = await DotNetSdkUpdater.httpGet(versionUrl);
-
-    if (response.status && response.status >= 400) {
-      throw new Error(`Failed to get product version for channel ${channel} - HTTP status ${response.status}`);
-    }
-
-    const contentType = response.headers.get('content-type');
-
-    if (!(contentType === 'text/plain' || contentType === 'application/octet-stream')) {
-      throw new Error(`Failed to get product version for channel ${channel} as plain text. Content-Type: ${contentType}`);
-    }
-
-    const versionRaw = await response.text();
-    const sdkVersion = versionRaw.trim();
-
-    const versions = await DotNetSdkUpdater.getSdkProductCommits(sdkVersion);
+    const versions = await DotNetSdkUpdater.getSdkProductCommits(version);
 
     return {
       aspnetcoreVersion: versions.aspnetcore.version,
@@ -614,50 +601,75 @@ export class DotNetSdkUpdater {
     };
   }
 
-  private static async getSdkProductCommits(sdkVersion: string): Promise<SdkProductCommits> {
+  private static async getSdkProductCommits(version: AssetVersion | string): Promise<SdkProductCommits> {
     // JSON support was only added as of .NET 8 RC1.
     // See https://github.com/dotnet/installer/pull/17000.
-    let productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromJson(sdkVersion);
+    let productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromJson(version);
     if (!productCommits) {
-      productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromText(sdkVersion);
+      productCommits = await DotNetSdkUpdater.getSdkProductCommitsFromText(version);
     }
     return productCommits;
   }
 
-  private static getSdkProductCommitsUrl(sdkVersion: string, format: 'json' | 'txt'): string {
+  private static getSdkProductCommitsUrl(version: AssetVersion | string, format: 'json' | 'txt'): string {
     const platform = 'win-x64';
-    return `https://ci.dot.net/public/Sdk/${sdkVersion}/productCommit-${platform}.${format}`;
+    if (typeof version === 'string') {
+      return `https://ci.dot.net/public/Sdk/${version}/productCommit-${platform}.${format}`;
+    }
+    return `https://aka.ms/dotnet/${version.channel}/${version.quality}/productCommit-${platform}.${format}`;
   }
 
-  private static async getSdkProductCommitsFromJson(sdkVersion: string): Promise<SdkProductCommits | null> {
-    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'json');
-    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}...`);
+  private static async getSdkProductCommitsFromJson(version: AssetVersion | string): Promise<SdkProductCommits | null> {
+    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(version, 'json');
+
+    if (typeof version === 'string') {
+      core.debug(`Downloading .NET SDK commits for version ${version} from ${commitsUrl}...`);
+    } else {
+      core.debug(`Downloading .NET SDK commits for channel ${version.channel} and quality ${version.quality} from ${commitsUrl}...`);
+    }
 
     const response = await DotNetSdkUpdater.httpGet(commitsUrl);
 
     if (response.status === 404) {
       return null;
     } else if (response.status >= 400) {
-      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.status}`);
+      throw new Error(
+        typeof version === 'string'
+          ? `Failed to get product commits for .NET SDK version ${version} - HTTP status ${response.status}`
+          : `Failed to get product commits for .NET SDK channel ${version.channel} and quality ${version.quality} - HTTP status ${response.status}`
+      );
     }
 
     const commits = await response.json();
 
     if (!commits) {
-      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion}.`);
+      throw new Error(
+        typeof version === 'string'
+          ? `Failed to get product commits for .NET SDK version ${version}.`
+          : `Failed to get product commits for .NET SDK channel ${version.channel} and quality ${version.quality}.`
+      );
     }
 
     return commits as SdkProductCommits;
   }
 
-  private static async getSdkProductCommitsFromText(sdkVersion: string): Promise<SdkProductCommits> {
-    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(sdkVersion, 'txt');
-    core.debug(`Downloading .NET SDK commits for version ${sdkVersion} from ${commitsUrl}`);
+  private static async getSdkProductCommitsFromText(version: AssetVersion | string): Promise<SdkProductCommits> {
+    const commitsUrl = DotNetSdkUpdater.getSdkProductCommitsUrl(version, 'txt');
+
+    if (typeof version === 'string') {
+      core.debug(`Downloading .NET SDK commits for version ${version} from ${commitsUrl}`);
+    } else {
+      core.debug(`Downloading .NET SDK commits for channel ${version.channel} and quality ${version.quality} from ${commitsUrl}`);
+    }
 
     const response = await DotNetSdkUpdater.httpGet(commitsUrl);
 
     if (response.status && response.status >= 400) {
-      throw new Error(`Failed to get product commits for .NET SDK version ${sdkVersion} - HTTP status ${response.status}`);
+      throw new Error(
+        typeof version === 'string'
+          ? `Failed to get product commits for .NET SDK version ${version} - HTTP status ${response.status}`
+          : `Failed to get product commits for .NET SDK channel ${version.channel} and quality ${version.quality} - HTTP status ${response.status}`
+      );
     }
 
     const commits = await response.text();
@@ -673,16 +685,20 @@ export class DotNetSdkUpdater {
 
     const getProduct = (component: string, optional = false): ProductCommit | null => {
       const commit = getValue(component, 'commit');
-      const version = getValue(component, 'version');
-      if (!commit || !version) {
+      const productVersion = getValue(component, 'version');
+      if (!commit || !productVersion) {
         if (optional) {
           return null;
         }
-        throw new Error(`Failed to get product information for ${component} for .NET SDK version ${sdkVersion}.`);
+        throw new Error(
+          typeof version === 'string'
+            ? `Failed to get product information for ${component} for .NET SDK version ${version}.`
+            : `Failed to get product information for ${component} for .NET SDK channel ${version.channel} and quality ${version.quality}.`
+        );
       }
       return {
         commit,
-        version,
+        version: productVersion,
       };
     };
 
@@ -996,3 +1012,5 @@ class NullWritable extends Writable {
 type PaginatedApi = import('@octokit/plugin-rest-endpoint-methods/dist-types/types').Api & {
   paginate: import('@octokit/plugin-paginate-rest').PaginateInterface;
 };
+
+type AssetVersion = { channel: string; quality: string };
