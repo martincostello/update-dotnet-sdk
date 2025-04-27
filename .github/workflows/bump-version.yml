@@ -39,10 +39,12 @@ jobs:
           $fileName = Join-Path "." "package.json"
           $json = (Get-Content $fileName | Out-String | ConvertFrom-Json)
 
+          $currentVersion = $json.version
+
           if (-Not [string]::IsNullOrEmpty(${env:NEXT_VERSION})) {
             $version = [System.Version]::new(${env:NEXT_VERSION})
           } else {
-            $version = [System.Version]::new($json.version)
+            $version = [System.Version]::new($currentVersion)
             $version = [System.Version]::new($version.Major, $version.Minor, $version.Build + 1)
           }
 
@@ -56,7 +58,14 @@ jobs:
           $json.packages.''.version = $updatedVersion
           $json | ConvertTo-Json -Depth 32 | Set-Content $fileName
 
-          "version=${updatedVersion}" >> $env:GITHUB_OUTPUT
+          if (${env:GITHUB_EVENT_NAME} -eq "release") {
+            $workflowPath = Join-Path "." ".github" "workflows" "update-dotnet-sdk.yml"
+            $workflowContent = Get-Content $workflowPath -Raw
+            $workflowContent = $workflowContent -Replace "(?m)^(\s+uses: martincostello\/update-dotnet-sdk\@)(.*)$", "`$`{1`}${env:GITHUB_SHA} # v${currentVersion}`r"
+            Set-Content -Path $workflowPath -Value $workflowContent.TrimEnd()
+          }
+
+          "version=${updatedVersion}" >> ${env:GITHUB_OUTPUT}
 
       - name: Push changes to GitHub
         id: push-changes
@@ -92,9 +101,9 @@ jobs:
           git commit -m "Bump version`n`nBump version to ${env:NEXT_VERSION} for the next release."
           git push -u origin $branchName
 
-          "branch-name=${branchName}" >> $env:GITHUB_OUTPUT
-          "updated-version=true" >> $env:GITHUB_OUTPUT
-          "version=${env:NEXT_VERSION}" >> $env:GITHUB_OUTPUT
+          "branch-name=${branchName}" >> ${env:GITHUB_OUTPUT}
+          "updated-version=true" >> ${env:GITHUB_OUTPUT}
+          "version=${env:NEXT_VERSION}" >> ${env:GITHUB_OUTPUT}
 
       - name: Create pull request
         if: steps.push-changes.outputs.updated-version == 'true'
