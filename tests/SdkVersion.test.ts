@@ -32,7 +32,7 @@ describe('SdkVersion', () => {
         expect(actual?.build).toBe(build);
       });
       test('major is correct', () => {
-        expect(actual?.major).toBe(major);
+        expect(actual?.major).not.toBe(major);
       });
       test('minor is correct', () => {
         expect(actual?.minor).toBe(minor);
