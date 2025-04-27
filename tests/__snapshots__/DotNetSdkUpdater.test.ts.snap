@@ -1135,3 +1135,57 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
   "securityIssues": [],
 }
 `;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 10.0.1xx, quality daily and prerelease label "" Gets correct info for daily build from daily build 1`] = `
+{
+  "current": {
+    "aspnetcoreVersion": "10.0.0-preview.4.25215.10",
+    "releaseDate": 2025-04-16T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/sdk/commits/39f2928b2c67e5e590dbbf27a9c7010d652c4e4e",
+    "runtimeVersion": "10.0.0-preview.4.25215.12",
+    "sdkVersion": "10.0.100-preview.4.25216.37",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "10.0.0-preview.4.25215.1",
+  },
+  "latest": {
+    "aspnetcoreVersion": "10.0.0-preview.4.25225.104",
+    "releaseDate": 2025-04-25T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/dotnet/commits/1164eb4ffbe25376e1f1cb93d08ae32174986c5f",
+    "runtimeVersion": "10.0.0-preview.4.25225.104",
+    "sdkVersion": "10.0.0-preview.4.25225.104",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "10.0.0-preview.4.25225.104",
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater getLatestDaily for channel 10.0.1xx, quality daily and prerelease label "" Gets correct info for daily build from official build 1`] = `
+{
+  "current": {
+    "aspnetcoreVersion": "10.0.0-preview.3.25172.1",
+    "releaseDate": 2025-04-10T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/10.0/preview/preview3/10.0.0-preview.3.md",
+    "runtimeVersion": "10.0.0-preview.3.25171.5",
+    "sdkVersion": "10.0.100-preview.3.25201.16",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "10.0.0-preview.3.25174.1",
+  },
+  "latest": {
+    "aspnetcoreVersion": "10.0.0-preview.4.25225.104",
+    "releaseDate": 2025-04-25T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/dotnet/commits/1164eb4ffbe25376e1f1cb93d08ae32174986c5f",
+    "runtimeVersion": "10.0.0-preview.4.25225.104",
+    "sdkVersion": "10.0.0-preview.4.25225.104",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "10.0.0-preview.4.25225.104",
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;

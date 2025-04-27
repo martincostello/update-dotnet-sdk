@@ -31,7 +31,7 @@ export class DotNetSdkUpdater {
     prereleaseLabel: string | undefined,
     releaseChannel: ReleaseChannel | null
   ): Promise<SdkVersions> {
-    const { sdkVersion, runtimeVersion, aspnetcoreVersion, windowsDesktopVersion, installerCommit, sdkCommit } =
+    const { dotnetCommit, sdkVersion, runtimeVersion, aspnetcoreVersion, windowsDesktopVersion, installerCommit, sdkCommit } =
       await DotNetSdkUpdater.getDotNetDailyVersion(channel, quality);
 
     const security = false;
@@ -50,10 +50,13 @@ export class DotNetSdkUpdater {
       return new Date(Date.UTC(year, month - 1, day));
     };
 
-    const getReleaseNotes = (installerCommitSha: string | null, sdkCommitSha: string): string => {
+    const getReleaseNotes = (dotnetCommitSha: string | null, installerCommitSha: string | null, sdkCommitSha: string): string => {
       let repo: string;
       let commit: string;
-      if (installerCommitSha) {
+      if (dotnetCommitSha) {
+        repo = 'dotnet';
+        commit = dotnetCommitSha;
+      } else if (installerCommitSha) {
         repo = 'installer';
         commit = installerCommitSha;
       } else {
@@ -75,10 +78,16 @@ export class DotNetSdkUpdater {
 
     if (!current) {
       const currentVersions = await DotNetSdkUpdater.getSdkProductCommits(currentSdkVersion);
+
+      let currentDotnetCommit: string | null = null;
+      if (DotNetSdkUpdater.isBuildfromDotnetDotnetRepo(currentVersions)) {
+        currentDotnetCommit = currentVersions.runtime.commit;
+      }
+
       current = {
         aspnetcoreVersion: currentVersions.aspnetcore.version,
         releaseDate: getReleaseDate(currentSdkVersion),
-        releaseNotes: getReleaseNotes(currentVersions.installer?.commit || null, currentVersions.sdk.commit),
+        releaseNotes: getReleaseNotes(currentDotnetCommit, currentVersions.installer?.commit || null, currentVersions.sdk.commit),
         runtimeVersion: currentVersions.runtime.version,
         sdkVersion: currentSdkVersion,
         security,
@@ -104,7 +113,7 @@ export class DotNetSdkUpdater {
       latest = {
         aspnetcoreVersion,
         releaseDate: getReleaseDate(sdkVersion),
-        releaseNotes: getReleaseNotes(installerCommit, sdkCommit),
+        releaseNotes: getReleaseNotes(dotnetCommit, installerCommit, sdkCommit),
         runtimeVersion,
         sdkVersion,
         security,
@@ -572,6 +581,7 @@ export class DotNetSdkUpdater {
     channel: string,
     quality: string | undefined
   ): Promise<{
+    dotnetCommit: string | null;
     aspnetcoreVersion: string;
     installerCommit: string | null;
     sdkCommit: string;
@@ -591,8 +601,14 @@ export class DotNetSdkUpdater {
 
     const versions = await DotNetSdkUpdater.getSdkProductCommits(version);
 
+    let dotnetCommit: string | null = null;
+    if (DotNetSdkUpdater.isBuildfromDotnetDotnetRepo(versions)) {
+      dotnetCommit = versions.runtime.commit;
+    }
+
     return {
       aspnetcoreVersion: versions.aspnetcore.version,
+      dotnetCommit,
       installerCommit: versions.installer?.commit || null,
       sdkCommit: versions.sdk.commit,
       runtimeVersion: versions.runtime.version,
@@ -899,6 +915,14 @@ export class DotNetSdkUpdater {
     }
 
     return versionParts.slice(0, 2).join('.');
+  }
+
+  private static isBuildfromDotnetDotnetRepo(commits: SdkProductCommits): boolean {
+    return (
+      commits.runtime.commit === commits.aspnetcore.commit &&
+      commits.runtime.commit === commits.sdk.commit &&
+      commits.runtime.commit === commits.windowsdesktop.commit
+    );
   }
 }
 

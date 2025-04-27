@@ -1258,6 +1258,56 @@ exports[`update-dotnet-sdk daily builds for channel "9.0.1xx" running the action
 
 exports[`update-dotnet-sdk daily builds for channel "9.0.1xx" running the action updates the SDK version in global.json 1`] = `"9.0.100-preview.6.24281.7"`;
 
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action generates the expected Git commit history 1`] = `
+[
+  "Update .NET SDK",
+  "",
+  "Update .NET SDK to version 10.0.0-preview.4.25225.104.",
+  "",
+  "---",
+  "updated-dependencies:",
+  "- dependency-name: Microsoft.NET.Sdk",
+  "  dependency-version: 10.0.0-preview.4.25225.104",
+  "  dependency-type: direct:production",
+  "  update-type: version-update:semver-patch",
+  "...",
+  "",
+  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+]
+`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action generates the expected GitHub step summary 1`] = `
+"<h1>.NET SDK 10.0.0-preview.4.25225.104</h1>
+An update from version 10.0.100-preview.4.25216.37 to 10.0.0-preview.4.25225.104 of the .NET SDK is available.<br>
+<br>
+This version of the .NET SDK was released on 2025-04-25 (-609 days ago).<br>
+<br>
+<a href="https://github.com/dotnet/dotnet/commits/1164eb4ffbe25376e1f1cb93d08ae32174986c5f">Release notes</a>
+"
+`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the aspnetcore-version output is correct 1`] = `"10.0.0-preview.4.25225.104"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the branch-name output is correct 1`] = `"update-dotnet-sdk-10.0.0-preview.4.25225.104"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the pull-request-number output is correct 1`] = `"42"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the pull-requests-closed output is correct 1`] = `"[]"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the runtime-version output is correct 1`] = `"10.0.0-preview.4.25225.104"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the sdk-updated output is correct 1`] = `"true"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the sdk-version output is correct 1`] = `"10.0.0-preview.4.25225.104"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the security output is correct 1`] = `"false"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action the windows-desktop-version output is correct 1`] = `"10.0.0-preview.4.25225.104"`;
+
+exports[`update-dotnet-sdk daily builds for channel "10.0.1xx" running the action updates the SDK version in global.json 1`] = `"10.0.0-preview.4.25225.104"`;
+
 exports[`update-dotnet-sdk when global.json contains multiple .NET SDK versions running the action generates the expected Git commit history 1`] = `
 [
   "Update .NET SDK",

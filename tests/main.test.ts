@@ -175,6 +175,7 @@ describe('update-dotnet-sdk', () => {
     ['daily', '8.0.1xx-preview7', '8.0.100-preview.6.23330.14'],
     ['daily', '9.0', '9.0.100-alpha.1.24058.9'],
     ['daily', '9.0.1xx', '9.0.100-preview.5.24281.15'],
+    ['daily', '10.0.1xx', '10.0.100-preview.4.25216.37'],
   ])('%s builds for channel "%s"', (quality: string, channel: string, sdkVersion: string) => {
     let fixture: ActionFixture;
 
