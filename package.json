@@ -40,7 +40,12 @@
     ],
     "reporters": [
       "default",
-      "github-actions"
+      [
+        "github-actions",
+        {
+          "silent": false
+        }
+      ]
     ],
     "transform": {
       "^.+\\.ts$": "ts-jest"
