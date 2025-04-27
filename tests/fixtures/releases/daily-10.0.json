@@ -1,0 +1,73 @@
+{
+  "scenarios": [
+    {
+      "basePath": "https://aka.ms",
+      "path": "/dotnet/10.0.1xx/daily/productCommit-win-x64.json",
+      "persist": true,
+      "response": {
+        "runtime": {
+          "commit": "1164eb4ffbe25376e1f1cb93d08ae32174986c5f",
+          "version": "10.0.0-preview.4.25225.104"
+        },
+        "aspnetcore": {
+          "commit": "1164eb4ffbe25376e1f1cb93d08ae32174986c5f",
+          "version": "10.0.0-preview.4.25225.104"
+        },
+        "windowsdesktop": {
+          "commit": "1164eb4ffbe25376e1f1cb93d08ae32174986c5f",
+          "version": "10.0.0-preview.4.25225.104"
+        },
+        "sdk": {
+          "commit": "1164eb4ffbe25376e1f1cb93d08ae32174986c5f",
+          "version": "10.0.0-preview.4.25225.104"
+        }
+      }
+    },
+    {
+      "basePath": "https://ci.dot.net",
+      "path": "/public/Sdk/10.0.100-preview.3.25201.16/productCommit-win-x64.json",
+      "persist": true,
+      "response": {
+        "runtime": {
+          "commit": "0a33e18a0bccc10a0c4646dbf5b0fc70cbb3aa44",
+          "version": "10.0.0-preview.3.25171.5"
+        },
+        "aspnetcore": {
+          "commit": "de35e2b0a0d8d5d1e307907983a6838da1092898",
+          "version": "10.0.0-preview.3.25172.1"
+        },
+        "windowsdesktop": {
+          "commit": "a53827037b594b554a61e54af8c3c0b31fd49184",
+          "version": "10.0.0-preview.3.25174.1"
+        },
+        "sdk": {
+          "commit": "9dee3cf508254bc3859d9cd2fe96aeb2ad1b9751",
+          "version": "10.0.100-preview.3.25201.16"
+        }
+      }
+    },
+    {
+      "basePath": "https://ci.dot.net",
+      "path": "/public/Sdk/10.0.100-preview.4.25216.37/productCommit-win-x64.json",
+      "persist": true,
+      "response": {
+        "runtime": {
+          "commit": "d06c2f6ec8228addc77cb7b7856c3fe07c3d1f02",
+          "version": "10.0.0-preview.4.25215.12"
+        },
+        "aspnetcore": {
+          "commit": "a94ba4b6c94e09433b586db219bd854e70021e5a",
+          "version": "10.0.0-preview.4.25215.10"
+        },
+        "windowsdesktop": {
+          "commit": "25fe245e386ba258f288d1ec5bac87e5cdb2c5de",
+          "version": "10.0.0-preview.4.25215.1"
+        },
+        "sdk": {
+          "commit": "39f2928b2c67e5e590dbbf27a9c7010d652c4e4e",
+          "version": "10.0.100-preview.4.25216.37"
+        }
+      }
+    }
+  ]
+}

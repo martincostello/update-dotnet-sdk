@@ -25,6 +25,7 @@ const getChannel = async (version: string): Promise<any> => {
 describe('DotNetSdkUpdater', () => {
   beforeAll(async () => {
     await setup('releases/daily-8.0');
+    await setup('releases/daily-10.0');
   });
 
   describe('tryUpdateSdk', () => {
@@ -183,12 +184,17 @@ describe('DotNetSdkUpdater', () => {
   );
 
   describe('getLatestDaily', () => {
-    const preview1 = '8.0.100-preview.1.23115.2';
-    const preview7 = '8.0.100-preview.7.23363.2';
-    let releaseInfo;
+    const sdkVersions = {
+      '8-official': '8.0.100-preview.1.23115.2',
+      '8-daily': '8.0.100-preview.7.23363.2',
+      '10-official': '10.0.100-preview.3.25201.16',
+      '10-daily': '10.0.100-preview.4.25216.37',
+    };
+    const releases = {};
 
     beforeAll(async () => {
-      releaseInfo = await getChannel('8.0');
+      releases['8'] = await getChannel('8.0');
+      releases['10'] = await getChannel('10.0');
     });
 
     describe.each([
@@ -202,11 +208,15 @@ describe('DotNetSdkUpdater', () => {
       ['8.0.1xx-preview7', 'daily', 'preview.7'],
       ['8.0.1xx-preview7', 'daily', 'rc.1'],
       ['8.0.1xx-preview7', 'daily', 'rc.2'],
+      ['10.0.1xx', 'daily', ''],
     ])('for channel %s, quality %s and prerelease label "%s"', (channel: string, quality: string, prereleaseLabel: string) => {
+      const major = channel.split('.')[0];
       test(
         'Gets correct info for daily build from official build',
         async () => {
-          expect(await DotNetSdkUpdater.getLatestDaily(preview1, channel, quality, prereleaseLabel, releaseInfo)).toMatchSnapshot();
+          expect(
+            await DotNetSdkUpdater.getLatestDaily(sdkVersions[`${major}-official`], channel, quality, prereleaseLabel, releases[major])
+          ).toMatchSnapshot();
         },
         timeout
       );
@@ -214,14 +224,18 @@ describe('DotNetSdkUpdater', () => {
       test(
         'Gets correct info for daily build from daily build',
         async () => {
-          expect(await DotNetSdkUpdater.getLatestDaily(preview7, channel, quality, prereleaseLabel, releaseInfo)).toMatchSnapshot();
+          expect(
+            await DotNetSdkUpdater.getLatestDaily(sdkVersions[`${major}-daily`], channel, quality, prereleaseLabel, releases[major])
+          ).toMatchSnapshot();
         },
         timeout
       );
     });
 
     test.each([[''], ['foo'], ['GA']])('rejects invalid quality %s', async (quality: string) => {
-      await expect(DotNetSdkUpdater.getLatestDaily(preview1, '8.0', quality, '', releaseInfo)).rejects.toThrow(/Invalid quality/);
+      await expect(DotNetSdkUpdater.getLatestDaily(sdkVersions['8-official'], '8.0', quality, '', releases['8'])).rejects.toThrow(
+        /Invalid quality/
+      );
     });
   });
 

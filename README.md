@@ -342,20 +342,20 @@ You can see an example of such a pull request [here][example-pull-request-daily]
 ### Specific Channels
 
 Ahead of the official release of a new .NET SDK version, the
-[dotnet/installer][dotnet-sdk-installer] repository typically branches,
+[dotnet/dotnet][dotnet-dotnet-sdk] repository typically branches,
 which causes the default channel to diverge in versioning compared to
 the next official build that is being prepared. For example, ahead of
-the release of .NET 8.0 preview 7, the `main` branch of the installer
-repository was updated to produce builds of .NET 8.0 Release Candidate 1.
+the release of .NET 10.0 preview 4, the `main` branch of the installer
+repository was updated to produce builds of .NET 10.0 Preview 5.
 
-In this scenario, to keep receiving daily builds of the .NET 8.0 preview 7
+In this scenario, to keep receiving daily builds of the .NET 10.0 preview 4
 SDK (i.e. the next version to be officially released), the `channel`
 input can be used to target a specific branch to obtain the latest .NET
 SDK version from.
 
 For example, the following actions YAML will update to the latest daily
-build of the .NET 8.0 SDK from the `8.0.1xx-preview7` channel which,
-corresponds to the `release/8.0.1xx-preview7` branch of the .NET SDK
+build of the .NET 10.0 SDK from the `10.0.1xx-preview4` channel which,
+corresponds to the `release/10.0.1xx-preview4` branch of the .NET SDK
 installer repository.
 
 ```yml
@@ -363,12 +363,12 @@ steps:
 - uses: actions/checkout@v4
 - uses: martincostello/update-dotnet-sdk@v3
   with:
-    channel: '8.0.1xx-preview7'
+    channel: '10.0.1xx-preview4'
     quality: 'daily'
     repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-For more information about daily builds, see the [.NET SDK Installer repository][dotnet-sdk-installer].
+For more information about daily builds, see the [.NET repository][dotnet-dotnet-sdk].
 
 ## Inputs
 
@@ -429,7 +429,7 @@ This project is licensed under the [Apache 2.0][license] license.
 
 [advanced-central-workflow]: https://github.com/martincostello/github-automation/blob/df69301435a3f4971fa630e65a3966762187c87b/.github/workflows/update-dotnet-sdks.yml
 [create-github-app]: https://docs.github.com/apps/creating-github-apps/creating-github-apps/creating-a-github-app
-[dotnet-sdk-installer]: https://github.com/dotnet/sdk#installing-the-sdk
+[dotnet-dotnet-sdk]: https://github.com/dotnet/dotnet#installing-the-sdk
 [dotnet-outdated]: https://github.com/dotnet-outdated/dotnet-outdated
 [dotnet-core-release-notes]: https://github.com/dotnet/core/tree/main/release-notes
 [example-pull-request]: https://github.com/martincostello/update-dotnet-sdk/pull/10
