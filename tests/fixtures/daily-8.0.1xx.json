@@ -2,15 +2,7 @@
   "scenarios": [
     {
       "basePath": "https://aka.ms",
-      "path": "/dotnet/8.0.1xx/daily/sdk-productVersion.txt",
-      "response": "8.0.100-rc.2.23424.12\n",
-      "responseHeaders": {
-        "content-type": "text/plain"
-      }
-    },
-    {
-      "basePath": "https://ci.dot.net",
-      "path": "/public/Sdk/8.0.100-rc.2.23424.12/productCommit-win-x64.json",
+      "path": "/dotnet/8.0.1xx/daily/productCommit-win-x64.json",
       "response": {
         "installer": {
           "commit": "e37e1c3e4ea3cd61916be54d132bd60dd729caf5",

@@ -2,10 +2,28 @@
   "scenarios": [
     {
       "basePath": "https://aka.ms",
-      "path": "/dotnet/9.0/daily/sdk-productVersion.txt",
-      "response": "9.0.100-alpha.1.24066.6\n",
-      "responseHeaders": {
-        "content-type": "text/plain"
+      "path": "/dotnet/9.0/daily/productCommit-win-x64.json",
+      "response": {
+        "installer": {
+          "commit": "aa5f136790068f7c993e52801e7bd4477d228691",
+          "version": "9.0.100-alpha.1.24066.6"
+        },
+        "runtime": {
+          "commit": "22ba7d607bb1d9caa0db9afcdc47eb5cef641fcb",
+          "version": "9.0.0-alpha.1.24061.26"
+        },
+        "aspnetcore": {
+          "commit": "a19c70eba3f89c7cbe9447f029b4c63322f47846",
+          "version": "9.0.0-alpha.1.24061.8"
+        },
+        "windowsdesktop": {
+          "commit": "35043947917c50e301196493f952d08600e3fd4d",
+          "version": "9.0.0-alpha.1.24061.5"
+        },
+        "sdk": {
+          "commit": "231e921dd53cb4f57acfae42b5984e4103d6b557",
+          "version": "9.0.100-alpha.1.24062.7"
+        }
       }
     },
     {
@@ -31,32 +49,6 @@
         "sdk": {
           "commit": "4b6d1c2371ee0296df15c72dff4c7ea64315bfe6",
           "version": "9.0.100-alpha.1.24058.9"
-        }
-      }
-    },
-    {
-      "basePath": "https://ci.dot.net",
-      "path": "/public/Sdk/9.0.100-alpha.1.24066.6/productCommit-win-x64.json",
-      "response": {
-        "installer": {
-          "commit": "aa5f136790068f7c993e52801e7bd4477d228691",
-          "version": "9.0.100-alpha.1.24066.6"
-        },
-        "runtime": {
-          "commit": "22ba7d607bb1d9caa0db9afcdc47eb5cef641fcb",
-          "version": "9.0.0-alpha.1.24061.26"
-        },
-        "aspnetcore": {
-          "commit": "a19c70eba3f89c7cbe9447f029b4c63322f47846",
-          "version": "9.0.0-alpha.1.24061.8"
-        },
-        "windowsdesktop": {
-          "commit": "35043947917c50e301196493f952d08600e3fd4d",
-          "version": "9.0.0-alpha.1.24061.5"
-        },
-        "sdk": {
-          "commit": "231e921dd53cb4f57acfae42b5984e4103d6b557",
-          "version": "9.0.100-alpha.1.24062.7"
         }
       }
     },
