@@ -39,11 +39,16 @@
       "src/**/*.ts"
     ],
     "reporters": [
-      "default",
       [
         "github-actions",
         {
           "silent": false
+        }
+      ],
+      [
+        "summary",
+        {
+          "summaryThreshold": 1
         }
       ]
     ],
