@@ -13,7 +13,7 @@ body:
   attributes:
     label: Version
     description: Which version of the action are you experiencing the issue with?
-    placeholder: 1.0.0
+    placeholder: 3.8.1
   validations:
     required: true
 - type: textarea
@@ -52,15 +52,6 @@ body:
     label: Exception(s) (if any)
     description: Include any exception(s) and/or stack trace(s) you get when facing this issue.
     render: text
-  validations:
-    required: false
-- type: input
-  attributes:
-    label: .NET Version
-    description: |
-      Run `dotnet --version` to get the .NET SDK version you're using.
-      Alternatively, which target framework(s) (e.g. `net8.0`) does the project you're using the package with target?
-    placeholder: 9.0.100
   validations:
     required: false
 - type: textarea
