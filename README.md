@@ -6,11 +6,11 @@
 
 This action updates the .NET SDK version specified by a `global.json` file stored in a GitHub repository.
 
-An example Pull Request created by the action can be found [here][example-pull-request].
+An example Pull Request created by the action can be found here: [martincostello/update-dotnet-sdk#10][example-pull-request].
 
 You can find out more information about this GitHub action in [this YouTube stream 📺][youtube-stream].
 
-You can also find a sample repository that uses this action to automate .NET patch updates [here][patching-sample].
+You can also find a sample repository that uses this action to automate .NET patch updateshere: [martincostello/dotnet-patch-automation-sample][patching-sample].
 
 ## Example Usage
 
@@ -89,8 +89,8 @@ Below are examples of an advanced GitHub Actions workflow to automate .NET SDK u
 also use the [dotnet-outdated][dotnet-outdated] .NET Global Tool to update any NuGet packages
 for the current .NET SDK release channel that are available from NuGet.org if the .NET SDK is updated.
 
-This workflow leverages a [GitHub reusable workflow][reusable-workflow-docs] that is included
-in this repository, which can be found [here][reusable-workflow].
+This workflow leverages a [GitHub reusable workflow][reusable-workflow-docs] that is
+[included in this repository][reusable-workflow].
 
 The workflow supports being used with a GitHub [personal access token][personal-access-token],
 a [GitHub app][github-apps], or [`GITHUB_TOKEN`][github-token].
@@ -181,7 +181,7 @@ a pull request.
 Using a personal access token or a GitHub app is recommended instead of using `GITHUB_TOKEN`,
 otherwise pull requests opened by this workflow, and commits pushed, will not queue your CI
 status checks if you use GitHub Actions for your CI. More information about this restriction
-can be found [here][triggering-workflows-from-a-workflow].
+can be found here: [_Triggering a workflow from a workflow_][triggering-workflows-from-a-workflow].
 
 See the [GitHub documentation][github-token] for more information on `GITHUB_TOKEN`.
 
@@ -337,7 +337,7 @@ steps:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-You can see an example of such a pull request [here][example-pull-request-daily].
+You can see an example of such a pull request here: [martincostello/adventofcode#1120][example-pull-request-daily].
 
 ### Specific Channels
 
