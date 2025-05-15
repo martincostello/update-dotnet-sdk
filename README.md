@@ -10,7 +10,7 @@ An example Pull Request created by the action can be found here: [martincostello
 
 You can find out more information about this GitHub action in [this YouTube stream 📺][youtube-stream].
 
-You can also find a sample repository that uses this action to automate .NET patch updateshere: [martincostello/dotnet-patch-automation-sample][patching-sample].
+You can also find a sample repository that uses this action to automate .NET patch updates here: [martincostello/dotnet-patch-automation-sample][patching-sample].
 
 ## Example Usage
 
