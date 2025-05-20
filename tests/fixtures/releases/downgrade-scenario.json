@@ -1,0 +1,61 @@
+{
+  "channel-version": "7.0",
+  "latest-release-date": "2023-06-13",
+  "latest-release": "7.0.304",
+  "latest-runtime": "7.0.7",
+  "latest-sdk": "7.0.304",
+  "supported": true,
+  "eol": false,
+  "eol-date": null,
+  "releases": [
+    {
+      "release-date": "2023-06-13",
+      "release-version": "7.0.7",
+      "security": false,
+      "release-notes": "https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.7/7.0.7.md",
+      "cve-list": null,
+      "runtime": {
+        "version": "7.0.7",
+        "version-display": "7.0.7"
+      },
+      "sdk": {
+        "version": "7.0.302",
+        "version-display": "7.0.302"
+      },
+      "sdks": [
+        {
+          "version": "7.0.304",
+          "version-display": "7.0.304",
+          "runtime-version": "7.0.7",
+          "vs-version": "17.6.3",
+          "vs-mac-version": "",
+          "vs-support": "Visual Studio 2022 (v17.6)",
+          "vs-mac-support": "",
+          "csharp-version": "11.0",
+          "fsharp-version": "7.0",
+          "vb-version": "16.9"
+        },
+        {
+          "version": "7.0.302",
+          "version-display": "7.0.302",
+          "runtime-version": "7.0.7",
+          "vs-version": "17.6.0",
+          "vs-mac-version": "",
+          "vs-support": "Visual Studio 2022 (v17.6)",
+          "vs-mac-support": "",
+          "csharp-version": "11.0",
+          "fsharp-version": "7.0",
+          "vb-version": "16.9"
+        }
+      ],
+      "aspnetcore-runtime": {
+        "version": "7.0.7",
+        "version-display": "7.0.7"
+      },
+      "windowsdesktop": {
+        "version": "7.0.7",
+        "version-display": "7.0.7"
+      }
+    }
+  ]
+}
