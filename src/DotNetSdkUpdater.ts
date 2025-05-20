@@ -130,6 +130,15 @@ export class DotNetSdkUpdater {
     };
   }
 
+  /**
+   * Gets the latest release of the .NET SDK for a given channel.
+   * If the latest SDK version is lower than the current SDK version,
+   * the current version will be returned as the latest to prevent downgrades.
+   *
+   * @param currentSdkVersion The current SDK version.
+   * @param channel The release channel to get the latest release for.
+   * @returns The current and latest SDK versions.
+   */
   public static getLatestRelease(currentSdkVersion: string, channel: ReleaseChannel): SdkVersions {
     const current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, channel);
     let latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
