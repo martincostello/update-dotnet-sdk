@@ -132,7 +132,20 @@ export class DotNetSdkUpdater {
 
   public static getLatestRelease(currentSdkVersion: string, channel: ReleaseChannel): SdkVersions {
     const current = DotNetSdkUpdater.getReleaseForSdk(currentSdkVersion, channel);
-    const latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
+    let latest = DotNetSdkUpdater.getReleaseForSdk(channel['latest-sdk'], channel);
+
+    // Check if the latest SDK version is lower than the current version
+    // to prevent downgrading
+    const currentSdkVersionParsed = SdkVersion.tryParse(current.sdkVersion);
+    const latestSdkVersionParsed = SdkVersion.tryParse(latest.sdkVersion);
+
+    if (currentSdkVersionParsed && latestSdkVersionParsed) {
+      // If the latest version is lower than the current version, use the current version as the latest
+      if (currentSdkVersionParsed.compareTo(latestSdkVersionParsed) > 0) {
+        core.info(`The latest reported SDK version ${latest.sdkVersion} would be a downgrade from ${current.sdkVersion}, skipping.`);
+        latest = current;
+      }
+    }
 
     const result = {
       current,

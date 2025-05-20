@@ -166,6 +166,18 @@ describe('DotNetSdkUpdater', () => {
   );
 
   test(
+    'Does not update the SDK version when the latest reported SDK is a downgrade',
+    async () => {
+      const releaseInfo = await getChannel('downgrade-scenario');
+      const sdkVersions = await DotNetSdkUpdater.getLatestRelease('7.0.304', releaseInfo);
+      // The current and latest SDK versions should be the same since we don't want to downgrade
+      expect(sdkVersions.current.sdkVersion).toBe('7.0.304');
+      expect(sdkVersions.latest.sdkVersion).toBe('7.0.304');
+    },
+    timeout
+  );
+
+  test(
     'Gets correct info if a newer SDK is available for the same runtime version',
     async () => {
       const releaseInfo = await getChannel('7.0.302');
