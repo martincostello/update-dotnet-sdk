@@ -180,14 +180,9 @@ describe('DotNetSdkUpdater', () => {
     'Does not update the prerelease SDK version when the latest reported SDK is a downgrade',
     async () => {
       const releaseInfo = await getChannel('prerelease-downgrade-scenario');
-      // Mock the comparison by directly testing the getLatestRelease method's logic
-      const currentVersion = releaseInfo.releases[0].sdks[0].version;
-      // The latest release SDK version is lower than our current version
-      expect(releaseInfo['latest-sdk']).toBe('8.0.100-preview.6.23320.1');
-      const sdkVersions = await DotNetSdkUpdater.getLatestRelease(currentVersion, releaseInfo);
-      // Verify that we didn't downgrade
-      expect(sdkVersions.current.sdkVersion).toBe(currentVersion);
-      expect(sdkVersions.latest.sdkVersion).toBe(currentVersion);
+      const sdkVersions = await DotNetSdkUpdater.getLatestRelease('8.0.100-preview.6.23320.5', releaseInfo);
+      expect(sdkVersions.current.sdkVersion).toBe('8.0.100-preview.6.23320.5');
+      expect(sdkVersions.latest.sdkVersion).toBe('8.0.100-preview.6.23320.5');
     },
     timeout
   );
