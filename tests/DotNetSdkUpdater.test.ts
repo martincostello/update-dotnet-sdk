@@ -115,7 +115,7 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info if a newer SDK is available for the same MSBuild version',
     async () => {
       const releaseInfo = await getChannel('3.1');
-      expect(await DotNetSdkUpdater.getLatestRelease('3.1.100', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('3.1.100', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
@@ -124,7 +124,7 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info if a newer SDK is available for a different MSBuild version',
     async () => {
       const releaseInfo = await getChannel('5.0');
-      expect(await DotNetSdkUpdater.getLatestRelease('5.0.103', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('5.0.103', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
@@ -133,7 +133,7 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info if a newer SDK is not available',
     async () => {
       const releaseInfo = await getChannel('3.1');
-      expect(await DotNetSdkUpdater.getLatestRelease('3.1.404', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('3.1.404', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
@@ -142,7 +142,7 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info if a newer SDK is not available',
     async () => {
       const releaseInfo = await getChannel('6.0');
-      expect(await DotNetSdkUpdater.getLatestRelease('6.0.100', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('6.0.100', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
@@ -151,7 +151,7 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info if a newer SDK is available that skips releases when latest is not a security release',
     async () => {
       const releaseInfo = await getChannel('7.0');
-      expect(await DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
@@ -160,38 +160,32 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info if a newer SDK is available that skips releases when latest is a security release',
     async () => {
       const releaseInfo = await getChannel('7.0.302');
-      expect(await DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('7.0.100', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
 
-  test(
-    'Does not update the SDK version when the latest reported SDK is a downgrade',
-    async () => {
-      const releaseInfo = await getChannel('downgrade-scenario');
-      const sdkVersions = await DotNetSdkUpdater.getLatestRelease('7.0.304', releaseInfo);
-      expect(sdkVersions.current.sdkVersion).toBe('7.0.304');
-      expect(sdkVersions.latest.sdkVersion).toBe('7.0.304');
-    },
-    timeout
-  );
-
-  test(
-    'Does not update the prerelease SDK version when the latest reported SDK is a downgrade',
-    async () => {
-      const releaseInfo = await getChannel('prerelease-downgrade-scenario');
-      const sdkVersions = await DotNetSdkUpdater.getLatestRelease('8.0.100-preview.6.23320.5', releaseInfo);
-      expect(sdkVersions.current.sdkVersion).toBe('8.0.100-preview.6.23320.5');
-      expect(sdkVersions.latest.sdkVersion).toBe('8.0.100-preview.6.23320.5');
-    },
-    timeout
-  );
+  describe.each([
+    ['stable', '7.0.304'],
+    ['prerelease', '8.0.100-preview.6.23320.5'],
+  ])('for %s SDK', (fixtureName: string, currentSdkVersion: string) => {
+    test(
+      'Does not update the version when the latest reported SDK is a downgrade',
+      async () => {
+        const releaseInfo = await getChannel(`downgrade-${fixtureName}`);
+        const sdkVersions = DotNetSdkUpdater.getLatestRelease(currentSdkVersion, releaseInfo);
+        expect(sdkVersions.current.sdkVersion).toBe(currentSdkVersion);
+        expect(sdkVersions.latest.sdkVersion).toBe(currentSdkVersion);
+      },
+      timeout
+    );
+  });
 
   test(
     'Gets correct info if a newer SDK is available for the same runtime version',
     async () => {
       const releaseInfo = await getChannel('7.0.302');
-      expect(await DotNetSdkUpdater.getLatestRelease('7.0.203', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('7.0.203', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
@@ -200,7 +194,7 @@ describe('DotNetSdkUpdater', () => {
     'Gets correct info between preview releases',
     async () => {
       const releaseInfo = await getChannel('8.0');
-      expect(await DotNetSdkUpdater.getLatestRelease('8.0.100-preview.1.23115.2', releaseInfo)).toMatchSnapshot();
+      expect(DotNetSdkUpdater.getLatestRelease('8.0.100-preview.1.23115.2', releaseInfo)).toMatchSnapshot();
     },
     timeout
   );
