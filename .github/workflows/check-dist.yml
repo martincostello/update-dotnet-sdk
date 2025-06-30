@@ -9,13 +9,15 @@ on:
       - 'src/**'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   check-dist:
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
 
@@ -23,6 +25,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           filter: 'tree:0'
+          persist-credentials: false
           show-progress: false
 
       - name: Setup Node
