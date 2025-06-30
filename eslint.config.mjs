@@ -15,6 +15,7 @@ export default [
       'github/no-blur': 'error',
     },
   },
+  stylistic.configs['disable-legacy'],
   {
     files: ['**/*.cjs', '**/*.js', '**/*.mjs', '**/*.ts'],
     ignores: ['dist/*', 'lib/*', 'node_modules/*'],
@@ -43,7 +44,6 @@ export default [
       'import/no-namespace': 'off',
       'no-unused-vars': 'off',
       'semi': 'off',
-      '@stylistic/func-call-spacing': ['error', 'never'],
       '@stylistic/semi': ['error', 'always'],
       '@stylistic/type-annotation-spacing': 'error',
       '@typescript-eslint/no-require-imports': 'error',
