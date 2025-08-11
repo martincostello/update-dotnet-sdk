@@ -71,7 +71,7 @@ jobs:
 
           git checkout -b $branchName
           git add .
-          git commit -m "Regenerate dist`n`nRegenerate the contents of dist."
+          git commit -m "Regenerate dist`n`nRegenerate the contents of dist." -s
 
           if ($LASTEXITCODE -ne 0) {
             Write-Output "No changes to commit."
