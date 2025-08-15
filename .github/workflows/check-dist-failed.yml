@@ -5,8 +5,7 @@ on:
     workflows: [ check-dist ]
     types: [ completed ]
 
-permissions:
-  pull-requests: read
+permissions: {}
 
 jobs:
   comment:

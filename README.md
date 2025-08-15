@@ -114,6 +114,8 @@ on:
     - cron:  '00 20 * * TUE'
   workflow_dispatch:
 
+permissions: {}
+
 # The Git commit user name and email are set as variables in the organization or repository settings.
 # See https://docs.github.com/actions/learn-github-actions/variables.
 jobs:
@@ -145,6 +147,8 @@ on:
   schedule:
     - cron:  '00 20 * * TUE'
   workflow_dispatch:
+
+permissions: {}
 
 # The Git commit user name and email are set as variables in the organization or repository settings.
 # See https://docs.github.com/actions/learn-github-actions/variables.
