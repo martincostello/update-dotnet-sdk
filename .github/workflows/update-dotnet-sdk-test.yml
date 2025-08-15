@@ -3,9 +3,7 @@ name: update-dotnet-sdk-test
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pull-requests: read
+permissions: {}
 
 jobs:
   update-sdk:
