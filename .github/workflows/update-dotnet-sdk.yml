@@ -244,6 +244,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
+        persist-credentials: true # zizmor: ignore[artipacked] Needed to push commits
         ref: ${{ inputs.ref || '' }}
         repository: ${{ inputs.repo || github.repository }}
         show-progress: false
