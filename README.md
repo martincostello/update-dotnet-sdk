@@ -114,15 +114,14 @@ on:
     - cron:  '00 20 * * TUE'
   workflow_dispatch:
 
-# No additional permissions are required for GITHUB_TOKEN as we are using a PAT.
-permissions:
-  contents: read
-
 # The Git commit user name and email are set as variables in the organization or repository settings.
 # See https://docs.github.com/actions/learn-github-actions/variables.
 jobs:
   update-sdk:
     uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
+    # No additional permissions are required for GITHUB_TOKEN as we are using a PAT.
+    permissions:
+      contents: read
     with:
       labels: "dependencies,.NET"
       user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
@@ -147,10 +146,6 @@ on:
     - cron:  '00 20 * * TUE'
   workflow_dispatch:
 
-# No additional permissions are required for GITHUB_TOKEN as we are using an app.
-permissions:
-  contents: read
-
 # The Git commit user name and email are set as variables in the organization or repository settings.
 # See https://docs.github.com/actions/learn-github-actions/variables.
 # You can obtain the user name and email for the GitHub app by running the following
@@ -162,6 +157,9 @@ permissions:
 jobs:
   update-sdk:
     uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@v3
+    # No additional permissions are required for GITHUB_TOKEN as we are using an app.
+    permissions:
+      contents: read
     with:
       labels: "dependencies,.NET"
       user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
@@ -193,9 +191,7 @@ on:
     - cron:  '00 20 * * TUE'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pull-requests: read
+permissions: {}
 
 jobs:
   update-sdk:
