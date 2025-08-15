@@ -1,3 +1,4 @@
+# zizmor: ignore[excessive-permissions] Allows inheriting permissions from the calling workflow
 name: update-dotnet-sdk
 
 on:
@@ -169,7 +170,7 @@ env:
 
 jobs:
 
-  update-dotnet-sdk:
+  update-dotnet-sdk: # zizmor: ignore[excessive-permissions] Allows inheriting permissions from the calling workflow
 
     name: Update .NET SDK
     runs-on: ${{ inputs.runs-on }}
