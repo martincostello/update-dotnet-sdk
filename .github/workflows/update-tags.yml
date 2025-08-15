@@ -5,8 +5,7 @@ on:
     tags: [ v* ]
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   tag:
