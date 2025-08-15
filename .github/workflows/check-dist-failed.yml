@@ -1,7 +1,7 @@
 name: check-dist-failed
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] usage is safe
     workflows: [ check-dist ]
     types: [ completed ]
 
@@ -11,6 +11,7 @@ permissions:
 jobs:
   comment:
     if: |
+      github.event.repository.fork == false &&
       github.event.workflow_run.conclusion == 'failure' &&
       github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest

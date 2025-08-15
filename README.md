@@ -16,7 +16,7 @@ You can also find a sample repository that uses this action to automate .NET pat
 
 ```yml
 steps:
-- uses: actions/checkout@v4
+- uses: actions/checkout@v5
 - uses: martincostello/update-dotnet-sdk@v3
   with:
     repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
     name: Update .NET SDK
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: martincostello/update-dotnet-sdk@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +75,7 @@ jobs:
     name: Update .NET SDK
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: 'dev' # Checkout the dev branch instead of the default branch
     - uses: martincostello/update-dotnet-sdk@v3
@@ -330,7 +330,7 @@ of the current .NET SDK version on the branch which the workflow is run from.
 
 ```yml
 steps:
-- uses: actions/checkout@v4
+- uses: actions/checkout@v5
 - uses: martincostello/update-dotnet-sdk@v3
   with:
     quality: 'daily'
@@ -360,7 +360,7 @@ installer repository.
 
 ```yml
 steps:
-- uses: actions/checkout@v4
+- uses: actions/checkout@v5
 - uses: martincostello/update-dotnet-sdk@v3
   with:
     channel: '10.0.1xx-preview4'

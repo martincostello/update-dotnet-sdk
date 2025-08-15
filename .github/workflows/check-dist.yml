@@ -13,7 +13,7 @@ permissions: {}
 
 jobs:
   check-dist:
-    if: ${{ !contains('["dependabot[bot]", "renovate[bot]"]', github.actor) }}
+    if: ${{ !contains(fromJSON('["dependabot[bot]", "renovate[bot]"]'), github.event.pull_request.user.login) }}
     runs-on: ubuntu-latest
 
     permissions:
