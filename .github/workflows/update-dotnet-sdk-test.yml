@@ -28,14 +28,26 @@ jobs:
     steps:
 
     - name: Print update details
+      shell: bash
+      env:
+        SDK_UPDATED: ${{ needs.update-sdk.outputs.sdk-updated }}
+        SDK_VERSION: ${{ needs.update-sdk.outputs.sdk-version }}
+        RUNTIME_VERSION: ${{ needs.update-sdk.outputs.runtime-version }}
+        ASPNETCORE_VERSION: ${{ needs.update-sdk.outputs.aspnetcore-version }}
+        WINDOWS_DESKTOP_VERSION: ${{ needs.update-sdk.outputs.windows-desktop-version }}
+        SECURITY: ${{ needs.update-sdk.outputs.security }}
+        BRANCH_NAME: ${{ needs.update-sdk.outputs.branch-name }}
+        PULL_REQUEST_NUMBER: ${{ needs.update-sdk.outputs.pull-request-number }}
+        PULL_REQUEST_HTML_URL: ${{ needs.update-sdk.outputs.pull-request-html-url }}
+        PULL_REQUESTS_CLOSED: ${{ needs.update-sdk.outputs.pull-requests-closed }}
       run: |
-        echo "SDK updated: ${{ needs.update-sdk.outputs.sdk-updated }}"
-        echo "SDK version: ${{ needs.update-sdk.outputs.sdk-version }}"
-        echo "Runtime version: ${{ needs.update-sdk.outputs.runtime-version }}"
-        echo "ASP.NET Core version: ${{ needs.update-sdk.outputs.aspnetcore-version }}"
-        echo "Windows Desktop version: ${{ needs.update-sdk.outputs.windows-desktop-version }}"
-        echo "Security: ${{ needs.update-sdk.outputs.security }}"
-        echo "Branch name: ${{ needs.update-sdk.outputs.branch-name }}"
-        echo "PR number: ${{ needs.update-sdk.outputs.pull-request-number }}"
-        echo "PR URL: ${{ needs.update-sdk.outputs.pull-request-html-url }}"
-        echo "PR(s) closed: ${{ needs.update-sdk.outputs.pull-requests-closed }}"
+        echo "SDK updated: ${SDK_UPDATED}"
+        echo "SDK version: ${SDK_VERSION}"
+        echo "Runtime version: ${RUNTIME_VERSION}"
+        echo "ASP.NET Core version: ${ASPNETCORE_VERSION}"
+        echo "Windows Desktop version: ${WINDOWS_DESKTOP_VERSION}"
+        echo "Security: ${SECURITY}"
+        echo "Branch name: ${BRANCH_NAME}"
+        echo "PR number: ${PULL_REQUEST_NUMBER}"
+        echo "PR URL: ${PULL_REQUEST_HTML_URL}"
+        echo "PR(s) closed: ${PULL_REQUESTS_CLOSED}"
