@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`update-dotnet-sdk 2.1 for the 2.1.500 SDK with a commit prefix of "" and security-only of false running the action generates the expected Git commit history 1`] = `
 [
