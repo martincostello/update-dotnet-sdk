@@ -42,7 +42,7 @@ jobs:
         run: npm audit fix
 
       - name: Regenerate dist
-        run: npm run package
+        run: npm run generate
 
       - name: Push changes to GitHub
         id: push-changes
