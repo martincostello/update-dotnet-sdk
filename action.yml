@@ -90,5 +90,5 @@ outputs:
   windows-desktop-version:
     description: 'The version of the Windows Desktop runtime associated with the updated .NET SDK.'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/main.js'
