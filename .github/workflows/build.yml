@@ -14,7 +14,7 @@ env:
   # renovate: datasource=github-releases depName=PSScriptAnalyzer packageName=PowerShell/PSScriptAnalyzer
   PSSCRIPTANALYZER_VERSION: '1.24.0'
   # renovate: datasource=github-releases depName=zizmor packageName=zizmorcore/zizmor
-  ZIZMOR_VERSION: '1.16.2'
+  ZIZMOR_VERSION: '1.16.3'
 
 permissions: {}
 
