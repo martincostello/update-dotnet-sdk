@@ -3,4 +3,3 @@ coverage/
 lib/
 node_modules/
 global.json
-vitest.config.js

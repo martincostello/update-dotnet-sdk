@@ -5,7 +5,7 @@ export default defineConfig({
     clearMocks: true,
     coverage: {
       enabled: true,
-      reporter: ['text', 'json', 'html'],
+      reporter: ['html', 'json', 'text'],
       include: ['src/**/*.ts'],
     },
     reporters: ['verbose'],

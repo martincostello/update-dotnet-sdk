@@ -4,6 +4,6 @@ When any files in `src` are changed or if `package.json` is modified, run `npm r
 
 Ensure that any new files that are added to `src` or `tests` end with a newline, as specified in the `.editorconfig` configuration (see `insert_final_newline = true`).
 
-Jest is used for tests.
+Vitest is used for tests.
 
 Prefer data-driven tests over multiple individual test cases where relevant.
