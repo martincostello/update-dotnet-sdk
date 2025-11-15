@@ -11,7 +11,7 @@
     "generate": "npm run build && npm run package",
     "lint": "eslint src/**/*.ts --fix",
     "package": "esbuild lib/main.js --bundle --minify --outdir=dist --packages=bundle --platform=node --sourcemap --target=node24.0.0",
-    "test": "jest",
+    "test": "vitest run",
     "publish": "npm run format && npm run lint && npm run generate",
     "all": "npm run publish && npm test"
   },
@@ -31,31 +31,6 @@
   },
   "engines": {
     "node": ">=24.0.0"
-  },
-  "jest": {
-    "clearMocks": true,
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.ts"
-    ],
-    "reporters": [
-      [
-        "github-actions",
-        {
-          "silent": false
-        }
-      ],
-      [
-        "summary",
-        {
-          "summaryThreshold": 1
-        }
-      ]
-    ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "verbose": true
   },
   "license": "Apache-2.0",
   "bugs": {
@@ -78,17 +53,18 @@
     "@stylistic/eslint-plugin": "5.5.0",
     "@typescript-eslint/eslint-plugin": "8.46.4",
     "@typescript-eslint/parser": "8.46.4",
+    "@vitest/coverage-v8": "^4.0.9",
+    "@vitest/ui": "^4.0.9",
     "esbuild": "0.27.0",
     "eslint": "9.39.1",
     "eslint-plugin-github": "6.0.0",
-    "eslint-plugin-jest": "29.1.0",
     "eslint-plugin-prettier": "5.5.4",
+    "eslint-plugin-vitest": "^0.5.4",
     "fast-check": "4.3.0",
     "globals": "16.5.0",
-    "jest": "30.2.0",
     "prettier": "3.6.2",
-    "ts-jest": "29.4.5",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^4.0.9"
   },
   "prettier": {
     "arrowParens": "always",

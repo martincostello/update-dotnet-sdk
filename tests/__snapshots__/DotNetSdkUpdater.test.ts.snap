@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 3.1 from 3.1.403 on 2023-05-02 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 3.1 from 3.1.403 on 2023-05-02 1`] = `
 "<h1>.NET SDK 3.1.404</h1>
 An update from version 3.1.403 to 3.1.404 of the .NET SDK is available.<br>
 <br>
@@ -10,7 +10,7 @@ This version of the .NET SDK was released on 2020-11-10 (903 days ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 5.0 from 5.0.102 on 2023-05-02 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 5.0 from 5.0.102 on 2023-05-02 1`] = `
 "<h1>.NET SDK 5.0.200</h1>
 An update from version 5.0.102 to 5.0.200 of the .NET SDK is available.<br>
 <br>
@@ -24,7 +24,7 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 6.0 from 6.0.407 on 2023-05-02 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 6.0 from 6.0.407 on 2023-05-02 1`] = `
 "<h1>.NET SDK 6.0.408</h1>
 An update from version 6.0.407 to 6.0.408 of the .NET SDK is available.<br>
 <br>
@@ -38,7 +38,7 @@ This update includes fixes for the following security issues:<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-14 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-14 1`] = `
 "<h1>.NET SDK 7.0.202</h1>
 An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
 <br>
@@ -48,7 +48,7 @@ This version of the .NET SDK was released on 2023-03-14 (0 days ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-15 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-15 1`] = `
 "<h1>.NET SDK 7.0.202</h1>
 An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
 <br>
@@ -58,7 +58,7 @@ This version of the .NET SDK was released on 2023-03-14 (1 day ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-16 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-03-16 1`] = `
 "<h1>.NET SDK 7.0.202</h1>
 An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
 <br>
@@ -68,7 +68,7 @@ This version of the .NET SDK was released on 2023-03-14 (2 days ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-05-02 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 7.0 from 7.0.201 on 2023-05-02 1`] = `
 "<h1>.NET SDK 7.0.202</h1>
 An update from version 7.0.201 to 7.0.202 of the .NET SDK is available.<br>
 <br>
@@ -78,7 +78,7 @@ This version of the .NET SDK was released on 2023-03-14 (49 days ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 7.0.302 from 7.0.203 on 2023-05-02 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 7.0.302 from 7.0.203 on 2023-05-02 1`] = `
 "<h1>.NET SDK 7.0.302</h1>
 An update from version 7.0.203 to 7.0.302 of the .NET SDK is available.<br>
 <br>
@@ -88,7 +88,7 @@ This version of the .NET SDK was released on 2023-04-11 (21 days ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct GitHub step summary for 8.0 from 8.0.100-preview.2.23157.25 on 2023-05-02 1`] = `
+exports[`DotNetSdkUpdater > Generates correct GitHub step summary for 8.0 from 8.0.100-preview.2.23157.25 on 2023-05-02 1`] = `
 "<h1>.NET SDK 8.0.100-preview.3.23178.7</h1>
 An update from version 8.0.100-preview.2.23157.25 to 8.0.100-preview.3.23178.7 of the .NET SDK is available.<br>
 <br>
@@ -98,7 +98,7 @@ This version of the .NET SDK was released on 2023-04-11 (21 days ago).<br>
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct release notes from 2.1.100 to 3.0.101 as a %s update 1`] = `
+exports[`DotNetSdkUpdater > Generates correct release notes from 2.1.100 to 3.0.101 as a undefined update 1`] = `
 "Update .NET SDK
 
 Update .NET SDK to version 3.0.101.
@@ -114,7 +114,7 @@ updated-dependencies:
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct release notes from 2.1.100 to 3.1.101 as a %s update 1`] = `
+exports[`DotNetSdkUpdater > Generates correct release notes from 2.1.100 to 3.1.101 as a undefined update 1`] = `
 "Update .NET SDK
 
 Update .NET SDK to version 3.1.101.
@@ -130,7 +130,7 @@ updated-dependencies:
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct release notes from 3.0.100 to 3.1.100 as a %s update 1`] = `
+exports[`DotNetSdkUpdater > Generates correct release notes from 3.0.100 to 3.1.100 as a undefined update 1`] = `
 "Update .NET SDK
 
 Update .NET SDK to version 3.1.100.
@@ -146,7 +146,7 @@ updated-dependencies:
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct release notes from 3.1.100 to 3.1.101 as a %s update 1`] = `
+exports[`DotNetSdkUpdater > Generates correct release notes from 3.1.100 to 3.1.101 as a undefined update 1`] = `
 "Update .NET SDK
 
 Update .NET SDK to version 3.1.101.
@@ -162,7 +162,7 @@ updated-dependencies:
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct release notes from 3.1.100 to 3.1.200 as a %s update 1`] = `
+exports[`DotNetSdkUpdater > Generates correct release notes from 3.1.100 to 3.1.200 as a undefined update 1`] = `
 "Update .NET SDK
 
 Update .NET SDK to version 3.1.200.
@@ -178,7 +178,7 @@ updated-dependencies:
 "
 `;
 
-exports[`DotNetSdkUpdater Generates correct release notes from 5.0.100 to 6.0.100 as a %s update 1`] = `
+exports[`DotNetSdkUpdater > Generates correct release notes from 5.0.100 to 6.0.100 as a undefined update 1`] = `
 "Update .NET SDK
 
 Update .NET SDK to version 6.0.100.
@@ -194,7 +194,7 @@ updated-dependencies:
 "
 `;
 
-exports[`DotNetSdkUpdater Gets correct info between preview releases 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info between preview releases 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -221,7 +221,7 @@ exports[`DotNetSdkUpdater Gets correct info between preview releases 1`] = `
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for a different MSBuild version 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is available for a different MSBuild version 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "5.0.3",
@@ -266,7 +266,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for a di
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for the same MSBuild version 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is available for the same MSBuild version 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "3.1.0",
@@ -334,7 +334,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for the 
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for the same runtime version 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is available for the same runtime version 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "7.0.5",
@@ -371,7 +371,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available for the 
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available that skips releases when latest is a security release 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is available that skips releases when latest is a security release 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "7.0.0",
@@ -416,7 +416,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available that ski
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available that skips releases when latest is not a security release 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is available that skips releases when latest is not a security release 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "7.0.0",
@@ -452,7 +452,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is available that ski
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is not available 1`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is not available 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "3.1.10",
@@ -479,7 +479,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is not available 1`] 
 }
 `;
 
-exports[`DotNetSdkUpdater Gets correct info if a newer SDK is not available 2`] = `
+exports[`DotNetSdkUpdater > Gets correct info if a newer SDK is not available 2`] = `
 {
   "current": {
     "aspnetcoreVersion": "6.0.0",
@@ -576,7 +576,7 @@ exports[`DotNetSdkUpdater Gets correct info if a newer SDK is not available 2`] 
 }
 `;
 
-exports[`DotNetSdkUpdater Sorts the CVEs in the pull request description 1`] = `
+exports[`DotNetSdkUpdater > Sorts the CVEs in the pull request description 1`] = `
 "Updates the .NET SDK to version \`7.0.202\`, which also updates the .NET runtime from version [\`\`7.0.0\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md) to version [\`\`7.0.4\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md).
 
 This release includes fixes for the following security issue(s):
@@ -586,7 +586,7 @@ This release includes fixes for the following security issue(s):
 This pull request was auto-generated by [GitHub Actions](https://github.local/owner/repository/actions/runs/123)."
 `;
 
-exports[`DotNetSdkUpdater Sorts the CVEs in the pull request description 2`] = `
+exports[`DotNetSdkUpdater > Sorts the CVEs in the pull request description 2`] = `
 "Updates the .NET SDK to version \`7.0.202\`, which also updates the .NET runtime from version [\`\`7.0.0\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.0/7.0.0.md) to version [\`\`7.0.4\`\`](https://github.com/dotnet/core/blob/main/release-notes/7.0/7.0.4/7.0.4.md).
 
 This release includes fixes for the following security issue(s):
@@ -596,7 +596,7 @@ This release includes fixes for the following security issue(s):
 This pull request was auto-generated by [GitHub Actions](https://github.local/owner/repository/actions/runs/123)."
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prerelease label "" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0, quality daily and prerelease label "" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -623,7 +623,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prer
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prerelease label "" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0, quality daily and prerelease label "" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -650,7 +650,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prer
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prerelease label "rc.1" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0, quality daily and prerelease label "rc.1" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -677,7 +677,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prer
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prerelease label "rc.1" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0, quality daily and prerelease label "rc.1" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -704,7 +704,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prer
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prerelease label "rc.2" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0, quality daily and prerelease label "rc.2" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -731,7 +731,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prer
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prerelease label "rc.2" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0, quality daily and prerelease label "rc.2" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -758,7 +758,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0, quality daily and prer
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and prerelease label "" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx, quality daily and prerelease label "" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -785,7 +785,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and 
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and prerelease label "" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx, quality daily and prerelease label "" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -812,7 +812,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and 
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and prerelease label "rc.1" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx, quality daily and prerelease label "rc.1" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -839,7 +839,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and 
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and prerelease label "rc.1" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx, quality daily and prerelease label "rc.1" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -866,7 +866,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and 
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and prerelease label "rc.2" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx, quality daily and prerelease label "rc.2" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -893,7 +893,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and 
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and prerelease label "rc.2" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx, quality daily and prerelease label "rc.2" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -920,7 +920,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx, quality daily and 
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -947,61 +947,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "" Gets correct info for daily build from official build 1`] = `
-{
-  "current": {
-    "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
-    "releaseDate": 2023-02-21T00:00:00.000Z,
-    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
-    "runtimeVersion": "8.0.0-preview.1.23110.8",
-    "sdkVersion": "8.0.100-preview.1.23115.2",
-    "security": false,
-    "securityIssues": [],
-    "windowsDesktopVersion": "8.0.0-preview.1.23112.2",
-  },
-  "latest": {
-    "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
-    "releaseDate": 2023-07-13T00:00:00.000Z,
-    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
-    "runtimeVersion": "8.0.0-preview.7.23361.9",
-    "sdkVersion": "8.0.100-preview.7.23363.2",
-    "security": false,
-    "securityIssues": [],
-    "windowsDesktopVersion": "8.0.0-preview.7.23362.11",
-  },
-  "security": false,
-  "securityIssues": [],
-}
-`;
-
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "preview.7" Gets correct info for daily build from daily build 1`] = `
-{
-  "current": {
-    "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
-    "releaseDate": 2023-07-13T00:00:00.000Z,
-    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
-    "runtimeVersion": "8.0.0-preview.7.23361.9",
-    "sdkVersion": "8.0.100-preview.7.23363.2",
-    "security": false,
-    "securityIssues": [],
-    "windowsDesktopVersion": "8.0.0-preview.7.23362.11",
-  },
-  "latest": {
-    "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
-    "releaseDate": 2023-07-13T00:00:00.000Z,
-    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
-    "runtimeVersion": "8.0.0-preview.7.23361.9",
-    "sdkVersion": "8.0.100-preview.7.23363.2",
-    "security": false,
-    "securityIssues": [],
-    "windowsDesktopVersion": "8.0.0-preview.7.23362.11",
-  },
-  "security": false,
-  "securityIssues": [],
-}
-`;
-
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "preview.7" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -1028,7 +974,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.1" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "preview.7" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -1055,7 +1001,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.1" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "preview.7" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -1068,21 +1014,21 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
     "windowsDesktopVersion": "8.0.0-preview.1.23112.2",
   },
   "latest": {
-    "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
-    "releaseDate": 2023-02-21T00:00:00.000Z,
-    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
-    "runtimeVersion": "8.0.0-preview.1.23110.8",
-    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
+    "releaseDate": 2023-07-13T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
+    "runtimeVersion": "8.0.0-preview.7.23361.9",
+    "sdkVersion": "8.0.100-preview.7.23363.2",
     "security": false,
     "securityIssues": [],
-    "windowsDesktopVersion": "8.0.0-preview.1.23112.2",
+    "windowsDesktopVersion": "8.0.0-preview.7.23362.11",
   },
   "security": false,
   "securityIssues": [],
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.2" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.1" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
@@ -1109,7 +1055,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.2" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.1" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
@@ -1136,7 +1082,61 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 8.0.1xx-preview7, quality d
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 10.0.1xx, quality daily and prerelease label "" Gets correct info for daily build from daily build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.2" > Gets correct info for daily build from daily build 1`] = `
+{
+  "current": {
+    "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
+    "releaseDate": 2023-07-13T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
+    "runtimeVersion": "8.0.0-preview.7.23361.9",
+    "sdkVersion": "8.0.100-preview.7.23363.2",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "8.0.0-preview.7.23362.11",
+  },
+  "latest": {
+    "aspnetcoreVersion": "8.0.0-preview.7.23362.32",
+    "releaseDate": 2023-07-13T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/installer/commits/19da2758bbeff00c686c491b18c6318c187c59c4",
+    "runtimeVersion": "8.0.0-preview.7.23361.9",
+    "sdkVersion": "8.0.100-preview.7.23363.2",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "8.0.0-preview.7.23362.11",
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 8.0.1xx-preview7, quality daily and prerelease label "rc.2" > Gets correct info for daily build from official build 1`] = `
+{
+  "current": {
+    "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
+    "releaseDate": 2023-02-21T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
+    "runtimeVersion": "8.0.0-preview.1.23110.8",
+    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "8.0.0-preview.1.23112.2",
+  },
+  "latest": {
+    "aspnetcoreVersion": "8.0.0-preview.1.23112.2",
+    "releaseDate": 2023-02-21T00:00:00.000Z,
+    "releaseNotes": "https://github.com/dotnet/core/blob/main/release-notes/8.0/preview/8.0.0-preview.1.md",
+    "runtimeVersion": "8.0.0-preview.1.23110.8",
+    "sdkVersion": "8.0.100-preview.1.23115.2",
+    "security": false,
+    "securityIssues": [],
+    "windowsDesktopVersion": "8.0.0-preview.1.23112.2",
+  },
+  "security": false,
+  "securityIssues": [],
+}
+`;
+
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 10.0.1xx, quality daily and prerelease label "" > Gets correct info for daily build from daily build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "10.0.0-preview.4.25215.10",
@@ -1163,7 +1163,7 @@ exports[`DotNetSdkUpdater getLatestDaily for channel 10.0.1xx, quality daily and
 }
 `;
 
-exports[`DotNetSdkUpdater getLatestDaily for channel 10.0.1xx, quality daily and prerelease label "" Gets correct info for daily build from official build 1`] = `
+exports[`DotNetSdkUpdater > getLatestDaily > for channel 10.0.1xx, quality daily and prerelease label "" > Gets correct info for daily build from official build 1`] = `
 {
   "current": {
     "aspnetcoreVersion": "10.0.0-preview.3.25172.1",

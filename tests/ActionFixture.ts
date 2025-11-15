@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { setup } from './fixtures';
 import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
@@ -125,7 +125,7 @@ export class ActionFixture {
   }
 
   private setupMocks(): void {
-    jest.spyOn(core, 'setFailed').mockImplementation(() => {});
+    vi.spyOn(core, 'setFailed').mockImplementation(() => {});
     this.setupLogging();
   }
 
@@ -134,26 +134,26 @@ export class ActionFixture {
       console.debug(`[${level}] ${arg}`);
     };
 
-    jest.spyOn(core, 'debug').mockImplementation((arg) => {
+    vi.spyOn(core, 'debug').mockImplementation((arg) => {
       logger('debug', arg);
     });
-    jest.spyOn(core, 'info').mockImplementation((arg) => {
+    vi.spyOn(core, 'info').mockImplementation((arg) => {
       logger('info', arg);
     });
-    jest.spyOn(core, 'notice').mockImplementation((arg) => {
+    vi.spyOn(core, 'notice').mockImplementation((arg) => {
       logger('notice', arg);
     });
-    jest.spyOn(core, 'warning').mockImplementation((arg) => {
+    vi.spyOn(core, 'warning').mockImplementation((arg) => {
       logger('warning', arg);
     });
-    jest.spyOn(core, 'error').mockImplementation((arg) => {
+    vi.spyOn(core, 'error').mockImplementation((arg) => {
       logger('error', arg);
     });
 
-    jest.spyOn(core.summary, 'addRaw').mockImplementation((text: string) => {
+    vi.spyOn(core.summary, 'addRaw').mockImplementation((text: string) => {
       this.stepSummary += text;
       return core.summary;
     });
-    jest.spyOn(core.summary, 'write').mockReturnThis();
+    vi.spyOn(core.summary, 'write').mockReturnThis();
   }
 }

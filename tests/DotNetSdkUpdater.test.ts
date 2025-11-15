@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as io from '@actions/io';
 
-import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import { DotNetSdkUpdater } from '../src/DotNetSdkUpdater';
 import { UpdateOptions } from '../src/UpdateOptions';
