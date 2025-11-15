@@ -2,7 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as fc from 'fast-check';
-import { beforeAll, describe, expect, test } from '@jest/globals';
+import { beforeAll, describe, expect, test } from 'vitest';
 import { SdkVersion } from '../src/SdkVersion';
 
 describe('SdkVersion', () => {

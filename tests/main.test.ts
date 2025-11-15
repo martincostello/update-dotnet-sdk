@@ -2,7 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import * as core from '@actions/core';
-import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, vi, test } from 'vitest';
 import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
@@ -21,7 +21,7 @@ const outputs = [
 
 describe('update-dotnet-sdk', () => {
   beforeAll(() => {
-    Date.now = jest.fn(() => new Date(Date.UTC(2023, 8 - 1, 25)).valueOf());
+    Date.now = vi.fn(() => new Date(Date.UTC(2023, 8 - 1, 25)).valueOf());
   });
 
   describe.each([

@@ -1,8 +1,8 @@
-import github from 'eslint-plugin-github';
-import jest from 'eslint-plugin-jest';
 import stylistic from '@stylistic/eslint-plugin';
-import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
+import github from 'eslint-plugin-github';
+import vitest from 'eslint-plugin-vitest';
+import globals from 'globals';
 
 export default [
   github.getFlatConfigs().recommended,
@@ -20,12 +20,12 @@ export default [
     files: ['**/*.cjs', '**/*.js', '**/*.mjs', '**/*.ts'],
     ignores: ['dist/*', 'lib/*', 'node_modules/*'],
     plugins: {
-      jest,
+      vitest,
       '@stylistic': stylistic,
     },
     languageOptions: {
       globals: {
-        ...jest.environments.globals.globals,
+        ...vitest.environments.env.globals,
         ...globals.node,
       },
       parser: tsParser,

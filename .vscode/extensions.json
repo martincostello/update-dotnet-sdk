@@ -3,7 +3,6 @@
     "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
-    "firsttris.vscode-jest-runner",
     "github.vscode-github-actions"
   ]
 }
