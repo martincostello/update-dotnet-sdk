@@ -49,6 +49,8 @@ jobs:
             exit 0
           }
 
+          npm run generate
+
           $branchName = "npm-audit-fix"
 
           git config user.email ${env:GIT_COMMIT_USER_EMAIL} | Out-Null
