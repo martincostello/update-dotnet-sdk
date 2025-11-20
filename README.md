@@ -380,7 +380,7 @@ For more information about daily builds, see the [.NET repository][dotnet-dotnet
 
 ### Optional
 
-| **Name**                | **Description** | **Default** |
+| **Name**                | **Description**                                                                                     | **Default**                                       |
 |:------------------------|:----------------------------------------------------------------------------------------------------|:--------------------------------------------------|
 | `branch-name`           | The optional Git branch name to use.                                                                | -                                                 |
 | `channel`               | The optional .NET release channel to download the SDK for (8.0, 10.0, etc.).                        | The channel derived from the current SDK version. |
