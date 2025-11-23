@@ -33,18 +33,6 @@ jobs:
         with:
           node-version: '24.x'
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: echo "dir=$(npm config get cache)" >> "${GITHUB_OUTPUT}"
-
-      - name: Setup npm cache
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        id: npm-cache
-        with:
-            path: ${{ steps.npm-cache-dir.outputs.dir }}
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: ${{ runner.os }}-node-
-
       - name: Install packages
         run: npm ci
 
