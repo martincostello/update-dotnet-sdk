@@ -244,7 +244,7 @@ jobs:
     # and that pushes as that user trigger any CI workflows that may trigger
     # on push, such as if any NuGet packages are updated after the PR is opened.
     - name: Checkout code
-      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with:
         persist-credentials: true # zizmor: ignore[artipacked] Needed to push commits
         ref: ${{ inputs.ref || '' }}
