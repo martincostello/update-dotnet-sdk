@@ -54,9 +54,9 @@
     "@types/node": "24.10.1",
     "@typescript-eslint/eslint-plugin": "8.48.1",
     "@typescript-eslint/parser": "8.48.1",
-    "@vitest/coverage-v8": "4.0.14",
+    "@vitest/coverage-v8": "4.0.15",
     "@vitest/eslint-plugin": "1.5.1",
-    "@vitest/ui": "4.0.14",
+    "@vitest/ui": "4.0.15",
     "esbuild": "0.27.0",
     "eslint": "9.39.1",
     "eslint-plugin-github": "6.0.0",
@@ -65,7 +65,7 @@
     "globals": "16.5.0",
     "prettier": "3.7.3",
     "typescript": "5.9.3",
-    "vitest": "4.0.14"
+    "vitest": "4.0.15"
   },
   "prettier": {
     "arrowParens": "always",
