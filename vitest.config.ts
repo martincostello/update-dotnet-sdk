@@ -8,6 +8,6 @@ export default defineConfig({
       reporter: ['html', 'json', 'text'],
       include: ['src/**/*.ts'],
     },
-    reporters: ['verbose'],
+    reporters: ['default', 'github-actions'],
   },
 });
