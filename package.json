@@ -55,7 +55,7 @@
     "@typescript-eslint/eslint-plugin": "8.50.1",
     "@typescript-eslint/parser": "8.50.1",
     "@vitest/coverage-v8": "4.0.16",
-    "@vitest/eslint-plugin": "1.5.4",
+    "@vitest/eslint-plugin": "1.6.3",
     "@vitest/ui": "4.0.16",
     "esbuild": "0.27.2",
     "eslint": "9.39.2",
