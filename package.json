@@ -62,7 +62,7 @@
     "eslint-plugin-github": "6.0.0",
     "eslint-plugin-prettier": "5.5.4",
     "fast-check": "4.5.3",
-    "globals": "16.5.0",
+    "globals": "17.0.0",
     "prettier": "3.7.4",
     "typescript": "5.9.3",
     "vitest": "4.0.16"
