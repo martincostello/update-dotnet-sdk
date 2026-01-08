@@ -44,7 +44,7 @@
     "@actions/io": "2.0.0",
     "@octokit/plugin-paginate-rest": "14.0.0",
     "@octokit/plugin-rest-endpoint-methods": "11.0.1",
-    "undici": "7.16.0"
+    "undici": "7.17.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.3",
