@@ -63,7 +63,7 @@
     "eslint-plugin-prettier": "5.5.5",
     "fast-check": "4.5.3",
     "globals": "17.1.0",
-    "prettier": "3.8.0",
+    "prettier": "3.8.1",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   },
