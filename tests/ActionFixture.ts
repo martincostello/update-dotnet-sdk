@@ -138,5 +138,15 @@ export class ActionFixture {
       configurable: true,
       writable: true,
     });
+
+    // Try to spy on error and setFailed for test assertions
+    try {
+      vi.spyOn(core, 'error').mockImplementation(() => {});
+      vi.spyOn(core, 'setFailed').mockImplementation(() => {});
+    } catch (e) {
+      // If spying fails with ES modules, create mock functions
+      (core as any).error = vi.fn();
+      (core as any).setFailed = vi.fn();
+    }
   }
 }
