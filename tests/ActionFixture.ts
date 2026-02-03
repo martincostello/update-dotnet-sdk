@@ -125,34 +125,13 @@ export class ActionFixture {
   }
 
   private setupMocks(): void {
-    this.setupLogging();
-  }
-
-  private setupLogging(): void {
-    const logger = (level: string, arg: string | Error) => {
-      console.debug(`[${level}] ${arg}`);
-    };
-
-    vi.spyOn(core, 'debug').mockImplementation((arg) => {
-      logger('debug', arg);
-    });
-    vi.spyOn(core, 'info').mockImplementation((arg) => {
-      logger('info', arg);
-    });
-    vi.spyOn(core, 'notice').mockImplementation((arg) => {
-      logger('notice', arg);
-    });
-    vi.spyOn(core, 'warning').mockImplementation((arg) => {
-      logger('warning', arg);
-    });
-    vi.spyOn(core, 'error').mockImplementation((arg) => {
-      logger('error', arg);
-    });
-
-    vi.spyOn(core.summary, 'addRaw').mockImplementation((text: string) => {
-      this.stepSummary += text;
-      return core.summary;
-    });
-    vi.spyOn(core.summary, 'write').mockReturnThis();
+    // Mocking is done at module level in test files
+    // But we need to set up the summary capture
+    if (core.summary && 'addRaw' in core.summary && typeof (core.summary.addRaw as any).mockImplementation === 'function') {
+      (core.summary.addRaw as any).mockImplementation((text: string) => {
+        this.stepSummary += text;
+        return core.summary;
+      });
+    }
   }
 }
