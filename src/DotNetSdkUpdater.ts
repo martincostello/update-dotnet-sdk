@@ -11,9 +11,9 @@ import * as github from '@actions/github';
 import { Writable } from 'stream';
 import { fetch, Response } from 'undici';
 
-import { UpdateOptions } from './UpdateOptions';
-import { UpdateResult } from './UpdateResult';
-import { SdkVersion } from './SdkVersion';
+import { UpdateOptions } from './UpdateOptions.js';
+import { UpdateResult } from './UpdateResult.js';
+import { SdkVersion } from './SdkVersion.js';
 
 export class DotNetSdkUpdater {
   private options: UpdateOptions;

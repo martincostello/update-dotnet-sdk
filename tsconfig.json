@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "target": "es2022",
-    "moduleResolution": "bundler",
+    "module": "node16",
+    "moduleResolution": "node16",
     "outDir": "./lib",
     "rootDir": "./src",
     "strict": true,
     "noImplicitAny": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["node"]
   },
   "exclude": [
     "node_modules",

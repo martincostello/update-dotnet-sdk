@@ -6,8 +6,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { context } from '@actions/github';
 
-import { DotNetSdkUpdater } from './DotNetSdkUpdater';
-import { UpdateOptions } from './UpdateOptions';
+import { DotNetSdkUpdater } from './DotNetSdkUpdater.js';
+import { UpdateOptions } from './UpdateOptions.js';
 
 export async function run(): Promise<void> {
   try {
