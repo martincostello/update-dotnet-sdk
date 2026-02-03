@@ -15,8 +15,8 @@ vi.mock('@actions/core', async () => {
     error: vi.fn(),
     summary: {
       ...actual.summary,
-      addRaw: vi.fn((text: string) => actual.summary.addRaw(text)),
-      write: vi.fn(() => actual.summary.write()),
+      addRaw: vi.fn().mockImplementation((text: string) => actual.summary.addRaw(text)),
+      write: vi.fn().mockImplementation(() => actual.summary.write()),
     },
   };
 });
