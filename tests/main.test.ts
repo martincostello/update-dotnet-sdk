@@ -3,8 +3,8 @@
 
 import { afterAll, beforeAll, describe, expect, vi, test } from 'vitest';
 
-vi.mock('@actions/core', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@actions/core')>();
+vi.mock('@actions/core', async () => {
+  const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
   return {
     ...actual,
     setFailed: vi.fn(),
@@ -15,11 +15,8 @@ vi.mock('@actions/core', async (importOriginal) => {
     error: vi.fn(),
     summary: {
       ...actual.summary,
-      addRaw: vi.fn((text: string) => {
-        // Call the real implementation but also mock it
-        return actual.summary.addRaw(text);
-      }),
-      write: vi.fn(() => actual.summary),
+      addRaw: vi.fn().mockReturnValue(actual.summary),
+      write: vi.fn().mockReturnValue(actual.summary),
     },
   };
 });
