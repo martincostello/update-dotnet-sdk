@@ -3,23 +3,8 @@
 
 import { afterAll, beforeAll, describe, expect, vi, test } from 'vitest';
 
-vi.mock('@actions/core', async () => {
-  const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
-  return {
-    ...actual,
-    setFailed: vi.fn(),
-    debug: vi.fn(),
-    info: vi.fn(),
-    notice: vi.fn(),
-    warning: vi.fn(),
-    error: vi.fn(),
-    summary: {
-      ...actual.summary,
-      addRaw: vi.fn().mockImplementation((text: string) => actual.summary.addRaw(text)),
-      write: vi.fn().mockImplementation(() => actual.summary.write()),
-    },
-  };
-});
+// Don't mock @actions/core - let the real implementation work
+// We'll handle logging output in the test environment
 
 import * as core from '@actions/core';
 import { ActionFixture } from './ActionFixture';

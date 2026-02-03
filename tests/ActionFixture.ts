@@ -125,11 +125,18 @@ export class ActionFixture {
   }
 
   private setupMocks(): void {
-    if (core.summary && 'addRaw' in core.summary && typeof (core.summary.addRaw as any).mockImplementation === 'function') {
-      (core.summary.addRaw as any).mockImplementation((text: string) => {
-        this.stepSummary += text;
-        return core.summary;
-      });
-    }
+    // Since vi.spyOn doesn't work with ES modules, we'll wrap the summary methods
+    const originalAddRaw = core.summary.addRaw;
+    const self = this;
+
+    // Override the method on the summary object
+    Object.defineProperty(core.summary, 'addRaw', {
+      value: function (text: string) {
+        self.stepSummary += text;
+        return originalAddRaw.call(core.summary, text);
+      },
+      configurable: true,
+      writable: true,
+    });
   }
 }
