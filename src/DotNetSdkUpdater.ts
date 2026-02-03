@@ -11,9 +11,9 @@ import * as github from '@actions/github';
 import { Writable } from 'stream';
 import { fetch, Response } from 'undici';
 
-import { UpdateOptions } from './UpdateOptions';
-import { UpdateResult } from './UpdateResult';
-import { SdkVersion } from './SdkVersion';
+import { UpdateOptions } from './UpdateOptions.js';
+import { UpdateResult } from './UpdateResult.js';
+import { SdkVersion } from './SdkVersion.js';
 
 export class DotNetSdkUpdater {
   private options: UpdateOptions;
@@ -1055,7 +1055,7 @@ class NullWritable extends Writable {
   }
 }
 
-type PaginatedApi = import('@octokit/plugin-rest-endpoint-methods/dist-types/types').Api & {
+type PaginatedApi = import('@octokit/plugin-rest-endpoint-methods').Api & {
   paginate: import('@octokit/plugin-paginate-rest').PaginateInterface;
 };
 

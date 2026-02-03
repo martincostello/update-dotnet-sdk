@@ -125,7 +125,6 @@ export class ActionFixture {
   }
 
   private setupMocks(): void {
-    vi.spyOn(core, 'setFailed').mockImplementation(() => {});
     this.setupLogging();
   }
 

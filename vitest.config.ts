@@ -9,5 +9,7 @@ export default defineConfig({
       include: ['src/**/*.ts'],
     },
     reporters: ['default', 'github-actions'],
+    unstubEnvs: true,
+    unstubGlobals: true,
   },
 });
