@@ -125,8 +125,6 @@ export class ActionFixture {
   }
 
   private setupMocks(): void {
-    // Mocking is done at module level in test files
-    // But we need to set up the summary capture
     if (core.summary && 'addRaw' in core.summary && typeof (core.summary.addRaw as any).mockImplementation === 'function') {
       (core.summary.addRaw as any).mockImplementation((text: string) => {
         this.stepSummary += text;
