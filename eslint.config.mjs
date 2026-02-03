@@ -42,7 +42,6 @@ export default [
       'filenames/match-regex': 'off',
       'github/filenames-match-regex': 'off',
       'import/no-namespace': 'off',
-      'import/no-unresolved': 'off',
       'no-unused-vars': 'off',
       'semi': 'off',
       '@stylistic/semi': ['error', 'always'],

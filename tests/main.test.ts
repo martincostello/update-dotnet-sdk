@@ -1,7 +1,9 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+import * as core from '@actions/core';
 import { afterAll, beforeAll, describe, expect, vi, test } from 'vitest';
+import { ActionFixture } from './ActionFixture';
 
 vi.mock('@actions/core', async () => {
   const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
@@ -10,9 +12,6 @@ vi.mock('@actions/core', async () => {
     setFailed: vi.fn(),
   };
 });
-
-import * as core from '@actions/core';
-import { ActionFixture } from './ActionFixture';
 
 const timeout = 30000;
 const outputs = [
