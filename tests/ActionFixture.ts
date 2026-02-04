@@ -6,15 +6,9 @@ import { vi } from 'vitest';
 vi.mock('@actions/core', async () => {
   const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
 
-  // Create mock spies once for the methods we want to override
-  const addRawSpy = vi.fn().mockReturnThis();
-  const writeSpy = vi.fn().mockReturnThis();
-
-  // Create a new summary object that uses the actual summary methods
-  // but replaces addRaw and write with our spies
-  const mockedSummary = Object.create(actual.summary);
-  mockedSummary.addRaw = addRawSpy;
-  mockedSummary.write = writeSpy;
+  const summary = Object.create(actual.summary);
+  summary.addRaw = vi.fn().mockReturnThis();
+  summary.write = vi.fn().mockReturnThis();
 
   return {
     ...actual,
@@ -25,7 +19,7 @@ vi.mock('@actions/core', async () => {
     warning: vi.fn(),
     notice: vi.fn(),
     error: vi.fn(),
-    summary: mockedSummary,
+    summary: summary,
   };
 });
 
