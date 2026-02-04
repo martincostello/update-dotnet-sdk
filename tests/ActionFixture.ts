@@ -162,7 +162,11 @@ export class ActionFixture {
 
     // Create mock spies for error and setFailed only once globally
     // This avoids "Cannot redefine property" errors in multiple tests
-    if (!ActionFixture.mocksInitialized) {
+    // Check both the static flag AND if the property descriptor indicates it's already been mocked
+    const errorDesc = Object.getOwnPropertyDescriptor(core, 'error');
+    const errorAlreadyMocked = errorDesc && !errorDesc.configurable;
+
+    if (!ActionFixture.mocksInitialized && !errorAlreadyMocked) {
       // Save the original implementations
       ActionFixture.originalError = core.error;
       ActionFixture.originalSetFailed = core.setFailed;
@@ -190,6 +194,13 @@ export class ActionFixture {
       ActionFixture.mocksInitialized = true;
     } else {
       // Reset the spy call counts for each test
+      // If properties are already defined, the spies should still be in ActionFixture static variables
+      if (ActionFixture.errorSpy === null && errorAlreadyMocked) {
+        // Property is mocked but we lost the spy reference (e.g., after module reload)
+        // Retrieve the spy from the property
+        ActionFixture.errorSpy = core.error as ReturnType<typeof vi.fn>;
+        ActionFixture.setFailedSpy = core.setFailed as ReturnType<typeof vi.fn>;
+      }
       ActionFixture.errorSpy?.mockClear();
       ActionFixture.setFailedSpy?.mockClear();
     }
