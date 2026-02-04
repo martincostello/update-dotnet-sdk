@@ -6,6 +6,27 @@ import { vi } from 'vitest';
 vi.mock('@actions/core', async () => {
   const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
 
+  // Create mock spies once for the methods we want to override
+  const addRawSpy = vi.fn().mockReturnThis();
+  const writeSpy = vi.fn().mockReturnThis();
+
+  // Create a proxy for summary that intercepts only the methods we want to mock
+  // while delegating everything else to the actual summary object
+  const summaryProxy = new Proxy(actual.summary, {
+    get(target, prop) {
+      if (prop === 'addRaw') {
+        return addRawSpy;
+      }
+      if (prop === 'write') {
+        return writeSpy;
+      }
+      // For all other properties/methods, use the actual implementation
+      const value = target[prop as keyof typeof target];
+      // Bind methods to the target to preserve 'this' context
+      return typeof value === 'function' ? value.bind(target) : value;
+    },
+  });
+
   return {
     ...actual,
     setFailed: vi.fn(),
@@ -15,11 +36,7 @@ vi.mock('@actions/core', async () => {
     warning: vi.fn(),
     notice: vi.fn(),
     error: vi.fn(),
-    summary: {
-      ...actual.summary,
-      addRaw: vi.fn().mockReturnThis(),
-      write: vi.fn().mockReturnThis(),
-    },
+    summary: summaryProxy,
   };
 });
 
