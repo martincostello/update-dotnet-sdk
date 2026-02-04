@@ -2,12 +2,8 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 import { afterAll, beforeAll, describe, expect, vi, test } from 'vitest';
-
-// Don't mock @actions/core - let the real implementation work
-// We'll handle logging output in the test environment
-
-import * as core from '@actions/core';
 import { ActionFixture } from './ActionFixture';
+import * as core from '@actions/core';
 
 const timeout = 30000;
 const outputs = [

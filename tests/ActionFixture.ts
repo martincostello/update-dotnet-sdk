@@ -1,12 +1,53 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+import { vi } from 'vitest';
+
+vi.mock('@actions/core', async () => {
+  const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
+
+  return {
+    ...actual,
+    setFailed: vi.fn(),
+    isDebug: vi.fn(() => true),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warning: vi.fn(),
+    notice: vi.fn(),
+    error: vi.fn(),
+    summary: {
+      ...actual.summary,
+      addBreak: vi.fn().mockReturnThis(),
+      addEOL: vi.fn().mockReturnThis(),
+      addHeading: vi.fn().mockReturnThis(),
+      addLink: vi.fn().mockReturnThis(),
+      addList: vi.fn().mockReturnThis(),
+      addRaw: vi.fn().mockReturnThis(),
+      emptyBuffer: vi.fn().mockReturnThis(),
+      stringify: vi.fn().mockReturnThis(),
+      write: vi.fn().mockReturnThis(),
+    },
+  };
+});
+
+vi.mock('@actions/github', async () => {
+  const actual = await vi.importActual<typeof import('@actions/github')>('@actions/github');
+
+  const ContextConstructor = actual.context.constructor;
+
+  return {
+    ...actual,
+    get context() {
+      return new ContextConstructor();
+    },
+  };
+});
+
 import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
-import { vi } from 'vitest';
 import { setup } from './fixtures';
 import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
@@ -115,94 +156,56 @@ export class ActionFixture {
       'INPUT_USER-NAME': 'github-actions[bot]',
     };
 
-    for (const key in inputs) {
-      environment[`INPUT_${key.toUpperCase()}`] = inputs[key];
+    for (const key in environment) {
+      process.env[key] = environment[key as keyof typeof environment];
     }
 
-    for (const key in environment) {
-      process.env[key] = environment[key as keyof typeof inputs];
+    for (const key in inputs) {
+      process.env[`INPUT_${key.toUpperCase()}`] = inputs[key];
     }
   }
 
-  // Track if mocks have been set up globally to avoid redefinition errors
-  private static mocksInitialized = false;
-  private static errorSpy: ReturnType<typeof vi.fn> | null = null;
-  private static setFailedSpy: ReturnType<typeof vi.fn> | null = null;
-  private static originalError: typeof core.error | null = null;
-  private static originalSetFailed: typeof core.setFailed | null = null;
-
   private setupMocks(): void {
-    // Since vi.spyOn doesn't work with ES modules, we'll wrap the functions using Object.defineProperty
-    const originalAddRaw = core.summary.addRaw;
-    const self = this;
+    vi.mocked(core.setFailed).mockImplementation(() => {});
+    this.setupLogging();
+  }
 
-    // Override summary.addRaw to capture step summary (check if already defined to allow multiple test runs)
-    const currentAddRaw = Object.getOwnPropertyDescriptor(core.summary, 'addRaw');
-    if (!currentAddRaw || currentAddRaw.configurable !== false) {
-      Object.defineProperty(core.summary, 'addRaw', {
-        value: function (text: string) {
-          self.stepSummary += text;
-          return originalAddRaw.call(core.summary, text);
-        },
-        configurable: true,
-        writable: true,
-      });
-    } else {
-      // If already mocked, just update the stepSummary capture
-      const existingFn = core.summary.addRaw;
-      Object.defineProperty(core.summary, 'addRaw', {
-        value: function (text: string) {
-          self.stepSummary += text;
-          return existingFn.call(core.summary, text);
-        },
-        configurable: true,
-        writable: true,
-      });
-    }
+  private setupLogging(): void {
+    const logger = (level: string, arg: string | Error) => {
+      console.debug(`[${level}] ${arg}`);
+    };
 
-    // Create mock spies for error and setFailed only once globally
-    // This avoids "Cannot redefine property" errors in multiple tests
-    // Check both the static flag AND if the property descriptor indicates it's already been mocked
-    const errorDesc = Object.getOwnPropertyDescriptor(core, 'error');
-    const errorAlreadyMocked = errorDesc && !errorDesc.configurable;
+    vi.mocked(core.isDebug).mockImplementation(() => {
+      return true;
+    });
+    vi.mocked(core.debug).mockImplementation((arg) => {
+      logger('debug', arg);
+    });
+    vi.mocked(core.info).mockImplementation((arg) => {
+      logger('info', arg);
+    });
+    vi.mocked(core.notice).mockImplementation((arg) => {
+      logger('notice', arg);
+    });
+    vi.mocked(core.warning).mockImplementation((arg) => {
+      logger('warning', arg);
+    });
+    vi.mocked(core.error).mockImplementation((arg) => {
+      logger('error', arg);
+    });
 
-    if (!ActionFixture.mocksInitialized && !errorAlreadyMocked) {
-      // Save the original implementations
-      ActionFixture.originalError = core.error;
-      ActionFixture.originalSetFailed = core.setFailed;
-
-      // Create spies that wrap the real implementations
-      ActionFixture.errorSpy = vi.fn((...args: Parameters<typeof core.error>) => {
-        return ActionFixture.originalError!(...args);
-      });
-      ActionFixture.setFailedSpy = vi.fn((...args: Parameters<typeof core.setFailed>) => {
-        return ActionFixture.originalSetFailed!(...args);
-      });
-
-      Object.defineProperty(core, 'error', {
-        value: ActionFixture.errorSpy,
-        configurable: false, // Make it non-configurable so we can detect it's already mocked
-        writable: false,
-      });
-
-      Object.defineProperty(core, 'setFailed', {
-        value: ActionFixture.setFailedSpy,
-        configurable: false, // Make it non-configurable so we can detect it's already mocked
-        writable: false,
-      });
-
-      ActionFixture.mocksInitialized = true;
-    } else {
-      // Reset the spy call counts for each test
-      // If properties are already defined, the spies should still be in ActionFixture static variables
-      if (ActionFixture.errorSpy === null && errorAlreadyMocked) {
-        // Property is mocked but we lost the spy reference (e.g., after module reload)
-        // Retrieve the spy from the property
-        ActionFixture.errorSpy = core.error as ReturnType<typeof vi.fn>;
-        ActionFixture.setFailedSpy = core.setFailed as ReturnType<typeof vi.fn>;
-      }
-      ActionFixture.errorSpy?.mockClear();
-      ActionFixture.setFailedSpy?.mockClear();
-    }
+    vi.mocked(core.summary.addRaw).mockImplementation((text: string) => {
+      this.stepSummary += text;
+      return core.summary;
+    });
+    vi.mocked(core.summary.addHeading).mockImplementation((text: string, level?: string | number) => {
+      const headingLevel = level || 1;
+      this.stepSummary += `<h${headingLevel}>${text}</h${headingLevel}>\n\n`;
+      return core.summary;
+    });
+    vi.mocked(core.summary.addEOL).mockImplementation(() => {
+      return core.summary;
+    });
+    vi.mocked(core.summary.write).mockReturnThis();
   }
 }
