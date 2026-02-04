@@ -125,11 +125,11 @@ export class ActionFixture {
   }
 
   private setupMocks(): void {
-    // Since vi.spyOn doesn't work with ES modules, we'll wrap the summary methods
+    // Since vi.spyOn doesn't work with ES modules, we'll wrap the functions using Object.defineProperty
     const originalAddRaw = core.summary.addRaw;
     const self = this;
 
-    // Override the method on the summary object
+    // Override summary.addRaw to capture step summary
     Object.defineProperty(core.summary, 'addRaw', {
       value: function (text: string) {
         self.stepSummary += text;
@@ -139,14 +139,20 @@ export class ActionFixture {
       writable: true,
     });
 
-    // Try to spy on error and setFailed for test assertions
-    try {
-      vi.spyOn(core, 'error').mockImplementation(() => {});
-      vi.spyOn(core, 'setFailed').mockImplementation(() => {});
-    } catch (e) {
-      // If spying fails with ES modules, create mock functions
-      (core as any).error = vi.fn();
-      (core as any).setFailed = vi.fn();
-    }
+    // Create mock spies for error and setFailed so tests can check if they were called
+    const errorSpy = vi.fn();
+    const setFailedSpy = vi.fn();
+
+    Object.defineProperty(core, 'error', {
+      value: errorSpy,
+      configurable: true,
+      writable: true,
+    });
+
+    Object.defineProperty(core, 'setFailed', {
+      value: setFailedSpy,
+      configurable: true,
+      writable: true,
+    });
   }
 }
