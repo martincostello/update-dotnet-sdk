@@ -17,14 +17,7 @@ vi.mock('@actions/core', async () => {
     error: vi.fn(),
     summary: {
       ...actual.summary,
-      addBreak: vi.fn().mockReturnThis(),
-      addEOL: vi.fn().mockReturnThis(),
-      addHeading: vi.fn().mockReturnThis(),
-      addLink: vi.fn().mockReturnThis(),
-      addList: vi.fn().mockReturnThis(),
       addRaw: vi.fn().mockReturnThis(),
-      emptyBuffer: vi.fn().mockReturnThis(),
-      stringify: vi.fn().mockReturnThis(),
       write: vi.fn().mockReturnThis(),
     },
   };
@@ -196,14 +189,6 @@ export class ActionFixture {
 
     vi.mocked(core.summary.addRaw).mockImplementation((text: string) => {
       this.stepSummary += text;
-      return core.summary;
-    });
-    vi.mocked(core.summary.addHeading).mockImplementation((text: string, level?: string | number) => {
-      const headingLevel = level || 1;
-      this.stepSummary += `<h${headingLevel}>${text}</h${headingLevel}>\n\n`;
-      return core.summary;
-    });
-    vi.mocked(core.summary.addEOL).mockImplementation(() => {
       return core.summary;
     });
     vi.mocked(core.summary.write).mockReturnThis();
