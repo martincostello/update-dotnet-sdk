@@ -1,12 +1,46 @@
 // Copyright (c) Martin Costello, 2020. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+import { vi } from 'vitest';
+
+vi.mock('@actions/core', async () => {
+  const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
+
+  const summary = Object.create(actual.summary);
+  summary.addRaw = vi.fn().mockReturnThis();
+  summary.write = vi.fn().mockReturnThis();
+
+  return {
+    ...actual,
+    setFailed: vi.fn(),
+    isDebug: vi.fn(() => true),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warning: vi.fn(),
+    notice: vi.fn(),
+    error: vi.fn(),
+    summary: summary,
+  };
+});
+
+vi.mock('@actions/github', async () => {
+  const actual = await vi.importActual<typeof import('@actions/github')>('@actions/github');
+
+  const ContextConstructor = actual.context.constructor;
+
+  return {
+    ...actual,
+    get context() {
+      return new ContextConstructor();
+    },
+  };
+});
+
 import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
-import { vi } from 'vitest';
 import { setup } from './fixtures';
 import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
@@ -115,17 +149,17 @@ export class ActionFixture {
       'INPUT_USER-NAME': 'github-actions[bot]',
     };
 
-    for (const key in inputs) {
-      environment[`INPUT_${key.toUpperCase()}`] = inputs[key];
+    for (const key in environment) {
+      process.env[key] = environment[key as keyof typeof environment];
     }
 
-    for (const key in environment) {
-      process.env[key] = environment[key as keyof typeof inputs];
+    for (const key in inputs) {
+      process.env[`INPUT_${key.toUpperCase()}`] = inputs[key];
     }
   }
 
   private setupMocks(): void {
-    vi.spyOn(core, 'setFailed').mockImplementation(() => {});
+    vi.mocked(core.setFailed).mockImplementation(() => {});
     this.setupLogging();
   }
 
@@ -134,26 +168,28 @@ export class ActionFixture {
       console.debug(`[${level}] ${arg}`);
     };
 
-    vi.spyOn(core, 'debug').mockImplementation((arg) => {
+    vi.mocked(core.isDebug).mockImplementation(() => {
+      return true;
+    });
+    vi.mocked(core.debug).mockImplementation((arg) => {
       logger('debug', arg);
     });
-    vi.spyOn(core, 'info').mockImplementation((arg) => {
+    vi.mocked(core.info).mockImplementation((arg) => {
       logger('info', arg);
     });
-    vi.spyOn(core, 'notice').mockImplementation((arg) => {
+    vi.mocked(core.notice).mockImplementation((arg) => {
       logger('notice', arg);
     });
-    vi.spyOn(core, 'warning').mockImplementation((arg) => {
+    vi.mocked(core.warning).mockImplementation((arg) => {
       logger('warning', arg);
     });
-    vi.spyOn(core, 'error').mockImplementation((arg) => {
+    vi.mocked(core.error).mockImplementation((arg) => {
       logger('error', arg);
     });
 
-    vi.spyOn(core.summary, 'addRaw').mockImplementation((text: string) => {
+    vi.mocked(core.summary.addRaw).mockImplementation((text: string) => {
       this.stepSummary += text;
       return core.summary;
     });
-    vi.spyOn(core.summary, 'write').mockReturnThis();
   }
 }

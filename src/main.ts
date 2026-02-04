@@ -4,10 +4,10 @@
 import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
+import { context } from '@actions/github';
 
 import { DotNetSdkUpdater } from './DotNetSdkUpdater';
 import { UpdateOptions } from './UpdateOptions';
-import { Context } from '@actions/github/lib/context';
 
 export async function run(): Promise<void> {
   try {
@@ -23,8 +23,6 @@ export async function run(): Promise<void> {
       core.setFailed(`The global.json file '${globalJsonPath}' cannot be found.`);
       return;
     }
-
-    const context = new Context();
 
     const options: UpdateOptions = {
       accessToken,
