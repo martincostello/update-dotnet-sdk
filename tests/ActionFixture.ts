@@ -129,30 +129,50 @@ export class ActionFixture {
     const originalAddRaw = core.summary.addRaw;
     const self = this;
 
-    // Override summary.addRaw to capture step summary
-    Object.defineProperty(core.summary, 'addRaw', {
-      value: function (text: string) {
-        self.stepSummary += text;
-        return originalAddRaw.call(core.summary, text);
-      },
-      configurable: true,
-      writable: true,
-    });
+    // Override summary.addRaw to capture step summary (check if already defined to allow multiple test runs)
+    const currentAddRaw = Object.getOwnPropertyDescriptor(core.summary, 'addRaw');
+    if (!currentAddRaw || currentAddRaw.configurable !== false) {
+      Object.defineProperty(core.summary, 'addRaw', {
+        value: function (text: string) {
+          self.stepSummary += text;
+          return originalAddRaw.call(core.summary, text);
+        },
+        configurable: true,
+        writable: true,
+      });
+    } else {
+      // If already mocked, just update the stepSummary capture
+      const existingFn = core.summary.addRaw;
+      Object.defineProperty(core.summary, 'addRaw', {
+        value: function (text: string) {
+          self.stepSummary += text;
+          return existingFn.call(core.summary, text);
+        },
+        configurable: true,
+        writable: true,
+      });
+    }
 
     // Create mock spies for error and setFailed so tests can check if they were called
-    const errorSpy = vi.fn();
-    const setFailedSpy = vi.fn();
+    // Only define if not already defined to avoid "Cannot redefine property" errors in multiple tests
+    const errorDesc = Object.getOwnPropertyDescriptor(core, 'error');
+    if (!errorDesc || typeof errorDesc.value !== 'function' || !('mock' in errorDesc.value)) {
+      const errorSpy = vi.fn();
+      Object.defineProperty(core, 'error', {
+        value: errorSpy,
+        configurable: true,
+        writable: true,
+      });
+    }
 
-    Object.defineProperty(core, 'error', {
-      value: errorSpy,
-      configurable: true,
-      writable: true,
-    });
-
-    Object.defineProperty(core, 'setFailed', {
-      value: setFailedSpy,
-      configurable: true,
-      writable: true,
-    });
+    const setFailedDesc = Object.getOwnPropertyDescriptor(core, 'setFailed');
+    if (!setFailedDesc || typeof setFailedDesc.value !== 'function' || !('mock' in setFailedDesc.value)) {
+      const setFailedSpy = vi.fn();
+      Object.defineProperty(core, 'setFailed', {
+        value: setFailedSpy,
+        configurable: true,
+        writable: true,
+      });
+    }
   }
 }
