@@ -126,6 +126,10 @@ export class ActionFixture {
 
   // Track if mocks have been set up globally to avoid redefinition errors
   private static mocksInitialized = false;
+  private static errorSpy: ReturnType<typeof vi.fn> | null = null;
+  private static setFailedSpy: ReturnType<typeof vi.fn> | null = null;
+  private static originalError: typeof core.error | null = null;
+  private static originalSetFailed: typeof core.setFailed | null = null;
 
   private setupMocks(): void {
     // Since vi.spyOn doesn't work with ES modules, we'll wrap the functions using Object.defineProperty
@@ -158,27 +162,36 @@ export class ActionFixture {
 
     // Create mock spies for error and setFailed only once globally
     // This avoids "Cannot redefine property" errors in multiple tests
-    // Check both the static flag AND if the property descriptor indicates it's already been mocked
-    const errorDesc = Object.getOwnPropertyDescriptor(core, 'error');
-    const errorAlreadyMocked = errorDesc && !errorDesc.configurable;
+    if (!ActionFixture.mocksInitialized) {
+      // Save the original implementations
+      ActionFixture.originalError = core.error;
+      ActionFixture.originalSetFailed = core.setFailed;
 
-    if (!ActionFixture.mocksInitialized && !errorAlreadyMocked) {
-      const errorSpy = vi.fn();
-      const setFailedSpy = vi.fn();
+      // Create spies that wrap the real implementations
+      ActionFixture.errorSpy = vi.fn((...args: Parameters<typeof core.error>) => {
+        return ActionFixture.originalError!(...args);
+      });
+      ActionFixture.setFailedSpy = vi.fn((...args: Parameters<typeof core.setFailed>) => {
+        return ActionFixture.originalSetFailed!(...args);
+      });
 
       Object.defineProperty(core, 'error', {
-        value: errorSpy,
+        value: ActionFixture.errorSpy,
         configurable: false, // Make it non-configurable so we can detect it's already mocked
         writable: false,
       });
 
       Object.defineProperty(core, 'setFailed', {
-        value: setFailedSpy,
+        value: ActionFixture.setFailedSpy,
         configurable: false, // Make it non-configurable so we can detect it's already mocked
         writable: false,
       });
 
       ActionFixture.mocksInitialized = true;
+    } else {
+      // Reset the spy call counts for each test
+      ActionFixture.errorSpy?.mockClear();
+      ActionFixture.setFailedSpy?.mockClear();
     }
   }
 }
