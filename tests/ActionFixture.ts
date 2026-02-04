@@ -6,9 +6,7 @@ import { vi } from 'vitest';
 vi.mock('@actions/core', async () => {
   const actual = await vi.importActual<typeof import('@actions/core')>('@actions/core');
 
-  // Create mock spies once for the methods we want to override
   const addRawSpy = vi.fn().mockReturnThis();
-  const writeSpy = vi.fn().mockReturnThis();
 
   // Create a proxy for summary that intercepts only the methods we want to mock
   // while delegating everything else to the actual summary object
@@ -18,11 +16,9 @@ vi.mock('@actions/core', async () => {
         return addRawSpy;
       }
       if (prop === 'write') {
-        return writeSpy;
+        return vi.fn().mockReturnThis();
       }
-      // For all other properties/methods, use the actual implementation
       const value = target[prop as keyof typeof target];
-      // Bind methods to the target to preserve 'this' context
       return typeof value === 'function' ? value.bind(target) : value;
     },
   });
@@ -208,6 +204,5 @@ export class ActionFixture {
       this.stepSummary += text;
       return core.summary;
     });
-    vi.mocked(core.summary.write).mockReturnThis();
   }
 }
