@@ -124,6 +124,9 @@ export class ActionFixture {
     }
   }
 
+  // Track if mocks have been set up globally to avoid redefinition errors
+  private static mocksInitialized = false;
+
   private setupMocks(): void {
     // Since vi.spyOn doesn't work with ES modules, we'll wrap the functions using Object.defineProperty
     const originalAddRaw = core.summary.addRaw;
@@ -153,26 +156,25 @@ export class ActionFixture {
       });
     }
 
-    // Create mock spies for error and setFailed so tests can check if they were called
-    // Only define if not already defined to avoid "Cannot redefine property" errors in multiple tests
-    const errorDesc = Object.getOwnPropertyDescriptor(core, 'error');
-    if (!errorDesc || typeof errorDesc.value !== 'function' || !('mock' in errorDesc.value)) {
+    // Create mock spies for error and setFailed only once globally
+    // This avoids "Cannot redefine property" errors in multiple tests
+    if (!ActionFixture.mocksInitialized) {
       const errorSpy = vi.fn();
+      const setFailedSpy = vi.fn();
+
       Object.defineProperty(core, 'error', {
         value: errorSpy,
         configurable: true,
         writable: true,
       });
-    }
 
-    const setFailedDesc = Object.getOwnPropertyDescriptor(core, 'setFailed');
-    if (!setFailedDesc || typeof setFailedDesc.value !== 'function' || !('mock' in setFailedDesc.value)) {
-      const setFailedSpy = vi.fn();
       Object.defineProperty(core, 'setFailed', {
         value: setFailedSpy,
         configurable: true,
         writable: true,
       });
+
+      ActionFixture.mocksInitialized = true;
     }
   }
 }
