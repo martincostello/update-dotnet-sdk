@@ -1,3 +1,15 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update dependency versions in GitHub Actions workflow file inputs",
+      "managerFilePatterns": [
+        "/(^|/)\\.github/workflows/.*\\.yml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)\\s .+?default:\\s?'(?<currentValue>.+?)'\\s"
+      ]
+    }
+  ]
 }
