@@ -88,7 +88,7 @@ on:
         required: false
         type: string
         # renovate: datasource=nuget depName=dotnet-outdated-tool packageName=dotnet-outdated-tool
-        default: '4.6.8'
+        default: '4.7.0'
       include-nuget-packages:
         description: 'A comma-separated list of NuGet package IDs (or substrings) to update, if update-nuget-packages is true.'
         required: false
