@@ -508,7 +508,7 @@ export class DotNetSdkUpdater {
 
     core.debug(`Found ${result.length} open pull request(s) targeting ${base} in ${owner}/${repo}.`);
 
-    type PullRequest = {
+    type PullRequestLite = {
       number: number;
       title: string;
       head: {
@@ -519,7 +519,7 @@ export class DotNetSdkUpdater {
       };
     };
 
-    let pulls: PullRequest[] = result.map((pull) => {
+    let pulls: PullRequestLite[] = result.map((pull) => {
       return {
         number: pull.number,
         title: pull.title,
