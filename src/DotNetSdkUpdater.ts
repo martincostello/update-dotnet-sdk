@@ -595,7 +595,7 @@ export class DotNetSdkUpdater {
 
   private static async httpGet(url: string): Promise<Response> {
     return await fetch(url, {
-      headers: new Headers([['User-Agent', 'martincostello/update-dotnet-sdk']]),
+      headers: { 'User-Agent': 'martincostello/update-dotnet-sdk' },
     });
   }
 
