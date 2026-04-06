@@ -377,6 +377,7 @@ export class DotNetSdkUpdater {
 
     const octokit = github.getOctokit(this.options.accessToken, {
       baseUrl: this.options.apiUrl,
+      request: { fetch },
     });
 
     const [owner, repo] = this.options.repo.split('/');
