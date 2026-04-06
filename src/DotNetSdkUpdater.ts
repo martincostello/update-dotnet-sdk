@@ -377,6 +377,7 @@ export class DotNetSdkUpdater {
 
     const octokit = github.getOctokit(this.options.accessToken, {
       baseUrl: this.options.apiUrl,
+      request: { fetch },
     });
 
     const [owner, repo] = this.options.repo.split('/');
@@ -595,7 +596,7 @@ export class DotNetSdkUpdater {
 
   private static async httpGet(url: string): Promise<Response> {
     return await fetch(url, {
-      headers: new Headers([['User-Agent', 'martincostello/update-dotnet-sdk']]),
+      headers: { 'User-Agent': 'martincostello/update-dotnet-sdk' },
     });
   }
 
