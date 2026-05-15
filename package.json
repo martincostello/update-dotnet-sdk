@@ -60,7 +60,7 @@
     "eslint": "9.39.4",
     "eslint-plugin-github": "6.0.0",
     "eslint-plugin-prettier": "5.5.5",
-    "fast-check": "4.7.0",
+    "fast-check": "4.8.0",
     "globals": "17.6.0",
     "prettier": "3.8.3",
     "typescript": "6.0.3",
