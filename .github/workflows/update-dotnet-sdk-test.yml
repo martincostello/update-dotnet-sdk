@@ -15,8 +15,10 @@ jobs:
       global-json-file: './_global.json'
       labels: dependencies
       update-nuget-packages: false
+      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
+      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
     secrets:
-      repo-token: ${{ secrets.GITHUB_TOKEN }}
+      repo-token: ${{ secrets.COSTELLOBOT_TOKEN }}
 
   print-outputs:
     name: Print outcome
