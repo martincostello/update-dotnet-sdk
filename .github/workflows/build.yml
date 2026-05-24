@@ -17,8 +17,8 @@ permissions: {}
 
 jobs:
   build:
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os-name }}
+    runs-on: ${{ matrix.runner }}
 
     permissions:
       attestations: write
@@ -29,12 +29,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            os-name: macos
-          - os: ubuntu-latest
-            os-name: linux
-          - os: windows-latest
-            os-name: windows
+          - os-name: macos
+            # renovate: datasource=github-runners depType=github-runner
+            runner: macos-26
+          - os-name: linux
+            # renovate: datasource=github-runners depType=github-runner
+            runner: ubuntu-24.04
+          - os-name: windows
+            # renovate: datasource=github-runners depType=github-runner
+            runner: windows-2025
 
     steps:
 
@@ -80,7 +83,7 @@ jobs:
         subject-path: ./dist/**/*.js
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       actions: read
