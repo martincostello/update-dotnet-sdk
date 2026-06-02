@@ -8,6 +8,9 @@ permissions: {}
 jobs:
   update-sdk:
     uses: ./.github/workflows/update-dotnet-sdk.yml
+    permissions:
+      contents: write
+      pull-requests: write
     with:
       global-json-file: './_global.json'
       labels: dependencies
