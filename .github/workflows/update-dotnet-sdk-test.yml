@@ -14,10 +14,8 @@ jobs:
       # renovate: datasource=github-runners depType=github-runner
       runs-on: ubuntu-24.04
       update-nuget-packages: false
-      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
-      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
     secrets:
-      repo-token: ${{ secrets.COSTELLOBOT_TOKEN }}
+      repo-token: ${{ secrets.GITHUB_TOKEN }}
 
   print-outputs:
     name: Print outcome

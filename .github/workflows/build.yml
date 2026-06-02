@@ -64,7 +64,6 @@ jobs:
       name: Upload coverage to Codecov
       with:
         flags: ${{ matrix.os-name }}
-        token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Generate SBOM
       uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
