@@ -14,10 +14,19 @@ permissions: {}
 jobs:
   release:
     runs-on: ubuntu-24.04
+    if: github.event.repository.fork == false
 
     concurrency:
       group: ${{ github.workflow }}
       cancel-in-progress: false
+
+    environment:
+      name: release
+      deployment: false
+
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
 
@@ -25,9 +34,8 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           filter: 'tree:0'
-          persist-credentials: true # zizmor: ignore[artipacked] Needed to push commits
+          persist-credentials: false
           show-progress: false
-          token: ${{ secrets.COSTELLOBOT_TOKEN }}
 
       - name: Get version
         id: get-version
@@ -38,6 +46,13 @@ jobs:
           $version = $json.version
           "version=${version}" >> $env:GITHUB_OUTPUT
 
+      - name: Get GitHub token
+        id: get-github-token
+        # zizmor: ignore[ref-version-mismatch] False positive
+        uses: martincostello/github-automation/actions/get-github-token@16711f5c6f94e59ee14b83697acb675be1528856 # get-github-token/v4.1.0
+        with:
+          profile-name: release
+
       - name: Create release
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
@@ -45,7 +60,7 @@ jobs:
           DRAFT: ${{ inputs.publish != true }}
           VERSION: ${{ steps.get-version.outputs.version }}
         with:
-          github-token: ${{ secrets.COSTELLOBOT_TOKEN }}
+          github-token: ${{ steps.get-github-token.outputs.token }}
           script: |
             const { repo, owner } = context.repo;
             const draft = process.env.DRAFT === 'true';
