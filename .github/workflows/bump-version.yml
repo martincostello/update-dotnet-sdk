@@ -141,7 +141,7 @@ jobs:
               repo,
               head: process.env.HEAD_BRANCH,
               base: process.env.BASE_BRANCH,
-              draft: true,
+              draft: false,
               body: [
                 `Bump version to \`${nextVersion}\` for the next release.`,
                 '',
