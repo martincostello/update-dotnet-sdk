@@ -140,6 +140,7 @@ jobs:
           $edits = @()
 
           foreach ($filePath in $editedFiles) {
+            $fileFullPath = Join-Path ${env:GITHUB_WORKSPACE} $filePath
             $currentFile = gh api "repos/${env:GITHUB_REPOSITORY}/contents/${filePath}?ref=${baseSha}" | ConvertFrom-Json
             $currentContent = $currentFile.content.Replace("`r", "").Replace("`n", "")
             $localContent = [System.Convert]::ToBase64String(
