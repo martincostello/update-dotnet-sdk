@@ -9,6 +9,7 @@ const timeout = 30000;
 const outputs = [
   ['aspnetcore-version'],
   ['branch-name'],
+  ['commit-sha'],
   ['pull-request-html-url'],
   ['pull-request-number'],
   ['pull-requests-closed'],

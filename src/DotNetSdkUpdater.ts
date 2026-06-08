@@ -340,13 +340,13 @@ export class DotNetSdkUpdater {
     }
 
     if (updateAvailable) {
-      const baseBranch = await this.applySdkUpdate(globalJsonRaw, update);
+      const updateResult = await this.applySdkUpdate(globalJsonRaw, update);
 
-      if (baseBranch) {
-        const pullRequest = await this.createPullRequest(baseBranch, update);
+      if (updateResult?.base) {
+        const pullRequest = await this.createPullRequest(updateResult.base, update);
 
         result.branchName = pullRequest.branch;
-        result.commitSha = pullRequest.commit;
+        result.commitSha = updateResult.commit;
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
         result.supersedes = pullRequest.supersedes;
@@ -823,7 +823,7 @@ export class DotNetSdkUpdater {
     }));
   }
 
-  private async applySdkUpdate(globalJson: string, versions: SdkVersions): Promise<string | undefined> {
+  private async applySdkUpdate(globalJson: string, versions: SdkVersions): Promise<{ base: string; commit: string } | undefined> {
     core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}...`);
 
     // Get the base branch and commit to use to create the branch and Pull Request
@@ -900,7 +900,7 @@ export class DotNetSdkUpdater {
     await this.execGit(['fetch', 'origin', this.options.branch], true);
     await this.execGit(['checkout', '-B', this.options.branch, 'FETCH_HEAD'], true);
 
-    return base;
+    return { base, commit: commitOid };
   }
 
   private async branchExists(octokit: Octokit, owner: string, repo: string, branch: string): Promise<boolean> {

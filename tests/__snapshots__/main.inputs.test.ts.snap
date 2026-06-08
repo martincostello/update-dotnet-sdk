@@ -22,6 +22,8 @@ exports[`update-dotnet-sdk > when close-superseded is false > running the action
 
 exports[`update-dotnet-sdk > when close-superseded is false > running the action > the branch-name output is correct 1`] = `"update-dotnet-sdk-6.0.413"`;
 
+exports[`update-dotnet-sdk > when close-superseded is false > running the action > the commit-sha output is correct 1`] = `"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"`;
+
 exports[`update-dotnet-sdk > when close-superseded is false > running the action > the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
 exports[`update-dotnet-sdk > when close-superseded is false > running the action > the pull-request-number output is correct 1`] = `"42"`;
@@ -61,6 +63,8 @@ exports[`update-dotnet-sdk > when close-superseded is true > running the action 
 exports[`update-dotnet-sdk > when close-superseded is true > running the action > the aspnetcore-version output is correct 1`] = `"6.0.21"`;
 
 exports[`update-dotnet-sdk > when close-superseded is true > running the action > the branch-name output is correct 1`] = `"update-dotnet-sdk-6.0.413"`;
+
+exports[`update-dotnet-sdk > when close-superseded is true > running the action > the commit-sha output is correct 1`] = `"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"`;
 
 exports[`update-dotnet-sdk > when close-superseded is true > running the action > the pull-request-html-url output is correct 1`] = `"https://github.local/martincostello/update-dotnet-sdk/pull/42"`;
 
