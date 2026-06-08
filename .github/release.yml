@@ -1,8 +1,9 @@
 changelog:
   exclude:
     authors:
-      - dependabot[bot]
       - costellobot
       - costellobot[bot]
+      - dependabot[bot]
       - github-actions[bot]
       - renovate[bot]
+      - update-dotnet-sdk[bot]
