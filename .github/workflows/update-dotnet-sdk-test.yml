@@ -17,8 +17,11 @@ jobs:
       # renovate: datasource=github-runners depType=github-runner
       runs-on: ubuntu-24.04
       update-nuget-packages: false
+      user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
+      user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
     secrets:
-      repo-token: ${{ secrets.GITHUB_TOKEN }}
+      application-id: ${{ secrets.UPDATER_APPLICATION_ID }}
+      application-private-key: ${{ secrets.UPDATER_APPLICATION_PRIVATE_KEY }}
 
   print-outputs:
     name: Print outcome
