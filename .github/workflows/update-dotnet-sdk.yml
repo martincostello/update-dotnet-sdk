@@ -567,7 +567,7 @@ jobs:
         SDK_SHA: ${{ steps.update-dotnet-sdk.outputs.commit-sha }}
       shell: pwsh
       run: |
-        if ([string]::IsNullOrEmpty(${env:PACKAGES_SHA})) {
+        if (-Not [string]::IsNullOrEmpty(${env:PACKAGES_SHA})) {
           "commit-sha=${env:PACKAGES_SHA}" >> ${env:GITHUB_OUTPUT}
         } else {
           "commit-sha=${env:SDK_SHA}" >> ${env:GITHUB_OUTPUT}
