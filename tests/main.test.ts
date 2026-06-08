@@ -65,16 +65,16 @@ describe('update-dotnet-sdk', () => {
           expect(core.setFailed).toHaveBeenCalledTimes(0);
         });
 
-        test('updates the SDK version in global.json', async () => {
-          expect(await fixture.sdkVersion()).toMatchSnapshot();
+        test('updates the SDK version in global.json', () => {
+          expect(fixture.committedSdkVersion()).toMatchSnapshot();
         });
 
-        test('generates the expected Git commit history', async () => {
-          expect(await fixture.commitHistory()).toMatchSnapshot();
+        test('generates the expected commit message', () => {
+          expect(fixture.commitMessage()).toMatchSnapshot();
         });
 
-        test('generates the expected Git diff', async () => {
-          expect(await fixture.diff()).toMatchSnapshot();
+        test('commits the expected global.json content', () => {
+          expect(fixture.committedContent()).toMatchSnapshot();
         });
 
         test('generates the expected GitHub step summary', async () => {
@@ -202,12 +202,12 @@ describe('update-dotnet-sdk', () => {
         expect(core.setFailed).toHaveBeenCalledTimes(0);
       });
 
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      test('updates the SDK version in global.json', () => {
+        expect(fixture.committedSdkVersion()).toMatchSnapshot();
       });
 
-      test('generates the expected Git commit history', async () => {
-        expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      test('generates the expected commit message', () => {
+        expect(fixture.commitMessage()).toMatchSnapshot();
       });
 
       test('generates the expected GitHub step summary', async () => {
@@ -247,14 +247,14 @@ describe('update-dotnet-sdk', () => {
         expect(core.setFailed).toHaveBeenCalledTimes(0);
       });
 
-      test('updates the global.json file correctly', async () => {
-        const content = await fixture.sdkContent();
+      test('updates the global.json file correctly', () => {
+        const content = fixture.committedContent();
         expect(content.includes(lineEndings)).toBe(true);
         expect(content.endsWith(suffix)).toBe(true);
       });
 
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      test('updates the SDK version in global.json', () => {
+        expect(fixture.committedSdkVersion()).toMatchSnapshot();
       });
     });
   });
@@ -318,20 +318,20 @@ describe('update-dotnet-sdk', () => {
         expect(core.setFailed).toHaveBeenCalledTimes(0);
       });
 
-      test('updates the global.json file correctly', async () => {
-        const content = await fixture.sdkContent();
+      test('updates the global.json file correctly', () => {
+        const content = fixture.committedContent();
         const globalJson = JSON.parse(content);
         expect(globalJson.sdk.version).toBe('9.0.100-alpha.1.24066.6');
         expect(globalJson.tools.dotnet).toBe('9.0.100-alpha.1.24066.6');
         expect(content).toMatchSnapshot();
       });
 
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      test('updates the SDK version in global.json', () => {
+        expect(fixture.committedSdkVersion()).toMatchSnapshot();
       });
 
-      test('generates the expected Git commit history', async () => {
-        expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      test('generates the expected commit message', () => {
+        expect(fixture.commitMessage()).toMatchSnapshot();
       });
 
       test('generates the expected GitHub step summary', async () => {

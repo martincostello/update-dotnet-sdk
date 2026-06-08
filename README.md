@@ -396,7 +396,6 @@ For more information about daily builds, see the [.NET repository][dotnet-dotnet
 | `security-only`         | If true, .NET SDK updates which do not contain security fixes are ignored.                          | `false`                                           |
 | `user-email`            | The optional email address to use for the Git commit.                                               | `github-actions[bot]@users.noreply.github.com`    |
 | `user-name`             | The optional user name to use for the Git commit.                                                   | `github-actions[bot]`                             |
-| `dry-run`               | If true, the action will not push changes to GitHub.                                                | `false`                                           |
 
 ## Outputs
 

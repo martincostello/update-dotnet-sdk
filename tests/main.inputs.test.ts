@@ -27,7 +27,6 @@ describe('update-dotnet-sdk', () => {
   describe.each([
     ['close-superseded', 'false', 'close-superseded-false'],
     ['close-superseded', 'true', 'close-superseded-true'],
-    ['dry-run', 'true', 'dry-run'],
   ])('when %s is %s', (name: string, value: string, scenario: string) => {
     let fixture: ActionFixture;
 
@@ -52,12 +51,12 @@ describe('update-dotnet-sdk', () => {
         expect(core.setFailed).toHaveBeenCalledTimes(0);
       });
 
-      test('updates the SDK version in global.json', async () => {
-        expect(await fixture.sdkVersion()).toMatchSnapshot();
+      test('updates the SDK version in global.json', () => {
+        expect(fixture.committedSdkVersion()).toMatchSnapshot();
       });
 
-      test('generates the expected Git commit history', async () => {
-        expect(await fixture.commitHistory(1)).toMatchSnapshot();
+      test('generates the expected commit message', () => {
+        expect(fixture.commitMessage()).toMatchSnapshot();
       });
 
       test.each(outputs)('the %s output is correct', (name: string) => {

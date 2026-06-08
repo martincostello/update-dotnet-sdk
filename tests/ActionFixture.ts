@@ -41,7 +41,7 @@ import * as fs from 'fs';
 import * as io from '@actions/io';
 import * as os from 'os';
 import * as path from 'path';
-import { setup } from './fixtures';
+import { CapturedCommit, getCapturedCommit, setup, setupCommit } from './fixtures';
 import { createEmptyFile, createGitRepo, createTemporaryDirectory, execGit } from './TestHelpers';
 import { run } from '../src/main';
 
@@ -80,6 +80,7 @@ export class ActionFixture {
 
     this.setupEnvironment(inputs);
     this.setupMocks();
+    setupCommit();
 
     if (fixtureName) {
       await setup(fixtureName);
@@ -116,10 +117,6 @@ export class ActionFixture {
     return history.split('\n');
   }
 
-  async diff(count: number = 1): Promise<string | string[]> {
-    return await execGit(['diff', `HEAD~${count}`, 'HEAD'], this.tempDir);
-  }
-
   async sdkContent(): Promise<string> {
     return await fs.promises.readFile(this.globalJsonPath, { encoding: 'utf8' });
   }
@@ -127,6 +124,29 @@ export class ActionFixture {
   async sdkVersion(): Promise<string> {
     const globalJson = JSON.parse(await this.sdkContent());
     return globalJson.sdk.version;
+  }
+
+  get commit(): CapturedCommit | undefined {
+    return getCapturedCommit();
+  }
+
+  // The content of the global.json file as committed to GitHub via the API.
+  // The file is no longer written to disk by the action, so this is the source
+  // of truth for the update that was applied.
+  committedContent(): string {
+    const commit = getCapturedCommit();
+    if (!commit) {
+      throw new Error('No commit was created.');
+    }
+    return commit.additions[0].content;
+  }
+
+  committedSdkVersion(): string {
+    return JSON.parse(this.committedContent()).sdk.version;
+  }
+
+  commitMessage(): string[] {
+    return getCapturedCommit()?.message.split('\n') ?? [];
   }
 
   private setupEnvironment(inputs: Record<string, string>): void {

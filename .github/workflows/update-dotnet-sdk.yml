@@ -114,11 +114,6 @@ on:
         required: false
         type: string
         default: 'github-actions[bot]'
-      dry-run:
-        description: 'If true, the workflow will not push changes to GitHub.'
-        required: false
-        type: boolean
-        default: false
       runs-on:
         description: 'The GitHub Actions runner to use.'
         required: false
@@ -264,7 +259,6 @@ jobs:
         close-superseded: ${{ inputs.close-superseded }}
         commit-message: ${{ inputs.commit-message }}
         commit-message-prefix: ${{ inputs.commit-message-prefix }}
-        dry-run: ${{ inputs.dry-run }}
         generate-step-summary: ${{ inputs.generate-step-summary }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
@@ -289,6 +283,7 @@ jobs:
       if: inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
       shell: pwsh
       env:
+        BRANCH_NAME: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
         COMMIT_MESSAGE_PREFIX: ${{ inputs.commit-message-prefix }}
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_NOLOGO: true
@@ -298,10 +293,12 @@ jobs:
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
         EXCLUDE_NUGET_PACKAGES: ${{ inputs.exclude-nuget-packages }}
         INCLUDE_NUGET_PACKAGES: ${{ inputs.include-nuget-packages }}
+        GH_TOKEN: ${{ steps.assign-token.outputs.access-token }}
         GIT_AUTHOR_EMAIL: ${{ inputs.user-email }}
         GIT_AUTHOR_NAME: ${{ inputs.user-name }}
         NUGET_XMLDOC_MODE: skip
         PRERELEASE_LABEL: ${{ inputs.nuget-packages-prerelease-label || '' }}
+        REPO_NAME: ${{ inputs.repo || github.repository }}
         UPDATED_SDK_VERSION: ${{ steps.update-dotnet-sdk.outputs.sdk-version }}
       run: |
         $ErrorActionPreference = "Stop"
@@ -467,17 +464,91 @@ jobs:
           $commitMessageLines += "..."
           $commitMessageLines += ""
           $commitMessageLines += ""
+          $commitMessageLines += "Signed-off-by: ${env:GIT_AUTHOR_NAME} <${env:GIT_AUTHOR_EMAIL}>"
 
-          $commitMessage = $commitMessageLines -join "`n"
+          $headline = $commitMessageLines[0]
+          $body = (($commitMessageLines | Select-Object -Skip 1) -join "`n").Trim()
 
-          git config user.email ${env:GIT_AUTHOR_EMAIL}
-          git config user.name ${env:GIT_AUTHOR_NAME}
+          if ([string]::IsNullOrEmpty(${env:BRANCH_NAME})) {
+            Write-Output "::warning::No branch is available to commit the NuGet package update(s) to."
+          } else {
+            # The .NET SDK update was already committed to the branch by the action and the local
+            # working tree was synced to that commit, so HEAD is the current head of the branch.
+            $baseSha = (git rev-parse HEAD).Trim()
 
-          git add .
-          git commit -m $commitMessage -s
-          git push
+            # Determine the files that were changed by updating the NuGet packages.
+            $editedFiles = @()
+            git diff --name-only $baseSha | ForEach-Object {
+              if (-Not [string]::IsNullOrEmpty($_)) {
+                $editedFiles += $_
+              }
+            }
 
-          Write-Output "Pushed update to $($dependencies.Count) NuGet package(s)."
+            $edits = @()
+
+            foreach ($filePath in $editedFiles) {
+              $fileFullPath = Join-Path ${env:GITHUB_WORKSPACE} $filePath
+              $localContent = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes($fileFullPath))
+              $currentContent = ""
+              try {
+                $currentFile = gh api "repos/${env:REPO_NAME}/contents/${filePath}?ref=${baseSha}" | ConvertFrom-Json
+                $currentContent = $currentFile.content.Replace("`r", "").Replace("`n", "")
+              } catch {
+                # The file does not yet exist on the branch
+              }
+
+              if ($currentContent -ne $localContent) {
+                $edits += @{
+                  path = $filePath
+                  contents = $localContent
+                }
+              }
+            }
+
+            if ($edits.Count -lt 1) {
+              Write-Output "There are no .NET NuGet package file changes to commit."
+            } else {
+              $query = 'mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }'
+
+              $payload = @{
+                query = $query
+                variables = @{
+                  input = @{
+                    branch = @{
+                      repositoryNameWithOwner = ${env:REPO_NAME}
+                      branchName = ${env:BRANCH_NAME}
+                    }
+                    expectedHeadOid = $baseSha
+                    message = @{
+                      headline = $headline
+                      body = $body
+                    }
+                    fileChanges = @{
+                      additions = @($edits)
+                    }
+                  }
+                }
+              } | ConvertTo-Json -Depth 20 -Compress
+
+              $headers = @{
+                Authorization = "Bearer ${env:GH_TOKEN}"
+                Accept = "application/vnd.github+json"
+              }
+
+              $result = Invoke-RestMethod `
+                -Method POST `
+                -Uri ${env:GITHUB_GRAPHQL_URL} `
+                -Headers $headers `
+                -ContentType "application/json" `
+                -Body $payload
+
+              if ($null -ne $result.errors) {
+                throw ($result.errors | ConvertTo-Json -Depth 20 -Compress)
+              }
+
+              Write-Output "Committed update to $($dependencies.Count) NuGet package(s)."
+            }
+          }
         }
         else {
           Write-Output "There are no .NET NuGet packages to update."

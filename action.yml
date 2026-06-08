@@ -64,10 +64,6 @@ inputs:
     description: 'The optional user name to use for the Git commit.'
     required: false
     default: 'github-actions[bot]'
-  dry-run:
-    description: 'If true, the action will not push changes to GitHub.'
-    required: false
-    default: 'false'
 outputs:
   aspnetcore-version:
     description: 'The version of the ASP.NET Core runtime associated with the updated .NET SDK.'

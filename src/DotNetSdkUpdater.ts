@@ -370,15 +370,19 @@ export class DotNetSdkUpdater {
     return result;
   }
 
+  private getOctokit(): Octokit {
+    return github.getOctokit(this.options.accessToken, {
+      baseUrl: this.options.apiUrl,
+      request: { fetch },
+    });
+  }
+
   private async createPullRequest(base: string, update: SdkVersions): Promise<PullRequest> {
     const title = `Update .NET SDK to ${update.latest.sdkVersion}`;
     const isGitHubEnterprise = this.options.serverUrl !== 'https://github.com';
     const body = DotNetSdkUpdater.generatePullRequestBody(update, this.options, isGitHubEnterprise);
 
-    const octokit = github.getOctokit(this.options.accessToken, {
-      baseUrl: this.options.apiUrl,
-      request: { fetch },
-    });
+    const octokit = this.getOctokit();
 
     const [owner, repo] = this.options.repo.split('/');
 
@@ -392,16 +396,6 @@ export class DotNetSdkUpdater {
       maintainer_can_modify: true,
       draft: false,
     };
-
-    if (this.options.dryRun) {
-      core.info(`Skipped creating GitHub Pull Request for branch ${this.options.branch} to ${base}`);
-      return {
-        branch: '',
-        number: 0,
-        supersedes: [],
-        url: '',
-      };
-    }
 
     const response = await octokit.rest.pulls.create(request);
 
@@ -829,10 +823,18 @@ export class DotNetSdkUpdater {
   private async applySdkUpdate(globalJson: string, versions: SdkVersions): Promise<string | undefined> {
     core.info(`Updating .NET SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}...`);
 
-    // Get the base branch to use later to create the Pull Request
+    // Get the base branch and commit to use to create the branch and Pull Request
     const base = await this.execGit(['rev-parse', '--abbrev-ref', 'HEAD']);
+    const headOid = await this.execGit(['rev-parse', 'HEAD']);
 
-    // Apply the update to the file system.
+    // Determine the path of the global.json file relative to the root of the
+    // repository so that it can be used to create a commit via the GitHub API.
+    const repoRoot = await this.execGit(['rev-parse', '--show-toplevel']);
+    const relativePath = path.relative(repoRoot, this.options.globalJsonPath).split(path.sep).join('/');
+
+    // Apply the update in memory only; the committed file is fetched back from
+    // GitHub after the commit is created so that the working tree matches exactly
+    // what was committed via the API.
     // A simple string replace is used to avoid accidentally changing line endings
     // in a way that might conflict with git config or .gitattributes settings.
     // A regular expression is used so that all matches are updated, not just the first;
@@ -842,10 +844,6 @@ export class DotNetSdkUpdater {
     const searchValue = new RegExp(`\\"${escapedVersion}\\"`, 'g');
     const json = globalJson.replace(searchValue, `"${versions.latest.sdkVersion}"`);
 
-    await fs.promises.writeFile(this.options.globalJsonPath, json, { encoding: 'utf8' });
-    core.info(`Updated SDK version in '${this.options.globalJsonPath}' to ${versions.latest.sdkVersion}`);
-
-    // Configure Git
     if (!this.options.branch) {
       this.options.branch = `update-dotnet-sdk-${versions.latest.sdkVersion}`.toLowerCase();
     }
@@ -860,52 +858,112 @@ export class DotNetSdkUpdater {
       }
     }
 
-    if (this.options.userName) {
-      await this.execGit(['config', 'user.name', this.options.userName]);
-      core.info(`Updated git user name to '${this.options.userName}'`);
-    }
-
-    if (this.options.userEmail) {
-      await this.execGit(['config', 'user.email', this.options.userEmail]);
-      core.info(`Updated git user email to '${this.options.userEmail}'`);
-    }
-
-    if (this.options.repo) {
-      await this.execGit(['remote', 'set-url', 'origin', `${this.options.serverUrl}/${this.options.repo}.git`]);
-      await this.execGit(['fetch', 'origin'], true);
-    }
-
     core.debug(`Branch: ${this.options.branch}`);
     core.debug(`Commit message: ${commitMessage}`);
     core.debug(`User name: ${this.options.userName}`);
     core.debug(`User email: ${this.options.userEmail}`);
 
-    const branchExists = await this.execGit(['rev-parse', '--verify', '--quiet', `remotes/origin/${this.options.branch}`], true);
+    const octokit = this.getOctokit();
+    const [owner, repo] = this.options.repo.split('/');
 
-    if (branchExists) {
+    if (await this.branchExists(octokit, owner, repo, this.options.branch)) {
       core.info(`The ${this.options.branch} branch already exists`);
       return undefined;
     }
 
-    await this.execGit(['checkout', '-b', this.options.branch], true);
+    // Create the branch pointing at the commit that is currently checked out
+    await octokit.rest.git.createRef({
+      owner,
+      repo,
+      ref: `refs/heads/${this.options.branch}`,
+      sha: headOid,
+    });
     core.info(`Created git branch ${this.options.branch}`);
 
-    await this.execGit(['add', this.options.globalJsonPath]);
-    core.info(`Staged git commit for '${this.options.globalJsonPath}'`);
+    // Create the commit via the GraphQL API so that it has a verified GPG signature
+    const commitOid = await this.commitFileChange(octokit, {
+      branch: this.options.branch,
+      content: json,
+      expectedHeadOid: headOid,
+      message: commitMessage,
+      path: relativePath,
+    });
 
-    await this.execGit(['commit', '-m', commitMessage, '-s']);
+    core.info(`Committed .NET SDK update to git (${commitOid.substring(0, 7)})`);
 
-    const sha1 = await this.execGit(['log', "--format='%H'", '-n', '1']);
-    const shortSha1 = sha1.replace(/'/g, '').substring(0, 7);
-
-    core.info(`Committed .NET SDK update to git (${shortSha1})`);
-
-    if (!this.options.dryRun && this.options.repo) {
-      await this.execGit(['push', '-u', 'origin', this.options.branch], true);
-      core.info(`Pushed changes to repository (${this.options.repo})`);
-    }
+    // Pull the commit created via the API into the local working tree so that the
+    // global.json file on disk matches exactly what was committed and any actions
+    // that run afterwards create their own commits on top of it correctly.
+    await this.execGit(['fetch', 'origin', this.options.branch], true);
+    await this.execGit(['checkout', '-B', this.options.branch, 'FETCH_HEAD'], true);
 
     return base;
+  }
+
+  private async branchExists(octokit: Octokit, owner: string, repo: string, branch: string): Promise<boolean> {
+    try {
+      await octokit.rest.git.getRef({ owner, repo, ref: `heads/${branch}` });
+      return true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.status === 404) {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  private async commitFileChange(
+    octokit: Octokit,
+    change: {
+      branch: string;
+      content: string;
+      expectedHeadOid: string;
+      message: string;
+      path: string;
+    }
+  ): Promise<string> {
+    // Split the commit message into its headline and body and add a sign-off
+    // trailer to the body to match a commit previously created with `git commit -s`.
+    const lines = change.message.split('\n');
+    const headline = lines[0];
+    const signOff = `Signed-off-by: ${this.options.userName} <${this.options.userEmail}>`;
+
+    let body = lines.slice(1).join('\n').trim();
+    body = body.length > 0 ? `${body}\n\n${signOff}` : signOff;
+
+    const mutation = `
+      mutation ($input: CreateCommitOnBranchInput!) {
+        createCommitOnBranch(input: $input) {
+          commit {
+            oid
+          }
+        }
+      }`;
+
+    const input = {
+      branch: {
+        repositoryNameWithOwner: this.options.repo,
+        branchName: change.branch,
+      },
+      expectedHeadOid: change.expectedHeadOid,
+      message: {
+        headline,
+        body,
+      },
+      fileChanges: {
+        additions: [
+          {
+            path: change.path,
+            contents: Buffer.from(change.content, 'utf8').toString('base64'),
+          },
+        ],
+      },
+    };
+
+    const response = await octokit.graphql<{ createCommitOnBranch: { commit: { oid: string } } }>(mutation, { input });
+
+    return response.createCommitOnBranch.commit.oid;
   }
 
   private async getLatestDotNetSdkForQuality(channel: string, sdkVersion: string): Promise<SdkVersions> {
@@ -1055,6 +1113,8 @@ class NullWritable extends Writable {
     callback();
   }
 }
+
+type Octokit = ReturnType<typeof github.getOctokit>;
 
 type PaginatedApi = import('@octokit/plugin-rest-endpoint-methods').Api & {
   paginate: import('@octokit/plugin-paginate-rest').PaginateInterface;
