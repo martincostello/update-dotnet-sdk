@@ -316,6 +316,7 @@ export class DotNetSdkUpdater {
 
     const result: UpdateResult = {
       branchName: '',
+      commitSha: '',
       pullRequestNumber: 0,
       pullRequestUrl: '',
       updated: false,
@@ -345,6 +346,7 @@ export class DotNetSdkUpdater {
         const pullRequest = await this.createPullRequest(baseBranch, update);
 
         result.branchName = pullRequest.branch;
+        result.commitSha = pullRequest.commit;
         result.pullRequestNumber = pullRequest.number;
         result.pullRequestUrl = pullRequest.url;
         result.supersedes = pullRequest.supersedes;
@@ -406,6 +408,7 @@ export class DotNetSdkUpdater {
 
     const result: PullRequest = {
       branch: response.data.head.ref,
+      commit: response.data.head.sha,
       number: response.data.number,
       supersedes: [],
       url: response.data.html_url,
@@ -1014,6 +1017,7 @@ interface CveInfo {
 
 interface PullRequest {
   branch: string;
+  commit: string;
   number: number;
   supersedes: number[];
   url: string;

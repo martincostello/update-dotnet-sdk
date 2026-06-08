@@ -126,6 +126,9 @@ on:
       branch-name:
         description: 'The name of the Git branch associated with the Pull Request created by the workflow if the .NET SDK is updated.'
         value: ${{ jobs.update-dotnet-sdk.outputs.branch-name }}
+      commit-sha:
+        description: 'The Git commit SHA associated with the Pull Request created by the workflow if the .NET SDK is updated.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.commit-sha }}
       pull-request-html-url:
         description: 'The HTML URL of the Pull Request created by the workflow if the .NET SDK is updated.'
         value: ${{ jobs.update-dotnet-sdk.outputs.pull-request-html-url }}
@@ -176,6 +179,7 @@ jobs:
     outputs:
       aspnetcore-version: ${{ steps.update-dotnet-sdk.outputs.aspnetcore-version }}
       branch-name: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
+      commit-sha: ${{ steps.assign-commit-sha.outputs.commit-sha }}
       pull-request-html-url: ${{ steps.update-dotnet-sdk.outputs.pull-request-html-url }}
       pull-request-number: ${{ steps.update-dotnet-sdk.outputs.pull-request-number }}
       pull-requests-closed: ${{ steps.update-dotnet-sdk.outputs.pull-requests-closed }}
@@ -280,11 +284,13 @@ jobs:
         global-json-file: ${{ inputs.global-json-file }}
 
     - name: Update NuGet packages
+      id: update-nuget-packages
       if: inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
       shell: pwsh
       env:
         BRANCH_NAME: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
         COMMIT_MESSAGE_PREFIX: ${{ inputs.commit-message-prefix }}
+        COMMIT_SHA: ${{ steps.update-dotnet-sdk.outputs.commit-sha }}
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_NOLOGO: true
         DOTNET_OUTDATED_VERSION: ${{ inputs.dotnet-outdated-version || '*' }}
@@ -472,13 +478,9 @@ jobs:
           if ([string]::IsNullOrEmpty(${env:BRANCH_NAME})) {
             Write-Output "::warning::No branch is available to commit the NuGet package update(s) to."
           } else {
-            # The .NET SDK update was already committed to the branch by the action and the local
-            # working tree was synced to that commit, so HEAD is the current head of the branch.
-            $baseSha = (git rev-parse HEAD).Trim()
-
             # Determine the files that were changed by updating the NuGet packages.
             $editedFiles = @()
-            git diff --name-only $baseSha | ForEach-Object {
+            git diff --name-only ${env:COMMIT_SHA} | ForEach-Object {
               if (-Not [string]::IsNullOrEmpty($_)) {
                 $editedFiles += $_
               }
@@ -491,7 +493,7 @@ jobs:
               $localContent = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes($fileFullPath))
               $currentContent = ""
               try {
-                $currentFile = gh api "repos/${env:REPO_NAME}/contents/${filePath}?ref=${baseSha}" | ConvertFrom-Json
+                $currentFile = gh api "repos/${env:REPO_NAME}/contents/${filePath}?ref=${env:COMMIT_SHA}" | ConvertFrom-Json
                 $currentContent = $currentFile.content.Replace("`r", "").Replace("`n", "")
               } catch {
                 # The file does not yet exist on the branch
@@ -519,7 +521,7 @@ jobs:
                       repositoryNameWithOwner = ${env:REPO_NAME}
                       branchName = ${env:BRANCH_NAME}
                     }
-                    expectedHeadOid = $baseSha
+                    expectedHeadOid = ${env:COMMIT_SHA}
                     message = @{
                       headline = $headline
                       body = $body
@@ -547,10 +549,26 @@ jobs:
                 throw ($result.errors | ConvertTo-Json -Depth 20 -Compress)
               }
 
+              $commitSha = $result.data.createCommitOnBranch.commit.oid
+              "commit-sha=${commitSha}" >> ${env:GITHUB_OUTPUT}
+
               Write-Output "Committed update to $($dependencies.Count) NuGet package(s)."
             }
           }
         }
         else {
           Write-Output "There are no .NET NuGet packages to update."
+        }
+
+    - name: Assign Git commit SHA
+      id: assign-commit-sha
+      env:
+        PACKAGES_SHA: ${{ steps.update-nuget-packages.outputs.commit-sha }}
+        SDK_SHA: ${{ steps.update-dotnet-sdk.outputs.commit-sha }}
+      shell: pwsh
+      run: |
+        if ([string]::IsNullOrEmpty(${env:PACKAGES_SHA})) {
+          "commit-sha=${env:PACKAGES_SHA}" >> ${env:GITHUB_OUTPUT}
+        } else {
+          "commit-sha=${env:SDK_SHA}" >> ${env:GITHUB_OUTPUT}
         }

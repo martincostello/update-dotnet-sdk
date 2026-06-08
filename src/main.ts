@@ -58,6 +58,7 @@ export async function run(): Promise<void> {
 
     core.setOutput('aspnetcore-version', result.runtimeVersions?.aspNetCore ?? '');
     core.setOutput('branch-name', result.branchName);
+    core.setOutput('commit-sha', result.commitSha);
     core.setOutput('pull-request-number', result.pullRequestNumber);
     core.setOutput('pull-request-html-url', result.pullRequestUrl);
     core.setOutput('pull-requests-closed', JSON.stringify(result.supersedes));
