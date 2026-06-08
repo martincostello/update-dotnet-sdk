@@ -935,14 +935,7 @@ export class DotNetSdkUpdater {
     let body = lines.slice(1).join('\n').trim();
     body = body.length > 0 ? `${body}\n\n${signOff}` : signOff;
 
-    const mutation = `
-      mutation ($input: CreateCommitOnBranchInput!) {
-        createCommitOnBranch(input: $input) {
-          commit {
-            oid
-          }
-        }
-      }`;
+    const mutation = `mutation ($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) {commit {oid} } }`;
 
     const input = {
       branch: {
