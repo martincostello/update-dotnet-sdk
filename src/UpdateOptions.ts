@@ -9,7 +9,6 @@ export interface UpdateOptions {
   closeSuperseded: boolean;
   commitMessage: string;
   commitMessagePrefix: string;
-  dryRun: boolean;
   generateStepSummary: boolean;
   globalJsonPath: string;
   labels: string;

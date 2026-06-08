@@ -396,7 +396,6 @@ For more information about daily builds, see the [.NET repository][dotnet-dotnet
 | `security-only`         | If true, .NET SDK updates which do not contain security fixes are ignored.                          | `false`                                           |
 | `user-email`            | The optional email address to use for the Git commit.                                               | `github-actions[bot]@users.noreply.github.com`    |
 | `user-name`             | The optional user name to use for the Git commit.                                                   | `github-actions[bot]`                             |
-| `dry-run`               | If true, the action will not push changes to GitHub.                                                | `false`                                           |
 
 ## Outputs
 
@@ -404,6 +403,7 @@ For more information about daily builds, see the [.NET repository][dotnet-dotnet
 |:--------------------------|:--------------------------------------------------------------------------------------------------------------|
 | `aspnetcore-version`      | The version of the ASP.NET Core runtime associated with the updated .NET SDK.                                 |
 | `branch-name`             | The name of the Git branch associated with the Pull Request created by the action if the .NET SDK is updated. |
+| `commit-sha`              | The Git commit SHA created by the action if the .NET SDK is updated.                                          |
 | `pull-request-number`     | The number of the Pull Request created by the action if the .NET SDK is updated.                              |
 | `pull-request-html-url`   | The HTML URL of the Pull Request created by the action if the .NET SDK is updated.                            |
 | `pull-requests-closed`    | A JSON array of the numbers of any pull requests that were closed as superseded.                              |

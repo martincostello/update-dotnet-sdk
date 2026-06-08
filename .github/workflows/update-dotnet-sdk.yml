@@ -114,11 +114,6 @@ on:
         required: false
         type: string
         default: 'github-actions[bot]'
-      dry-run:
-        description: 'If true, the workflow will not push changes to GitHub.'
-        required: false
-        type: boolean
-        default: false
       runs-on:
         description: 'The GitHub Actions runner to use.'
         required: false
@@ -131,6 +126,9 @@ on:
       branch-name:
         description: 'The name of the Git branch associated with the Pull Request created by the workflow if the .NET SDK is updated.'
         value: ${{ jobs.update-dotnet-sdk.outputs.branch-name }}
+      commit-sha:
+        description: 'The Git commit SHA associated with the Pull Request created by the workflow if the .NET SDK is updated.'
+        value: ${{ jobs.update-dotnet-sdk.outputs.commit-sha }}
       pull-request-html-url:
         description: 'The HTML URL of the Pull Request created by the workflow if the .NET SDK is updated.'
         value: ${{ jobs.update-dotnet-sdk.outputs.pull-request-html-url }}
@@ -181,6 +179,7 @@ jobs:
     outputs:
       aspnetcore-version: ${{ steps.update-dotnet-sdk.outputs.aspnetcore-version }}
       branch-name: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
+      commit-sha: ${{ steps.assign-commit-sha.outputs.commit-sha }}
       pull-request-html-url: ${{ steps.update-dotnet-sdk.outputs.pull-request-html-url }}
       pull-request-number: ${{ steps.update-dotnet-sdk.outputs.pull-request-number }}
       pull-requests-closed: ${{ steps.update-dotnet-sdk.outputs.pull-requests-closed }}
@@ -257,14 +256,13 @@ jobs:
     # for the same release channel as the SDK specified in global.json.
     - name: Update .NET SDK
       id: update-dotnet-sdk
-      uses: martincostello/update-dotnet-sdk@fb6d4182e67895769ed694cbefe95df25fa58cd7 # v5.0.4
+      uses: martincostello/update-dotnet-sdk@e9c3798befbd0acbb1dfa40a6338d5b5c586d07f # v6.0.0
       with:
         branch-name: ${{ inputs.branch-name }}
         channel: ${{ inputs.channel }}
         close-superseded: ${{ inputs.close-superseded }}
         commit-message: ${{ inputs.commit-message }}
         commit-message-prefix: ${{ inputs.commit-message-prefix }}
-        dry-run: ${{ inputs.dry-run }}
         generate-step-summary: ${{ inputs.generate-step-summary }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
@@ -286,10 +284,13 @@ jobs:
         global-json-file: ${{ inputs.global-json-file }}
 
     - name: Update NuGet packages
+      id: update-nuget-packages
       if: inputs.update-nuget-packages && steps.update-dotnet-sdk.outputs.sdk-updated == 'true'
       shell: pwsh
       env:
+        BRANCH_NAME: ${{ steps.update-dotnet-sdk.outputs.branch-name }}
         COMMIT_MESSAGE_PREFIX: ${{ inputs.commit-message-prefix }}
+        COMMIT_SHA: ${{ steps.update-dotnet-sdk.outputs.commit-sha }}
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         DOTNET_NOLOGO: true
         DOTNET_OUTDATED_VERSION: ${{ inputs.dotnet-outdated-version || '*' }}
@@ -298,10 +299,12 @@ jobs:
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
         EXCLUDE_NUGET_PACKAGES: ${{ inputs.exclude-nuget-packages }}
         INCLUDE_NUGET_PACKAGES: ${{ inputs.include-nuget-packages }}
+        GH_TOKEN: ${{ steps.assign-token.outputs.access-token }}
         GIT_AUTHOR_EMAIL: ${{ inputs.user-email }}
         GIT_AUTHOR_NAME: ${{ inputs.user-name }}
         NUGET_XMLDOC_MODE: skip
         PRERELEASE_LABEL: ${{ inputs.nuget-packages-prerelease-label || '' }}
+        REPO_NAME: ${{ inputs.repo || github.repository }}
         UPDATED_SDK_VERSION: ${{ steps.update-dotnet-sdk.outputs.sdk-version }}
       run: |
         $ErrorActionPreference = "Stop"
@@ -467,18 +470,105 @@ jobs:
           $commitMessageLines += "..."
           $commitMessageLines += ""
           $commitMessageLines += ""
+          $commitMessageLines += "Signed-off-by: ${env:GIT_AUTHOR_NAME} <${env:GIT_AUTHOR_EMAIL}>"
 
-          $commitMessage = $commitMessageLines -join "`n"
+          $headline = $commitMessageLines[0]
+          $body = (($commitMessageLines | Select-Object -Skip 1) -join "`n").Trim()
 
-          git config user.email ${env:GIT_AUTHOR_EMAIL}
-          git config user.name ${env:GIT_AUTHOR_NAME}
+          if ([string]::IsNullOrEmpty(${env:BRANCH_NAME})) {
+            Write-Output "::warning::No branch is available to commit the NuGet package update(s) to."
+          } else {
+            # Determine the files that were changed by updating the NuGet packages.
+            $editedFiles = @()
+            git diff --name-only ${env:COMMIT_SHA} | ForEach-Object {
+              if (-Not [string]::IsNullOrEmpty($_)) {
+                $editedFiles += $_
+              }
+            }
 
-          git add .
-          git commit -m $commitMessage -s
-          git push
+            $edits = @()
 
-          Write-Output "Pushed update to $($dependencies.Count) NuGet package(s)."
+            foreach ($filePath in $editedFiles) {
+              $fileFullPath = Join-Path ${env:GITHUB_WORKSPACE} $filePath
+              $localContent = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes($fileFullPath))
+              $currentContent = ""
+              try {
+                $currentFile = gh api "repos/${env:REPO_NAME}/contents/${filePath}?ref=${env:COMMIT_SHA}" | ConvertFrom-Json
+                $currentContent = $currentFile.content.Replace("`r", "").Replace("`n", "")
+              } catch {
+                # The file does not yet exist on the branch
+                Write-Output "File $filePath does not exist on branch ${env:BRANCH_NAME}."
+              }
+
+              if ($currentContent -ne $localContent) {
+                $edits += @{
+                  path = $filePath
+                  contents = $localContent
+                }
+              }
+            }
+
+            if ($edits.Count -lt 1) {
+              Write-Output "There are no .NET NuGet package file changes to commit."
+            } else {
+              $query = 'mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }'
+
+              $payload = @{
+                query = $query
+                variables = @{
+                  input = @{
+                    branch = @{
+                      repositoryNameWithOwner = ${env:REPO_NAME}
+                      branchName = ${env:BRANCH_NAME}
+                    }
+                    expectedHeadOid = ${env:COMMIT_SHA}
+                    message = @{
+                      headline = $headline
+                      body = $body
+                    }
+                    fileChanges = @{
+                      additions = @($edits)
+                    }
+                  }
+                }
+              } | ConvertTo-Json -Depth 20 -Compress
+
+              $headers = @{
+                Authorization = "Bearer ${env:GH_TOKEN}"
+                Accept = "application/vnd.github+json"
+              }
+
+              $result = Invoke-RestMethod `
+                -Method POST `
+                -Uri ${env:GITHUB_GRAPHQL_URL} `
+                -Headers $headers `
+                -ContentType "application/json" `
+                -Body $payload
+
+              if ($null -ne $result.errors) {
+                throw ($result.errors | ConvertTo-Json -Depth 20 -Compress)
+              }
+
+              $commitSha = $result.data.createCommitOnBranch.commit.oid
+              "commit-sha=${commitSha}" >> ${env:GITHUB_OUTPUT}
+
+              Write-Output "Committed update to $($dependencies.Count) NuGet package(s)."
+            }
+          }
         }
         else {
           Write-Output "There are no .NET NuGet packages to update."
+        }
+
+    - name: Assign Git commit SHA
+      id: assign-commit-sha
+      env:
+        PACKAGES_SHA: ${{ steps.update-nuget-packages.outputs.commit-sha }}
+        SDK_SHA: ${{ steps.update-dotnet-sdk.outputs.commit-sha }}
+      shell: pwsh
+      run: |
+        if (-Not [string]::IsNullOrEmpty(${env:PACKAGES_SHA})) {
+          "commit-sha=${env:PACKAGES_SHA}" >> ${env:GITHUB_OUTPUT}
+        } else {
+          "commit-sha=${env:SDK_SHA}" >> ${env:GITHUB_OUTPUT}
         }

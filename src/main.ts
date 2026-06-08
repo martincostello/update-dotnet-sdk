@@ -32,7 +32,6 @@ export async function run(): Promise<void> {
       closeSuperseded: true,
       commitMessage: core.getInput('commit-message', { required: false }),
       commitMessagePrefix: core.getInput('commit-message-prefix', { required: false }),
-      dryRun: core.getInput('dry-run', { required: false }) === 'true',
       generateStepSummary: core.getInput('generate-step-summary', { required: false }) === 'true',
       globalJsonPath,
       labels: core.getInput('labels', { required: false }) ?? '',
@@ -59,6 +58,7 @@ export async function run(): Promise<void> {
 
     core.setOutput('aspnetcore-version', result.runtimeVersions?.aspNetCore ?? '');
     core.setOutput('branch-name', result.branchName);
+    core.setOutput('commit-sha', result.commitSha);
     core.setOutput('pull-request-number', result.pullRequestNumber);
     core.setOutput('pull-request-html-url', result.pullRequestUrl);
     core.setOutput('pull-requests-closed', JSON.stringify(result.supersedes));

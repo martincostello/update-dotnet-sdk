@@ -40,6 +40,7 @@ jobs:
         WINDOWS_DESKTOP_VERSION: ${{ needs.update-sdk.outputs.windows-desktop-version }}
         SECURITY: ${{ needs.update-sdk.outputs.security }}
         BRANCH_NAME: ${{ needs.update-sdk.outputs.branch-name }}
+        COMMIT_SHA: ${{ needs.update-sdk.outputs.commit-sha }}
         PULL_REQUEST_NUMBER: ${{ needs.update-sdk.outputs.pull-request-number }}
         PULL_REQUEST_HTML_URL: ${{ needs.update-sdk.outputs.pull-request-html-url }}
         PULL_REQUESTS_CLOSED: ${{ needs.update-sdk.outputs.pull-requests-closed }}
@@ -51,6 +52,7 @@ jobs:
         echo "Windows Desktop version: ${WINDOWS_DESKTOP_VERSION}"
         echo "Security: ${SECURITY}"
         echo "Branch name: ${BRANCH_NAME}"
+        echo "Commit SHA: ${COMMIT_SHA}"
         echo "PR number: ${PULL_REQUEST_NUMBER}"
         echo "PR URL: ${PULL_REQUEST_HTML_URL}"
         echo "PR(s) closed: ${PULL_REQUESTS_CLOSED}"

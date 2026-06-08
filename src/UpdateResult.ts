@@ -3,6 +3,7 @@
 
 export interface UpdateResult {
   branchName: string;
+  commitSha: string;
   pullRequestNumber: number;
   pullRequestUrl: string;
   security: boolean;
