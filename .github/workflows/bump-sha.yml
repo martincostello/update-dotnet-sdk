@@ -1,0 +1,245 @@
+name: bump-sha
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  bump-sha:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    if: github.event.repository.fork == false
+
+    concurrency:
+      group: '${{ github.workflow }}'
+      cancel-in-progress: false
+
+    environment:
+      name: write
+      deployment: false
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+
+      - name: Checkout code
+        id: checkout-code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          filter: 'tree:0'
+          persist-credentials: false
+          ref: ${{ github.event.repository.default_branch }}
+          show-progress: false
+
+      - name: Bump Git SHA
+        id: bump-sha
+        shell: pwsh
+        env:
+          ACTION_SHA: ${{ steps.checkout-code.outputs.commit }}
+        run: |
+          $sha = ${env:ACTION_SHA}
+
+          if ([string]::IsNullOrEmpty($sha)) {
+            throw "Failed to determine the commit SHA to use for the action."
+          }
+
+          $workflowPath = Join-Path "." ".github" "workflows" "update-dotnet-sdk.yml"
+          $workflowContent = Get-Content $workflowPath -Raw
+
+          # Replace only the Git SHA the action is pinned to, leaving the
+          # trailing version comment and the file's line endings untouched.
+          $pattern = "(?m)^(\s+uses: martincostello/update-dotnet-sdk@)[0-9a-fA-F]+(.*)$"
+          $replacement = '${1}' + $sha + '$2'
+          $updatedContent = $workflowContent -Replace $pattern, $replacement
+
+          if ($updatedContent -eq $workflowContent) {
+            Write-Output "::notice::The Git SHA for the martincostello/update-dotnet-sdk action is already up-to-date."
+            "updated=false" >> ${env:GITHUB_OUTPUT}
+            exit 0
+          }
+
+          Set-Content -Path $workflowPath -Value $updatedContent.TrimEnd()
+
+          "sha=${sha}" >> ${env:GITHUB_OUTPUT}
+          "updated=true" >> ${env:GITHUB_OUTPUT}
+
+      - name: Get GitHub token
+        id: get-github-token
+        if: steps.bump-sha.outputs.updated == 'true'
+        uses: martincostello/github-automation/actions/get-github-token@36f156b090e9259937ebf5151c165ddb1fcf6eac # get-github-token/v4.3.0
+        with:
+          profile-name: version-bump
+
+      - name: Push changes to GitHub
+        id: push-changes
+        if: steps.bump-sha.outputs.updated == 'true'
+        shell: pwsh
+        env:
+          ACTION_SHA: ${{ steps.bump-sha.outputs.sha }}
+          APP_SLUG: ${{ steps.get-github-token.outputs.app-slug }}
+          CHECKOUT_COMMIT: ${{ steps.checkout-code.outputs.commit }}
+          GH_TOKEN: ${{ steps.get-github-token.outputs.token }}
+          TOKEN_TYPE: ${{ steps.get-github-token.outputs.token-type }}
+        run: |
+          $branchName = "bump-sha-${env:ACTION_SHA}"
+          $branchProbe = gh api "repos/${env:GITHUB_REPOSITORY}/git/ref/heads/${branchName}" 2>&1
+
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "::notice::Branch ${branchName} already exists."
+            "updated-sha=false" >> ${env:GITHUB_OUTPUT}
+            exit 0
+          }
+
+          if ((($branchProbe | Out-String) -notmatch 'HTTP 404')) {
+            throw "Failed to check whether branch '${branchName}' exists."
+          }
+
+          if (${env:TOKEN_TYPE} -eq "app") {
+            $gitUserName = "${env:APP_SLUG}[bot]"
+            $gitUserId = gh api "users/${gitUserName}" --jq '.id'
+            if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($gitUserId)) {
+              throw "Failed to resolve user ID for GitHub app ${gitUserName}."
+            }
+            $gitUserEmail = "${gitUserId}+${gitUserName}@users.noreply.github.com"
+          } else {
+            $identity = gh api "user" | ConvertFrom-Json
+            $gitUserName = $identity.login
+            $gitUserEmail = if ([string]::IsNullOrEmpty($identity.email)) {
+              "$($identity.id)+$($identity.login)@users.noreply.github.com"
+            } else {
+              $identity.email
+            }
+          }
+
+          $baseSha = ${env:CHECKOUT_COMMIT}
+
+          $editedFiles = @()
+          git diff --name-only $baseSha | ForEach-Object {
+            $editedFiles += $_
+          }
+
+          if ($LASTEXITCODE -ne 0 || $editedFiles.Count -lt 1) {
+            Write-Output "No changes to commit."
+            "updated-sha=false" >> ${env:GITHUB_OUTPUT}
+            exit 0
+          }
+
+          $edits = @()
+
+          foreach ($filePath in $editedFiles) {
+            $fileFullPath = Join-Path ${env:GITHUB_WORKSPACE} $filePath
+            $currentFile = gh api "repos/${env:GITHUB_REPOSITORY}/contents/${filePath}?ref=${baseSha}" | ConvertFrom-Json
+            $currentContent = $currentFile.content.Replace("`r", "").Replace("`n", "")
+            $localContent = [System.Convert]::ToBase64String(
+              [System.IO.File]::ReadAllBytes($fileFullPath))
+
+            if ($currentContent -ne $localContent) {
+              $edits += @{
+                path = $filePath
+                contents = $localContent
+              }
+            }
+          }
+
+          if ($edits.Count -lt 1) {
+            Write-Output "No changes to commit."
+            "updated-sha=false" >> ${env:GITHUB_OUTPUT}
+            exit 0
+          }
+
+          @{
+            ref = "refs/heads/${branchName}"
+            sha = $baseSha
+          } | ConvertTo-Json -Compress | gh api --method POST "repos/${env:GITHUB_REPOSITORY}/git/refs" --input -
+
+          $query = @'
+          mutation($input: CreateCommitOnBranchInput!) {
+            createCommitOnBranch(input: $input) {
+              commit {
+                oid
+              }
+            }
+          }
+          '@
+
+          $title = "Bump Git SHA"
+          $body = @(
+            "Bump the Git SHA for the martincostello/update-dotnet-sdk action to ${env:ACTION_SHA}.",
+            "",
+            "Signed-off-by: ${gitUserName} <${gitUserEmail}>"
+          ) -join "`n"
+
+          $payload = @{
+            query = $query
+            variables = @{
+              input = @{
+                branch = @{
+                  repositoryNameWithOwner = ${env:GITHUB_REPOSITORY}
+                  branchName = $branchName
+                }
+                expectedHeadOid = $baseSha
+                message = @{
+                  headline = $title
+                  body = $body
+                }
+                fileChanges = @{
+                  additions = $edits
+                }
+              }
+            }
+          } | ConvertTo-Json -Depth 20 -Compress
+
+          $headers = @{
+            Authorization = "Bearer ${env:GH_TOKEN}"
+            Accept = "application/vnd.github+json"
+          }
+
+          $result = Invoke-RestMethod `
+            -Method POST `
+            -Uri ${env:GITHUB_GRAPHQL_URL} `
+            -Headers $headers `
+            -ContentType "application/json" `
+            -Body $payload
+
+          if ($null -ne $result.errors) {
+            throw ($result.errors | ConvertTo-Json -Depth 20 -Compress)
+          }
+
+          "branch-name=${branchName}" >> ${env:GITHUB_OUTPUT}
+          "title=${title}" >> ${env:GITHUB_OUTPUT}
+          "updated-sha=true" >> ${env:GITHUB_OUTPUT}
+
+      - name: Create pull request
+        if: steps.push-changes.outputs.updated-sha == 'true'
+        shell: pwsh
+        env:
+          ACTION_SHA: ${{ steps.bump-sha.outputs.sha }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          HEAD_BRANCH: ${{ steps.push-changes.outputs.branch-name }}
+          GH_TOKEN: ${{ steps.get-github-token.outputs.token }}
+          PR_TITLE: ${{ steps.push-changes.outputs.title }}
+        run: |
+          $workflowUrl = "${env:GITHUB_SERVER_URL}/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
+
+          $body = @(
+            "Bump the Git SHA for the action to ``${env:ACTION_SHA}``.",
+            "",
+            "This pull request was generated by [GitHub Actions](${workflowUrl})."
+          ) -join "`n"
+
+          $prUrl = gh pr create `
+            --title ${env:PR_TITLE} `
+            --body $body `
+            --head ${env:HEAD_BRANCH} `
+            --base ${env:BASE_BRANCH} `
+            --repo ${env:GITHUB_REPOSITORY}
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to create pull request."
+          }
+
+          $prNumber = ($prUrl -split "/")[-1]
+          Write-Output "::notice::Created pull request ${env:GITHUB_REPOSITORY}#${prNumber}: ${prUrl}"

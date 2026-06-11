@@ -145,7 +145,7 @@ jobs:
             $currentContent = $currentFile.content.Replace("`r", "").Replace("`n", "")
             $localContent = [System.Convert]::ToBase64String(
               [System.IO.File]::ReadAllBytes($fileFullPath))
-            
+
             if ($currentContent -ne $localContent) {
               $edits += @{
                 path = $filePath
