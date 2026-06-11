@@ -28,6 +28,10 @@ inputs:
     description: 'The optional Git commit message prefix to use if commit-message is not specified.'
     required: false
     default: ''
+  draft:
+    description: 'If true, any pull request created by the action is opened as a draft.'
+    required: false
+    default: 'false'
   generate-step-summary:
     description: 'If true, will output a summary of any .NET SDK update to $GITHUB_STEP_SUMMARY.'
     required: false

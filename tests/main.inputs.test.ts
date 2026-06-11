@@ -65,4 +65,38 @@ describe('update-dotnet-sdk', () => {
       });
     });
   });
+
+  describe('when draft is true', () => {
+    let fixture: ActionFixture;
+
+    beforeAll(async () => {
+      fixture = new ActionFixture('10.0.100-preview.4.25216.37');
+
+      fixture.channel = '10.0.1xx';
+      fixture.quality = 'daily';
+
+      await fixture.initialize('draft-true', {
+        draft: 'true',
+      });
+    });
+
+    afterAll(async () => {
+      await fixture?.destroy();
+    });
+
+    describe('running the action', () => {
+      beforeAll(async () => {
+        await fixture.run();
+      }, timeout);
+
+      test('generates no errors', () => {
+        expect(core.error).toHaveBeenCalledTimes(0);
+        expect(core.setFailed).toHaveBeenCalledTimes(0);
+      });
+
+      test('opens the pull request as a draft', () => {
+        expect(fixture.getOutput('pull-request-number')).toBe('42');
+      });
+    });
+  });
 });

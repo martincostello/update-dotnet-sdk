@@ -396,7 +396,7 @@ export class DotNetSdkUpdater {
       base,
       body,
       maintainer_can_modify: true,
-      draft: false,
+      draft: this.options.draft,
     };
 
     const response = await octokit.rest.pulls.create(request);

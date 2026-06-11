@@ -29,6 +29,11 @@ on:
         required: false
         type: string
         default: ''
+      draft:
+        description: 'An optional value of true or false to specify whether any pull request created should be opened as a draft.'
+        required: false
+        type: string
+        default: ''
       dotnet-roll-forward:
         description: 'An optional value that controls how roll forward is applied to any .NET tools run by the workflow.'
         required: false
@@ -252,6 +257,34 @@ jobs:
         show-progress: false
         token: ${{ steps.assign-token.outputs.access-token }}
 
+    # Determine whether the pull request should be opened as a draft. If the
+    # user did not specify a value for the draft input, the pull request is
+    # opened as a draft if NuGet packages are also going to be updated so that
+    # it cannot be merged before any updates have been committed. The pull request
+    # is marked as ready for review once the NuGet packages have been updated.
+    - name: Configure draft pull request
+      id: configure-draft
+      env:
+        DRAFT: ${{ inputs.draft }}
+        UPDATE_NUGET_PACKAGES: ${{ inputs.update-nuget-packages }}
+      shell: pwsh
+      run: |
+        $draft = ${env:DRAFT}
+        $updateNuGetPackages = ${env:UPDATE_NUGET_PACKAGES} -eq 'true'
+        $markReady = 'false'
+
+        if ([string]::IsNullOrEmpty($draft)) {
+          if ($updateNuGetPackages) {
+            $draft = 'true'
+            $markReady = 'true'
+          } else {
+            $draft = 'false'
+          }
+        }
+
+        "draft=${draft}" >> ${env:GITHUB_OUTPUT}
+        "mark-ready=${markReady}" >> ${env:GITHUB_OUTPUT}
+
     # Run the action to check if a new version of the .NET SDK is available
     # for the same release channel as the SDK specified in global.json.
     - name: Update .NET SDK
@@ -263,6 +296,7 @@ jobs:
         close-superseded: ${{ inputs.close-superseded }}
         commit-message: ${{ inputs.commit-message }}
         commit-message-prefix: ${{ inputs.commit-message-prefix }}
+        draft: ${{ steps.configure-draft.outputs.draft }}
         generate-step-summary: ${{ inputs.generate-step-summary }}
         global-json-file: ${{ inputs.global-json-file }}
         labels: ${{ inputs.labels }}
@@ -572,3 +606,19 @@ jobs:
         } else {
           "commit-sha=${env:SDK_SHA}" >> ${env:GITHUB_OUTPUT}
         }
+
+    # If the pull request was opened as a draft because NuGet packages were
+    # also being updated, mark it as ready for review now that the NuGet
+    # package updates have been completed, whether or not any commit was made.
+    - name: Mark pull request as ready for review
+      if: |
+        steps.configure-draft.outputs.mark-ready == 'true' &&
+        steps.update-dotnet-sdk.outputs.sdk-updated == 'true' &&
+        steps.update-dotnet-sdk.outputs.pull-request-number != ''
+      env:
+        GH_TOKEN: ${{ steps.assign-token.outputs.access-token }}
+        PR_NUMBER: ${{ steps.update-dotnet-sdk.outputs.pull-request-number }}
+        REPO_NAME: ${{ inputs.repo || github.repository }}
+      shell: pwsh
+      run: |
+        gh pr ready ${env:PR_NUMBER} --repo ${env:REPO_NAME}
