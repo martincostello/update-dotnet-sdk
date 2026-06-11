@@ -30,7 +30,7 @@ on:
         type: string
         default: ''
       draft:
-        description: 'An optional value of true or false to specify whether any pull request created should be opened as a draft.'
+        description: 'An optional boolean value to specify whether any pull request created should be opened as a draft.'
         required: false
         type: string
         default: ''
