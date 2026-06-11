@@ -32,6 +32,7 @@ export async function run(): Promise<void> {
       closeSuperseded: true,
       commitMessage: core.getInput('commit-message', { required: false }),
       commitMessagePrefix: core.getInput('commit-message-prefix', { required: false }),
+      draft: core.getInput('draft', { required: false }) === 'true',
       generateStepSummary: core.getInput('generate-step-summary', { required: false }) === 'true',
       globalJsonPath,
       labels: core.getInput('labels', { required: false }) ?? '',
