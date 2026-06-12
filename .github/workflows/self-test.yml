@@ -1,0 +1,37 @@
+name: self-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+
+  self-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: false
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      with:
+        filter: 'tree:0'
+        persist-credentials: false
+        show-progress: false
+
+    - name: Update .NET SDK
+      uses: ./
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
