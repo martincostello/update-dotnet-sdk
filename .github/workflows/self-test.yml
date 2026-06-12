@@ -39,6 +39,8 @@ jobs:
       shell: pwsh
       env:
         DOTNET_VERSION: ${{ steps.setup-dotnet.outputs.dotnet-version }}
+        GIT_COMMITTER_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+        GIT_COMMITTER_NAME: "github-actions[bot]"
       run: |
         $globalJsonPath = Join-Path ${env:GITHUB_WORKSPACE} "global.json"
         $globalJsonContent = @{
@@ -47,6 +49,8 @@ jobs:
           }
         } | ConvertTo-Json -Depth 3
         Set-Content -Path $globalJsonPath -Value $globalJsonContent
+        git config user.email ${env:GIT_COMMITTER_EMAIL}
+        git config user.name ${env:GIT_COMMITTER_NAME}
         git add $globalJsonPath
         git commit -m "Add global.json for .NET SDK version ${env:DOTNET_VERSION}" -s
 
