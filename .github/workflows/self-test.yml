@@ -31,6 +31,25 @@ jobs:
         persist-credentials: false
         show-progress: false
 
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5.3.0
+      id: setup-dotnet
+
+    - name: Create global.json
+      shell: pwsh
+      env:
+        DOTNET_VERSION: ${{ steps.setup-dotnet.outputs.dotnet-version }}
+      run: |
+        $globalJsonPath = Join-Path ${env:GITHUB_WORKSPACE} "global.json"
+        $globalJsonContent = @{
+          sdk = @{
+            version = ${env:DOTNET_VERSION}
+          }
+        } | ConvertTo-Json -Depth 3
+        Set-Content -Path $globalJsonPath -Value $globalJsonContent
+        git add $globalJsonPath
+        git commit -m "Add global.json for .NET SDK version ${env:DOTNET_VERSION}" -s
+
     - name: Update .NET SDK
       uses: ./
       with:
