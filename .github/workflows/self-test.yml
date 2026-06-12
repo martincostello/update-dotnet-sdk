@@ -1,0 +1,62 @@
+name: self-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+
+  self-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: false
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      with:
+        filter: 'tree:0'
+        persist-credentials: false
+        show-progress: false
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5.3.0
+      id: setup-dotnet
+      with:
+        dotnet-version: latest
+
+    - name: Create global.json
+      shell: pwsh
+      env:
+        DOTNET_VERSION: ${{ steps.setup-dotnet.outputs.dotnet-version }}
+        GIT_COMMITTER_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+        GIT_COMMITTER_NAME: "github-actions[bot]"
+      run: |
+        $globalJsonPath = Join-Path ${env:GITHUB_WORKSPACE} "global.json"
+        $globalJsonContent = @{
+          sdk = @{
+            version = ${env:DOTNET_VERSION}
+          }
+        } | ConvertTo-Json -Depth 3
+        Set-Content -Path $globalJsonPath -Value $globalJsonContent
+        git config user.email ${env:GIT_COMMITTER_EMAIL}
+        git config user.name ${env:GIT_COMMITTER_NAME}
+        git add $globalJsonPath -f
+        git commit -m "Add global.json for .NET SDK version ${env:DOTNET_VERSION}" -s
+
+    - name: Update .NET SDK
+      uses: ./
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}

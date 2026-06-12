@@ -113,7 +113,7 @@ on:
         description: 'The optional email address to use for the Git commits.'
         required: false
         type: string
-        default: 'github-actions[bot]@users.noreply.github.com'
+        default: '41898282+github-actions[bot]@users.noreply.github.com'
       user-name:
         description: 'The optional user name to use for the Git commits.'
         required: false

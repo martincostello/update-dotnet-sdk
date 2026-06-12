@@ -165,7 +165,7 @@ export class ActionFixture {
       'INPUT_REPO': this.repo,
       'INPUT_REPO-TOKEN': 'my-token',
       'INPUT_SECURITY-ONLY': this.securityOnly.toString().toLowerCase(),
-      'INPUT_USER-EMAIL': 'github-actions[bot]@users.noreply.github.com',
+      'INPUT_USER-EMAIL': '41898282+github-actions[bot]@users.noreply.github.com',
       'INPUT_USER-NAME': 'github-actions[bot]',
     };
 

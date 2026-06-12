@@ -37,7 +37,7 @@ exports[`update-dotnet-sdk > 2.1 for the 2.1.500 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -102,7 +102,7 @@ exports[`update-dotnet-sdk > 2.1 for the 2.1.500 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -199,7 +199,7 @@ exports[`update-dotnet-sdk > 3.1 for the 3.1.201 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -264,7 +264,7 @@ exports[`update-dotnet-sdk > 3.1 for the 3.1.201 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -329,7 +329,7 @@ exports[`update-dotnet-sdk > 3.1 for the 3.1.201 SDK with a commit prefix of "ch
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -394,7 +394,7 @@ exports[`update-dotnet-sdk > 3.1 for the 3.1.201 SDK with a commit prefix of "ch
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -491,7 +491,7 @@ exports[`update-dotnet-sdk > 6.0 for the 6.0.100 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -556,7 +556,7 @@ exports[`update-dotnet-sdk > 6.0 for the 6.0.100 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -653,7 +653,7 @@ exports[`update-dotnet-sdk > 7.0 for the 7.0.100 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -718,7 +718,7 @@ exports[`update-dotnet-sdk > 7.0 for the 7.0.100 SDK with a commit prefix of "" 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -841,7 +841,7 @@ exports[`update-dotnet-sdk > 7.0-sdk-only for the 7.0.307 SDK with a commit pref
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -902,7 +902,7 @@ exports[`update-dotnet-sdk > 8.0 for the 8.0.100-preview.6.23330.14 SDK with a c
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -984,7 +984,7 @@ exports[`update-dotnet-sdk > daily builds for channel "8.0" > running the action
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -1036,7 +1036,7 @@ exports[`update-dotnet-sdk > daily builds for channel "8.0.1xx" > running the ac
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -1088,7 +1088,7 @@ exports[`update-dotnet-sdk > daily builds for channel "8.0.1xx-preview7" > runni
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -1140,7 +1140,7 @@ exports[`update-dotnet-sdk > daily builds for channel "9.0" > running the action
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -1192,7 +1192,7 @@ exports[`update-dotnet-sdk > daily builds for channel "9.0.1xx" > running the ac
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -1244,7 +1244,7 @@ exports[`update-dotnet-sdk > daily builds for channel "10.0.1xx" > running the a
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -1296,7 +1296,7 @@ exports[`update-dotnet-sdk > when global.json contains multiple .NET SDK version
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
