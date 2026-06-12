@@ -14,7 +14,7 @@ exports[`update-dotnet-sdk > when close-superseded is false > running the action
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
@@ -56,7 +56,7 @@ exports[`update-dotnet-sdk > when close-superseded is true > running the action 
   "  update-type: version-update:semver-patch",
   "...",
   "",
-  "Signed-off-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
+  "Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
 ]
 `;
 
