@@ -53,8 +53,8 @@ jobs:
         Set-Content -Path $globalJsonPath -Value $globalJsonContent
         git config user.email ${env:GIT_COMMITTER_EMAIL}
         git config user.name ${env:GIT_COMMITTER_NAME}
-        git add $globalJsonPath
-        git commit -f -m "Add global.json for .NET SDK version ${env:DOTNET_VERSION}" -s
+        git add $globalJsonPath -f
+        git commit -m "Add global.json for .NET SDK version ${env:DOTNET_VERSION}" -s
 
     - name: Update .NET SDK
       uses: ./
