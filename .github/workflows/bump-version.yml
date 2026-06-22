@@ -72,7 +72,7 @@ jobs:
           if (${env:GITHUB_EVENT_NAME} -eq "release") {
             $workflowPath = Join-Path "." ".github" "workflows" "update-dotnet-sdk.yml"
             $workflowContent = Get-Content $workflowPath -Raw
-            $workflowContent = $workflowContent -Replace "(?m)^(\s+uses: martincostello\/update-dotnet-sdk\@)(.*)$", "`$`{1`}${env:GITHUB_SHA} # v${updatedVersion}"
+            $workflowContent = $workflowContent -Replace "(?m)^(\s+uses: martincostello\/update-dotnet-sdk\@)(.*)$", "`$`{1`}${env:GITHUB_SHA} # v${currentVersion}"
             Set-Content -Path $workflowPath -Value $workflowContent.TrimEnd()
           }
 
