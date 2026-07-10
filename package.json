@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.5",
-    "@eslint/js": "9.39.4",
+    "@eslint/js": "10.0.1",
     "@octokit/types": "16.0.0",
     "@stylistic/eslint-plugin": "5.10.0",
     "@types/node": "25.9.4",
@@ -57,7 +57,7 @@
     "@vitest/coverage-v8": "4.1.10",
     "@vitest/eslint-plugin": "1.6.21",
     "esbuild": "0.28.1",
-    "eslint": "9.39.4",
+    "eslint": "10.6.0",
     "eslint-plugin-github": "6.1.0",
     "eslint-plugin-prettier": "5.5.6",
     "fast-check": "4.8.0",
