@@ -34,15 +34,15 @@ export type CapturedCommit = {
 };
 
 let capturedCommit: CapturedCommit | undefined;
-let commitInterceptorsRegistered = false;
+let staticInterceptorsRegistered = false;
 
 const commitOid = 'a'.repeat(40);
 
-function registerCommitInterceptors(): void {
-  if (commitInterceptorsRegistered) {
+function registerStaticInterceptors(): void {
+  if (staticInterceptorsRegistered) {
     return;
   }
-  commitInterceptorsRegistered = true;
+  staticInterceptorsRegistered = true;
 
   const origin = 'https://github.local';
   const jsonHeaders = { 'content-type': 'application/json' };
@@ -60,8 +60,13 @@ function registerCommitInterceptors(): void {
     .intercept({ path: /\/git\/refs$/, method: 'POST' })
     .reply(201, { ref: 'refs/heads/branch', object: { sha: commitOid } }, { headers: jsonHeaders })
     .persist();
+}
 
-  // The createCommitOnBranch GraphQL mutation captures the commit and returns its OID
+function registerGraphqlInterceptor(): void {
+  const origin = 'https://github.local';
+  const jsonHeaders = { 'content-type': 'application/json' };
+
+  // The createCommitOnBranch GraphQL mutation captures the commit and returns its OID.
   agent
     .get(origin)
     .intercept({ path: '/api/graphql', method: 'POST' })
@@ -82,13 +87,13 @@ function registerCommitInterceptors(): void {
         data: { data: { createCommitOnBranch: { commit: { oid: commitOid } } } },
         responseOptions: { headers: jsonHeaders },
       };
-    })
-    .persist();
+    });
 }
 
 export function setupCommit(): void {
   capturedCommit = undefined;
-  registerCommitInterceptors();
+  registerStaticInterceptors();
+  registerGraphqlInterceptor();
 }
 
 export function getCapturedCommit(): CapturedCommit | undefined {
