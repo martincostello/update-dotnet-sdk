@@ -67,10 +67,6 @@ function registerGraphqlInterceptor(): void {
   const jsonHeaders = { 'content-type': 'application/json' };
 
   // The createCommitOnBranch GraphQL mutation captures the commit and returns its OID.
-  // Registered fresh each time rather than persisted so that the reply callback is
-  // invoked on every call; in undici 8.10+ a persisted callback-based interceptor has
-  // its callback stripped after the first invocation, causing subsequent calls to
-  // return the cached response without running the callback.
   agent
     .get(origin)
     .intercept({ path: '/api/graphql', method: 'POST' })
