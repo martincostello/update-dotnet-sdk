@@ -47,7 +47,7 @@
     "undici": "8.10.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.6",
+    "@eslint/eslintrc": "3.3.7",
     "@eslint/js": "10.0.1",
     "@octokit/types": "18.0.0",
     "@stylistic/eslint-plugin": "5.10.0",
