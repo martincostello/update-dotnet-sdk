@@ -57,7 +57,7 @@
     "@vitest/coverage-v8": "5.0.0",
     "@vitest/eslint-plugin": "1.6.27",
     "esbuild": "0.28.2",
-    "eslint": "10.9.1",
+    "eslint": "10.10.0",
     "eslint-plugin-github": "6.1.2",
     "eslint-plugin-prettier": "5.5.6",
     "fast-check": "4.9.0",
