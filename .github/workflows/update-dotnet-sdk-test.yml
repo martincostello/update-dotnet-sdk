@@ -15,7 +15,7 @@ jobs:
       global-json-file: './_global.json'
       labels: dependencies
       # renovate: datasource=github-runners depType=github-runner
-      runs-on: ubuntu-24.04
+      runs-on: ubuntu-26.04
       update-nuget-packages: false
       user-email: ${{ vars.GIT_COMMIT_USER_EMAIL }}
       user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
