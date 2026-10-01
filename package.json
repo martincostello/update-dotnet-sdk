@@ -42,7 +42,7 @@
     "@actions/exec": "3.0.0",
     "@actions/github": "9.1.1",
     "@actions/io": "3.0.2",
-    "@octokit/plugin-paginate-rest": "15.0.0",
+    "@octokit/plugin-paginate-rest": "16.0.0",
     "@octokit/plugin-rest-endpoint-methods": "18.0.0",
     "undici": "8.11.2"
   },
