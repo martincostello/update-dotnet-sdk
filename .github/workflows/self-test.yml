@@ -57,6 +57,6 @@ jobs:
         git commit -m "Add global.json for .NET SDK version ${env:DOTNET_VERSION}" -s
 
     - name: Update .NET SDK
-      uses: ./
+      uses: $/
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
